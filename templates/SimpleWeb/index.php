@@ -99,7 +99,7 @@ elseif(getconfig('GoAdmin')  == 'on'  ){
                 foreach ($links as $link) {
                 $linkURL=getconfig('urlz')  == 'on' ? $link['url'] :'./index.php?c=click&id='.$link['id'].'&u='.$u;
                 $description = empty($link['description']) ? '作者很懒，没有填写描述。' : $link['description'];
-                $img= getconfig('LoadIcon')  == 'on' ? 'https://favicon.rss.ink/v1/'.base64($link['url']):$libs.'/Other/default.ico';
+                $img= getconfig('LoadIcon')  == 'on' ? geticourl($favicon,$link['url']):$libs.'/Other/default.ico';
                 ?><div class="col-md-3 col-sm-4 col-xs-6 ">
                 <a href="<?php echo $linkURL?>" class="card-link" target="_blank">
                 <img src="<?php echo $img ?>" align="center" width="16px" height="16px">

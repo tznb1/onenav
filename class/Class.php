@@ -47,7 +47,15 @@ if ($count){
     $db->insert('on_config',['name'=> $name ,'value'=> $value]);
 }
 }
-
+//获取图标URL
+function geticourl($icon,$url){
+if ($icon ==1){return('./favicon/?url='.$url);}
+elseif($icon ==2){return('//favicon.rss.ink/v1/'.base64($url));}
+elseif($icon ==3){return('//ico.hnysnet.com/get.php?url='.$url);}
+elseif($icon ==4){return('//api.15777.cn/get.php?url='.$url);}
+elseif($icon ==5){return('////favicon.cccyun.cc/'.$url);}
+else{return('./favicon/?url='.$url);}//如果参数错误则使用本地服务器
+}
 //读取配置
 function getconfig($name){
 global $db;
@@ -162,7 +170,20 @@ function getSubstrRight($str, $rightStr)
     $right = strpos($str, $rightStr);
     return substr($str, 0, $right);
 }
+//将URL转换为base64编码
+function base64($url){
+    $urls = parse_url($url);
 
+    //获取请求协议
+    $scheme = empty( $urls['scheme'] ) ? 'http://' : $urls['scheme'].'://';
+    //获取主机名
+    $host = $urls['host'];
+    //获取端口
+    $port = empty( $urls['port'] ) ? '' : ':'.$urls['port'];
+
+    $new_url = $scheme.$host.$port;
+    return base64_encode($new_url);
+}
 //取文本右边  getSubstrLeft('请用php取出小超越工作室右边文本吧','小超越工作室');
 function getSubstrLeft($str, $leftStr)
 {

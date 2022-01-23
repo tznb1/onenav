@@ -77,6 +77,15 @@
     <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年01月23日</h4>
       <ul>
+        <li>新增:网站图标获取接口配置,支持本地服务器获取(支持缓存,如果服务器不能访问外网请勿使用,会增加服务器负担,小宽度低配置请酌情使用!)</li>
+      </ul>
+    </div>
+  </li>
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年01月22日</h4>
+      <ul>
         <li>修复:注册后首次访问主页有一个js加载失败的bug,调整注册后的默认配置!</li>
         <li>修复:百素主题首页添加链接无法使用</li>
         <li>优化:首页添加连接适用移动端,适配:默认主题,百素主题 (终端识别方式:js识别浏览器UA,如有不准请反馈)</li>
@@ -260,6 +269,7 @@
 <blockquote class="layui-elem-quote layui-text">SimpleWeb主题：<a href="https://github.com/KrunkZhou/SimpleWebNavigation" target="_blank">github</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">hotkeys快捷键：<a href="https://github.com/jaywcjlove/hotkeys/" target="_blank">github </a>&ensp;
 <a href="https://wangchujiang.com/hotkeys/" target="_blank">官方</a></blockquote>
+<blockquote class="layui-elem-quote layui-text">getFavicon：<a href="https://github.com/owen0o0/getFavicon" target="_blank">官方文档</a></blockquote>
 
 </div><!--开发文档End-->
 </div>

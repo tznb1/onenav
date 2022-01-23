@@ -63,20 +63,7 @@ else{
     $onenav['right_menu'] = 'user_menu();';
 }
 
-//将URL转换为base64编码
-function base64($url){
-    $urls = parse_url($url);
 
-    //获取请求协议
-    $scheme = empty( $urls['scheme'] ) ? 'http://' : $urls['scheme'].'://';
-    //获取主机名
-    $host = $urls['host'];
-    //获取端口
-    $port = empty( $urls['port'] ) ? '' : ':'.$urls['port'];
-
-    $new_url = $scheme.$host.$port;
-    return base64_encode($new_url);
-}
 //允许只用参数载入指定主题,如需禁止屏蔽或删掉此段!
 $Style= $_GET['Style']==''? '0':$_GET['Style'] ;
 $Theme='./templates/'.$_GET['Theme'];
