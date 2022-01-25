@@ -11,6 +11,14 @@ $db = new medoo([
 //3.服务器是否禁止了copy函数
 //4.如果无法解决可以手动注册,即复制此文件和onenav.simple.db3到data目录,并改名为admin.db3和admin.php 然后访问注意即可!
 //5.升级说明:正常情况直接覆盖文件访问主页即可!建议先备份数据在升级!
+
+//原版升级:
+//1.压缩备份原来的整站数据,删掉除data目录外的文件和目录,然后覆盖上传!
+//2.把原来data目录下的onenav.db3改名为admin.db3
+//3.把原来data目录下的config.php改名为admin.php
+//4.打开data/admin.php 删除或注释掉3到8行,即require 'class/Medoo.php';开始到 ]);结束!
+//5.访问主页,看到升级提示刷新2次即可,账号密码是从php配置里复制的!如果没有配置密码默认为admin,账号是库名即admin
+//访问非默认库(其他用户):url/?u=admin (admin是库名,即data目录下的数据库,库名不等于账号!登陆后台可设置成默认首页!)
 //用户名
 define('USER','admin');
 //密码

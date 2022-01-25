@@ -19,7 +19,6 @@ class Api {
         }else if(!empty($TEMPLATE)  &&  !file_exists('./templates/'.getSubstrRight($TEMPLATE,'|').'/index.php')){
             $this->err_msg(-1103,'主题模板不存在,请核对后再试！');
         }
-        //else if(!empty($Token)  && strlen($Token)<32){$this->err_msg(-1103,'因安全问题,Token长度不能小于32位！');} 
         Writeconfig('title',strip_tags($title));
         Writeconfig('description',strip_tags($description));
         Writeconfig('logo',strip_tags($logo));
@@ -33,11 +32,6 @@ class Api {
         Writeconfig('footer',base64_encode($footer));
         Writeconfig('head',base64_encode($head));
         Writeconfig('navwidth',number_format($navwidth));
-        
-        //if ($Email !="") {Writeconfig('Email',$Email);}
-        //if ($user !="") {Writeconfig('user',$user);}
-        //if ($password !="") {Writeconfig('password',$password);}
-        //if ($Token !="") {Writeconfig('Token',$Token);}
         if ($TEMPLATE !="") {Writeconfig('Style',getSubstrLeft($TEMPLATE,'|'));Writeconfig('Theme',getSubstrRight($TEMPLATE,'|'));  }
         exit(json_encode($data = ['code'  =>  0,'msg'   =>  'successful']));
     }
@@ -319,17 +313,98 @@ protected function Getkey($user,$pass,$Expire){
     }
 
     //批量导入链接
-    public function imp_link($token,$filename,$fid,$property = 0){
+    public function imp_link($token,$filename,$fid,$property = 0,$all =0){
         $this->auth($token);
         //检查文件是否存在
         if ( !file_exists($filename) ) {
-            $this->err_msg(-1016,'File does not exist!');
+            $this->err_msg(-1016,'文件不存在!');
+        }elseif(substr($filename,0, 12)!='data/upload/'){
+            //检测路径前缀,不限制的话可以可以导入data下其他用户的数据库!存在安全隐患!
+            $this->err_msg(-1016,'路径非法!');
         }
+        $res='<table class="layui-table" lay-even><colgroup><col width="200"><col width="250"><col></colgroup><thead><tr><th>标题</th><th>URL</th><th>失败原因</th></tr></thead><tbody>';
+        //落幕导入段-检测是否为数据库,是则导入! 
+        if(strtolower(end(explode('.',$filename)))=='db3'){
+            $tempdb = new Medoo\Medoo(['database_type' => 'sqlite', 'database_file' => $filename]);
+            $sql = "SELECT * FROM on_categorys";
+            $categorys = $tempdb->select('on_categorys','*');
+            $data = $tempdb->query("select * from sqlite_master where name = 'on_categorys' and sql like '%Icon%'")->fetchAll();
+            $icon = count($data)==0 ? false:true ; //判断有没有图标字段!如果没有则尝试从名称取图标写到专用字段
+            
+            $fail =0;$success=0;
+            foreach ($categorys as $category) {
+                $name = strip_tags($category['name']);//取分类名
+                if(($name=='')){continue;}//如果名称为空则跳到循环尾 (名称为空)
+                $cat_name = $this -> db->get('on_categorys','*',[ 'name' =>  $name ]); //取当前库同名ID
+                $cat_id = $this -> db->get('on_categorys','*',[ 'id' =>  $category['id'] ]); //取当前库同名ID
+                //如果没有图标字段,则说明是原版数据库!尝试正则提取是否有图标,有的话就写到写到数据库!
+                //注:原版可以写N个图标,但我这设计只能一个,所以只提取第一个图标!
+                if (!$icon && preg_match('/<i class="fa (.+)"><\/i>/i',$category['name'],$matches) != 0){
+                    $ico=$matches[1];
+                }else{
+                    $ico=$category['Icon'];
+                }
+                
+                //如果分类名相同就不创建新分类,而是把全部连接导入到同名分类下!
+                if((strip_tags($cat_name['name'])==$name)){
+                    $tempdb->update('on_categorys',['id' => $cat_name['id'] ],[ 'id' => $category['id']]); //修改分类ID,方便后面导入连接!
+                    $tempdb->update('on_links',['fid' => $cat_name['id'] ],[ 'fid' => $category['id']]); //修改链接分类ID,方便后面导入连接!
+                }
+                else{
+                    $data = [
+                        'name'          =>  strip_tags($name),
+                        'add_time'      =>  $all == 1 ? $category['add_time']:time(),
+                        'up_time'       =>  $all == 1 ? $category['up_time']:null,
+                        'weight'        =>  $all == 1 ? $category['weight']:0,
+                        'property'      =>  $category['property'],
+                        'description'   =>  $category['description'],
+                        'Icon'          =>  $ico
+                    ];
+                    $this->db->insert("on_categorys",$data);
+                    $id = $this->db->id();
+                    if(!empty($id)){
+                    $tempdb->update('on_categorys',['id' => $id ],[ 'id' => $category['id']]); //修改分类ID,方便后面导入连接!
+                    $tempdb->update('on_links',['fid' => $id ],[ 'fid' => $category['id']]); //修改链接分类ID,方便后面导入连接!
+                    }
+                }
+
+            }
+            //导入链接
+            $links = $tempdb->select('on_links','*');
+            $total = count($links);
+            foreach ($links as $link) {
+                if( ($link['title'] == '') || ($link['url'] == '') ) {
+                $fail++;
+                $res=$res.'<tr><td>'.$link['title'].'</td><td>'.$link['url'].'</td><td>标题或URL为空</td></tr>';
+                continue;
+                }
+                $data = [
+                'fid'           =>  $link['fid'],
+                'title'         =>  $link['title'],
+                'url'           =>  $link['url'],
+                'description'   =>  $link['description'],
+                'add_time'      =>  $all == 1 ? $link['add_time']:time(),
+                'up_time'       =>  $all == 1 ? $link['up_time']:null,
+                'weight'        =>  $all == 1 ? $link['weight']:0,
+                'property'      =>  $link['property'],
+                'click'         =>  $all == 1 ? $link['click']:0
+                ];
+                $re = $this->db->insert('on_links',$data);
+                $row = $re->rowCount();
+                if( $row ){$success++;}else{$fail++;$res=$res.'<tr><td>'.$link['title'].'</td><td>'.$link['url'].'</td><td>URL重复</td></tr>';}
+            }
+          //删除书签
+        unlink($filename);
+        $data=['code'=>0,'msg'=>'总数：'.$total.' 成功：'.$success.' 失败：'.$fail,'res'  =>  $res.'</tbody></table>'];
+        exit(json_encode($data));  
+        }
+        //落幕导入End
         //解析HTML数据
+        if (empty($fid)) {
+            $this->err_msg(-1016,'上传html格式时所属分类不能为空!');
+        }
         $content = file_get_contents($filename);
-
         $pattern = "/<A.*<\/A>/i";
-
         preg_match_all($pattern,$content,$arr);
         //失败次数
         $fail = 0;
@@ -344,13 +419,12 @@ protected function Getkey($user,$pass,$Expire){
             $url = str_replace('" ADD_DATE','',$urls[0]);
             $pattern = "/>.*<\/a>$/i";
             preg_match($pattern,$link,$titles);
-            
             $title = str_replace('>','',$titles[0]);
             $title = str_replace('</A','',$title);
-            
             //如果标题或者链接为空，则不导入
             if( ($title == '') || ($url == '') ) {
                 $fail++;
+                $res=$res.'<tr><td>'.$title.'</td><td>'.$url.'</td><td>标题或URL为空</td></tr>';
                 continue;
             }
             $data = [
@@ -380,14 +454,15 @@ protected function Getkey($user,$pass,$Expire){
             //如果插入失败
             else{
                 $fail++;
+                $res=$res.'<tr><td>'.$title.'</td><td>'.$url.'</td><td>URL重复</td></tr>';
             }
         }
         //删除书签
         unlink($filename);
         $data = [
             'code'      =>  0,
-            'msg'       =>  '总数：'.$total.' 成功：'.$success.' 失败：'.$fail
-            ,'f' => $f
+            'msg'       =>  '总数：'.$total.' 成功：'.$success.' 失败：'.$fail,
+            'res'  =>  $res.'</tbody></table>'
         ];
         exit(json_encode($data));
     }
@@ -399,7 +474,7 @@ protected function Getkey($user,$pass,$Expire){
         $this->auth($token);
         if ($_FILES["file"]["error"] > 0)
         {
-            $this->err_msg(-1015,'File upload failed!');
+            $this->err_msg(-1015,'文件上传失败!');
         }
         else
         {
@@ -410,16 +485,16 @@ protected function Getkey($user,$pass,$Expire){
             
             //临时文件位置
             $temp = $_FILES["file"]["tmp_name"];
-            if( $suffix != 'html' ) {
+            if( $suffix != 'html'  && $suffix != 'db3') {
                 //删除临时文件
                 unlink($filename);
                 $this->err_msg(-1014,'不支持的文件后缀名！');
             }
-            
-            if( copy($temp,'data/'.$filename) ) {
+            if(!is_dir('data/upload')){mkdir('data/upload',0755,true);}
+            if(copy($temp,'data/upload/'.$filename) ) {
                 $data = [
                     'code'      =>  0,
-                    'file_name' =>  'data/'.$filename
+                    'file_name' =>  'data/upload/'.$filename
                 ];
                 exit(json_encode($data));
             }

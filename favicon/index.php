@@ -18,8 +18,8 @@ $favicon = new \Jerrybendy\Favicon\Favicon;
 
 /* ------ 参数设置 ------ */
 
-$defaultIco='../favicon.ico';   //默认图标路径
-$expire = 2592000;           //缓存有效期30天, 单位为:秒，为0时不缓存
+$defaultIco='./favicon.ico';   //默认图标路径
+$expire = 2592000;           //2592000 缓存有效期30天, 单位为:秒，为0时不缓存
 
 /* ------ 参数设置 ------ */
 

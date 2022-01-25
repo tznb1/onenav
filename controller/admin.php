@@ -5,7 +5,7 @@ if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
  */
 //检查认证
 check_auth($username,$password);
-
+$version =get_version();
 $page = empty($_GET['page']) ? 'index' : $_GET['page'];
 //如果页面是修改edit_category
 if ($page == 'edit_category' ) {

@@ -595,20 +595,18 @@ form.on('submit(get_link_info)', function(data){
 });
 //导入书签
 form.on('submit(imp_link)', function(data){
+    layer.load(1, {shade:[0.1,'#fff']});//加载层
     //用ajax异步加载
     $.post('./index.php?c=api&method=imp_link&u='+u,data.field,function(data,status){
       //如果添加成功
       if(data.code == 0) {
-        layer.open({
-          title: '导入完成'
-          ,content: data.msg
-        });
-        //layer.msg('已添加！', {icon: 1});
+          open_msg('800px', '600px',data.msg,data.res);
       }
       else{
         layer.msg(data.err_msg, {icon: 5});
       }
     });
+    layer.closeAll();//关闭所有层
     console.log(data.field) 
     return false; 
 });
@@ -617,7 +615,8 @@ form.on('submit(imp_link)', function(data){
 upload.render({
     elem: '#up_html' //绑定元素
     ,url: './index.php?c=api&method=upload&u='+u //上传接口
-    ,exts: 'html|HTML'
+    ,exts: 'html|HTML|db3'
+    ,accept: 'file'
     ,done: function(res){
       //console.log(res);
       //上传完毕回调

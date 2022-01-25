@@ -5,7 +5,9 @@ $u = inject_check ( strip_tags(@$_GET['u'])); //取Get参数并过滤
 $reg= 1 ; //0.禁止注册  1.允许注册  2.禁止注册(admin除外) 
 $login = 'login';//登陆入口名称!如果名为login则隐藏入口!反之未隐藏入口,隐藏时用户如果没保存专属登陆入口且不知道入口名将无法登陆!
 $libs = "./static"; //使用本地服务器请填写./static 使用CDN请将static文件夹上传并修改地址,后缀不要带/
-
+//图标获取接口: 1:本地服务器 2:favicon.rss.ink(原著用的接口) 3:ico.hnysnet.com 4:api.15777.cn 5:favicon.cccyun.cc (SSL证书过期..) 6:api.iowen.cn
+//接口都是网上搜集来的,可靠性未知,如果图标获取异常请尝试更换!个人比较推荐6
+$favicon = 1;
 if((!isset($u)) or ($u == '')){ 
     $Default_DB=$_COOKIE['DefaultDB'];
     if ($Default_DB !=''){
@@ -16,7 +18,8 @@ if((!isset($u)) or ($u == '')){
 } //默认首页
 
 require ('./class/Medoo.php');//数据库框架
-require ('./class/Class.php');
+require ('./class/Class.php');//载入函数库
+$version =get_version();//设置全局版本号
 //如果数据文件存在则载入数据库
 if(file_exists('./data/'.$u.'.db3')){
 $db = new Medoo\Medoo([

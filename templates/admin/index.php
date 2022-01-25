@@ -13,11 +13,17 @@
 <div class="layui-tab-item layui-show layui-form layui-form-pane"><!--相关信息--> 
   <div class="layui-form-item">
     <div class="layui-inline">
-      <label class="layui-form-label">版本</label>
+      <label class="layui-form-label">当前版本</label>
         <div class="layui-input-inline">
         <input value='<?php echo get_version(); ?>'disabled class="layui-input">
       </div> 
     </div>
+    <!--<div class="layui-inline">-->
+    <!--  <label class="layui-form-label">最新版本</label>-->
+    <!--    <div class="layui-input-inline">-->
+    <!--    <input value='<?php echo file_get_contents('https://gitee.com/tznb/OneNav/raw/master/initial/version.txt'); ?>'disabled class="layui-input">-->
+    <!--  </div> -->
+    <!--</div>-->
     <div class="layui-inline">
       <label class="layui-form-label">数据库</label>
         <div class="layui-input-inline">
@@ -72,6 +78,25 @@
     </div>
   </div><!--表单End-->
 <ul class="layui-timeline">
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年01月25日</h4>
+      <ul>
+        <li>优化:书签导入时显示加载层,导入结束返回具体的失败条目!</li>
+      </ul>
+    </div>
+  </li>
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年01月24日</h4>
+      <ul>
+        <li>新增:书签导入支持db3格式,可用于升级时导入旧数据,数据合并等!,新增保留属性开关,选为是时保留相关属性!</li>
+        <li>调整:书签导入上传路径改为根目录下upload文件夹,API限制该文件夹外的路径!</li>
+      </ul>
+    </div>
+  </li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -244,7 +269,10 @@
 </ul>     
 </div><!--相关信息End-->
 <div class="layui-tab-item"><!--开发文档-->
-<blockquote class="layui-elem-quote layui-text">项目地址 ：<a href="https://github.com/helloxz/onenav" target="_blank">github</a></blockquote>
+
+
+<blockquote class="layui-elem-quote layui-text">此版项目地址：<a href="https://gitee.com/tznb/OneNav" target="_blank">Gitee 码云 (唯一地址)</a></blockquote>
+<blockquote class="layui-elem-quote layui-text">原著项目地址 ：<a href="https://github.com/helloxz/onenav" target="_blank">github</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">帮助文档 ：<a href="https://dwz.ovh/onenav" target="_blank">dwz.ovh/onenav</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">原著博客 ：<a href="https://www.xiaoz.me" target="_blank">www.xiaoz.me</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">社区支持 ：<a href="https://dwz.ovh/vd0bw" target="_blank" >dwz.ovh/vd0bw</a></blockquote>

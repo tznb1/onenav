@@ -20,7 +20,7 @@ if(!file_exists('./data/'.$u.'.db3' )){
     }
     exit;
 }
-$version =get_version();
+
 //如果已经登录，获取所有分类和链接
 $is_login=is_login();
 if($is_login){

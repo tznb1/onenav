@@ -53,7 +53,8 @@ if ($icon ==1){return('./favicon/?url='.$url);}
 elseif($icon ==2){return('//favicon.rss.ink/v1/'.base64($url));}
 elseif($icon ==3){return('//ico.hnysnet.com/get.php?url='.$url);}
 elseif($icon ==4){return('//api.15777.cn/get.php?url='.$url);}
-elseif($icon ==5){return('////favicon.cccyun.cc/'.$url);}
+elseif($icon ==5){return('//favicon.cccyun.cc/'.$url);}
+elseif($icon ==6){return('//api.iowen.cn/favicon/'.parse_url($url)['host'].'.png');}
 else{return('./favicon/?url='.$url);}//如果参数错误则使用本地服务器
 }
 //读取配置

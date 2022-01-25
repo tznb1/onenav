@@ -336,5 +336,6 @@ function imp_link($api) {
     $filename = trim($_POST['filename']);
     $fid = intval($_POST['fid']);
     $property = intval(@$_POST['property']);
-    $api->imp_link($token,$filename,$fid,$property);
+    $all =intval(@$_POST['all']);
+    $api->imp_link($token,$filename,$fid,$property,$all);
 }
