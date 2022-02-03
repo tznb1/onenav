@@ -9,6 +9,10 @@
             <dd><a href="./index.php?c=admin&page=logout&u=<?php echo $u?>">退出登录</a></dd>
             <dd><a href="./index.php?c=admin&page=edit_user&u=<?php echo $u?>">账号设置</a></dd>
             <dd><a href="./index.php?c=admin&page=edit_homepage&u=<?php echo $u?>">主页设置</a></dd>
+            <?php if($udb->get("user","Level",["User"=>$u]) == 999){
+            echo'<dd><a href="./index.php?c=admin&page=root&u='.$u.'">网站管理</a></dd>';
+            }?>
+            
           </dl>
         </li>
       </ul>

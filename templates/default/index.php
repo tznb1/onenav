@@ -140,7 +140,7 @@
 						?>
 							<div class="mdui-card-primary" style = "padding-top:16px;">
 									<div class="mdui-card-primary-title link-title">
-										<img src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($favicon,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16px" height="16px">
+										<img src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16px" height="16px">
 										<span class="link_title"><?php echo $link['title']; ?></span> 
 									</div>
 							</div>

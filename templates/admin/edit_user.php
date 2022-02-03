@@ -24,15 +24,6 @@
  </div>
  <div class="layui-form-item">
     <div class="layui-inline">
-      <label class="layui-form-label">账号</label>
-      <div class="layui-input-inline">
-        <input type="text" name="user"  value = '<?php// echo getconfig('user');?>' placeholder='<?php echo getconfig('user');?>'  autocomplete="off" class="layui-input">
-      </div>
-      <div class="layui-form-mid layui-word-aux">登陆后台的账号,不要和库名混淆了!</div>
-    </div>
- </div>
- <div class="layui-form-item">
-    <div class="layui-inline">
       <label class="layui-form-label">原密码</label>
       <div class="layui-input-inline">
         <input type="text" name="password" lay-verify="required" value='<?php//echo getconfig('password');?>' placeholder='原密码' autocomplete="off" class="layui-input">
@@ -61,4 +52,5 @@
 </div>
 <!-- 内容主题区域END -->
 </div>
-<?php include_once('footer.php'); ?>
+
+<?php $md5=true; include_once('footer.php'); ?>

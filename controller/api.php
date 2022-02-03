@@ -1,4 +1,5 @@
 <?php
+Visit();//访问控制
 if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
 /**
  * name:API入口文件
@@ -71,6 +72,17 @@ switch ($method) {
     case 'edit_tiquan':
         edit_tiquan($api);
         break;        
+    case 'edit_root':
+        edit_root($api);
+        break;  
+    case 'user_list':
+        user_list($api);
+        break; 
+    case 'user_list_del':
+        user_list_del($api);
+    case 'user_list_login':
+        user_list_login($api);
+        break; 
     default:
         # code...
         break;
@@ -113,6 +125,20 @@ function edit_user($api){
     $Email = $_POST['Email'];
     $api->edit_user($token,$Email,$NewToken,$user,$pass,$newpassword);
 }
+//root全局配置修改 DUser=admin&Reg=1&Register=Register&login=login&libs=.%2Fstatic&visit=1&IconAPI=6
+function edit_root($api){
+    $token = $_POST['token'];//获取token
+    $DUser = $_POST['DUser'];
+    $Reg = $_POST['Reg'];
+    $Register = $_POST['Register'];
+    $login = $_POST['login'];
+    $libs = $_POST['libs'];
+    $visit = $_POST['visit'];
+    $IconAPI= $_POST['IconAPI'];
+    $api->edit_root($token,$DUser,$Reg,$Register,$login,$libs,$visit,$IconAPI);
+}
+
+
 /**
  * 编辑单元格
  */
@@ -297,6 +323,43 @@ function link_list($api){
     $query = $_POST['query'];
     $fid  = intval($_POST['fid']);
     $api->link_list($page,$limit,$token,$query,$fid);
+}
+/**
+ * 查询用户列表
+ */
+function user_list($api){
+    $token = $_POST['token'];
+    $_page = $_POST['page'];
+    if ($_page !=''){
+        $page = empty(intval($_page)) ? 1 : intval($_page);
+    }else{
+        $page = empty(intval($_GET['page'])) ? 1 : intval($_GET['page']);
+    }
+    $_limit = $_POST['limit'];
+    if ($_limit !=''){
+        $limit = empty(intval($_limit)) ? 10 : intval($_limit);
+    }else{
+        $limit = empty(intval($_GET['limit'])) ? 10: intval($_GET['limit']);
+    }
+    $query = $_POST['query'];
+    $fid  = intval($_POST['fid']);
+    $api->user_list($page,$limit,$token,$query,$fid);
+}
+/**
+ * 删除用户
+ */
+function user_list_del($api){
+    $token = $_POST['token'];
+    $id = $_POST['id'];
+    $api->user_list_del($token,$id);
+}
+/**
+ * 删除用户
+ */
+function user_list_login($api){
+    $token = $_POST['token'];
+    $id = $_POST['id'];
+    $api->user_list_login($token,$id);
 }
 
 /**

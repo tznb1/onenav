@@ -83,7 +83,7 @@
 							});
 
 						} else {
-							layer.msg(data.err_msg, {
+							layer.msg(data.msg, {
 								icon: 5
 							});
 						}

@@ -81,6 +81,28 @@
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年02月03日</h4>
+      <ul>
+        <li>新增用户管理,使用表格显示用户基础信息,支持搜索,一键进入用户主页,后台,删除用户!</li>
+        <li>新增刘桐序主题风格</li>
+      </ul>
+    </div>
+  </li>
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年01月29日</h4>
+      <ul>
+        <li>为了提高易用性,取消了登录和注册的库名!新增用户表!取消账号修改功能!</li>
+        <li>登录和注册页面分离,支持修改注册入口名!</li>
+        <li>密码记录改为MD5,而非明文!提高了安全性!</li>
+        <li>新增网站管理功能,管理员账号可以在后台修改全局配置(30日)</li>
+      </ul>
+    </div>
+  </li>
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年01月25日</h4>
       <ul>
         <li>优化:书签导入时显示加载层,导入结束返回具体的失败条目!</li>

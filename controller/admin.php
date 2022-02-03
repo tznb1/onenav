@@ -1,11 +1,11 @@
 <?php
+Visit();//访问控制
 if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
 /**
  * 后台入口文件
  */
 //检查认证
 check_auth($username,$password);
-$version =get_version();
 $page = empty($_GET['page']) ? 'index' : $_GET['page'];
 //如果页面是修改edit_category
 if ($page == 'edit_category' ) {
@@ -72,28 +72,28 @@ if ( $page == 'imp_link' ) {
 //如果是退出
 //如果页面是添加链接页面
 if ($page == 'logout') {
-    global $u;
+    global $username;
     //清除cookie
-    setcookie($u."_key", '', time()-1,"/");
-    setcookie($u."_Expire", '', time()-1,"/");
+    setcookie($username."_key", '', time()-1,"/");
+    setcookie($username."_Expire", '', time()-1,"/");
     //跳转到首页
-    header('location:/?u='.$u);
+    header('location:/?u='.$username);
     exit;
 }
 
 
-$page = $page.'.php';
+
 
 //检查授权
 function check_auth($username,$password){
-    global $u,$login;
+    global $login;
     $ip = getIP();
-    $key = Getkey($username,$password,$_COOKIE[$u.'_Expire']);//计算正确key
-    $Cookie = $_COOKIE[$u.'_key'];//获取Cookie中的Key
+    $key = Getkey($username,$password,$_COOKIE[$username.'_Expire']);//计算正确key
+    $Cookie = $_COOKIE[$username.'_key'];//获取Cookie中的Key
     //如果cookie的值和计算的key不一致，则没有权限 
     if (empty($Cookie)){
         if ($login =='login'){
-            $msg = "<h3>您未登录，请<a href = 'index.php?c=".$login."&u=".$u."'>重新登录</a>！</h3>";
+            $msg = "<h3>您未登录，请<a href = 'index.php?c=".$login."&u=".$username."'>重新登录</a>！</h3>";
         }else{
             $msg = "<h3>您未登录<br />登陆入口已被隐藏!<br />请联系管理员</a>！</h3>";
         }
@@ -101,7 +101,7 @@ function check_auth($username,$password){
         exit;
     }elseif($Cookie != $key){
         if ($login =='login'){
-            $msg = "<h3>鉴权认证失败，请<a href = 'index.php?c=".$login."&u=".$u."'>重新登录</a>！</h3>";
+            $msg = "<h3>鉴权认证失败，请<a href = 'index.php?c=".$login."&u=".$username."'>重新登录</a>！</h3>";
         }else{
             $msg = "<h3>鉴权认证失败，请重新登录<br />登陆入口已被隐藏!<br />请联系管理员</a>！</h3>";
         }
@@ -111,4 +111,4 @@ function check_auth($username,$password){
 
 }
 // 载入前台首页模板
-require('./templates/admin/'.$page);
+require('./templates/admin/'.$page.'.php');

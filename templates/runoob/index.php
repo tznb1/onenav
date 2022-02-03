@@ -94,7 +94,7 @@
         foreach ($links as $link) {
         $linkURL=getconfig('urlz')  == 'on' ? $link['url'] :'./index.php?c=click&id='.$link['id'].'&u='.$u;
         $description = empty($link['description']) ? '作者很懒，没有填写描述。' : $link['description'];
-        $img= getconfig('LoadIcon')  == 'on' ? geticourl($favicon,$link['url']):$Theme.'/static/default.ico';
+        $img= getconfig('LoadIcon')  == 'on' ? geticourl($IconAPI,$link['url']):$Theme.'/static/default.ico';
         ?>
         <a class="item-top item-1" href="<?php echo $linkURL?>"><h4><?php echo $link['title']?></h4>
         <img class="codeicon codeicon-36" height="36" width="36" src="<?php echo $img?>">

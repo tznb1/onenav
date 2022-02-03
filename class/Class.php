@@ -45,8 +45,16 @@ if ($count){
     $db->update('on_config',['value' => $value],['name' => $name]);
 }else{
     $db->insert('on_config',['name'=> $name ,'value'=> $value]);
-}
-}
+}}
+
+//写入配置(如果不存在则创建)
+function Writeconfigd($db,$table,$name,$value){
+$count = $db->count($table,[ 'Name' => $name]);
+if ($count){
+    $db->update($table,['Value' => $value],['Name' => $name]);
+}else{
+    $db->insert($table,['Name'=> $name ,'Value'=> $value]);
+}}
 //获取图标URL
 function geticourl($icon,$url){
 if ($icon ==1){return('./favicon/?url='.$url);}
@@ -82,6 +90,18 @@ elseif (substr($name,0, 3) =='fa-')
 {return('class="fa '.$name.'"');}
 else{return($name);}
 }
+//访问控制
+function Visit(){
+    global $Visit,$udb,$u;
+    if($Visit==0 ){
+        if($udb->get("user","Level",["User"=>$u]) == 999 && is_login()){
+            //允许管理员账号在登录的情况下正常使用!
+            return;
+        }
+        $msg = "<h3>网站正在进行维护,请稍后再试!</h3>";
+        require('./templates/admin/403.php' );
+        exit;}
+}
 
 //用户名限制
 function check_user($value){
@@ -90,6 +110,13 @@ if(!preg_match("/^[a-zA-Z0-9]+$/",$value)){
 }
     return true;
 }
+//取Get参数并过滤
+function Get($str){
+return inject_check (strip_tags(@$_GET[$str]));;}
+//关键字过滤
+function inject_check($str){
+$tmp=preg_match('/select|insert|and|or|update|delete|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile/', $str); // 进行过滤
+if($tmp){msg(-1000,'您的请求带有不合法参数，已被拦截！');}else{return $str;}}
 //获取访客IP
 function getIP() { 
     if (getenv('HTTP_CLIENT_IP')) { 
@@ -134,37 +161,30 @@ function GetExpire(){
 }
 //判断用户是否已经登录
 function is_login(){
-    global $u,$username,$password;
-    $key = Getkey($username,$password,$_COOKIE[$u.'_Expire']);
+    global $username,$password;
+    $key = Getkey($username,$password,$_COOKIE[$username.'_Expire']);
     //获取session
-    $session = $_COOKIE[$u.'_key'];
+    $session = $_COOKIE[$username.'_key'];
     //如果已经成功登录
-    if($session == $key) {
+    if($session == $key && $_COOKIE[$username.'_Expire']>time()) {
         return true;
     }
     else{
         return false;
     }
 }
-//返回JSON错误信息
-function err_msg($code,$err_msg){
-        $data = [
-            'code'      =>  $code,
-            'err_msg'   =>  $err_msg
-        ];
-        header('Content-Type:application/json; charset=utf-8');
-        exit(json_encode($data));
+//返回JSON信息(常规信息统一规范)
+function msg($code,$msg){
+    $data = ['code'=>$code,'msg'=>$msg];
+    header('Content-Type:application/json; charset=utf-8');
+    exit(json_encode($data));
 }
-//返回成功信息
-function success_msg($code,$msg,$dbname){
-        $data = [
-            'code'      =>  $code,
-            'msg'   =>  $msg,
-            'u'   =>  $dbname
-        ];
-        header('Content-Type:application/json; charset=utf-8');
-        exit(json_encode($data));
+//返回JSON信息(自定义信息)
+function msgA($data){
+    header('Content-Type:application/json; charset=utf-8');
+    exit(json_encode($data));
 }
+
 //取文本左边 getSubstrRight('请用php取出这段字符串中左边文本','中');
 function getSubstrRight($str, $rightStr)
 {

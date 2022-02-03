@@ -42,7 +42,7 @@ table.render({
         return add_time;
       }}
       ,{field: 'up_time', title: '修改时间', width:160, sort: true,templet:function(d){
-          if(d.up_time != ''){
+          if(d.up_time != '' && d.up_time != null){
             var up_time = timestampToTime(d.up_time);
             return up_time;}else{return '';}
       }}
@@ -67,7 +67,7 @@ var value = obj.value //得到修改后的值
     if(data.code == 0){
         layer.msg('修改成功')
         obj.update({up_time:data.t});//修改单元格的更新时间
-    } else{layer.msg(data.err_msg);}});
+    } else{layer.msg(data.msg);}});
 });
 //监听单元格编辑(连接)
 table.on('edit(mylink)', function(obj){
@@ -78,7 +78,7 @@ var value = obj.value //得到修改后的值
     if(data.code == 0){
         layer.msg('修改成功')
         obj.update({up_time:data.t});
-    } else{layer.msg(data.err_msg);}});
+    } else{layer.msg(data.msg);}});
 });
 
 //回车和按钮事件
@@ -133,7 +133,7 @@ if(value == num){
     layer.closeAll();//关闭所有层
     category_q(); //刷新数据
     open_msg('600px', '500px','处理结果',data.res);
-    } else{layer.msg(data.err_msg);}});
+    } else{layer.msg(data.msg);}});
 }else{
     layer.msg('输入内容有误,无需删除请点击取消!', {icon: 5});}
 }); 
@@ -179,7 +179,7 @@ table.on('tool(category_list)', function(obj){
                 obj.del();
             }
             else{
-                layer.msg(data.err_msg);
+                layer.msg(data.msg);
             }
         });
         layer.close(index);
@@ -341,7 +341,7 @@ table.on('toolbar(mylink)', function(obj){
                 link_q();
                 layer.msg('转移成功!', {icon: 1});
                 }else{
-                layer.msg(data.err_msg, {icon: 2});
+                layer.msg(data.msg, {icon: 2});
                 }
              });
              });
@@ -363,7 +363,7 @@ table.on('toolbar(mylink)', function(obj){
              link_q();
              layer.msg('操作成功!', {icon: 1});
              }else{
-             layer.msg(data.err_msg, {icon: 2});
+             layer.msg(data.msg, {icon: 2});
              }
              });
             };
@@ -381,7 +381,7 @@ table.on('toolbar(mylink)', function(obj){
                 obj.del();
             }
             else{
-                layer.msg(data.err_msg);
+                layer.msg(data.msg);
             }
         });
         layer.close(index);
@@ -441,37 +441,6 @@ function(obj) {
 	}
 });
 
-//登录
-form.on('submit(login)', function(data){
-    $.post('./index.php?c='+_GET("c")+'&check=login&u='+data.field.u,data.field,function(data,status){
-      //如果添加成功
-      console.log(data)
-      if(data.code == 0) {
-          console.log(data)
-        window.location.href = './index.php?c=admin&u='+data.u;
-      }
-      else{
-        layer.msg(data.err_msg, {icon: 5});
-      }
-    });
-    console.log(data.field) 
-    return false; 
-});
-//注册
-form.on('submit(register)', function(data){
-    u=data.field.user;
-    $.post('./index.php?c='+_GET("c")+'&check=register&u='+data.field.u,data.field,function(data,status){
-      if(data.code == 0) {
-        window.location.href = './index.php?c='+_GET("c")+'&page=config&u='+data.u;
-      }
-      else{
-        layer.msg(data.err_msg, {icon: 5});
-      }
-    });
-    console.log(data.field) 
-    return false;
-});
-
 //添加分类目录
 form.on('submit(add_category)', function(data){
     $.post('./index.php?c=api&method=add_category&u='+u,data.field,function(data,status){
@@ -480,7 +449,7 @@ form.on('submit(add_category)', function(data){
         layer.msg('已添加！', {icon: 1});
       }
       else{
-        layer.msg(data.err_msg, {icon: 5});
+        layer.msg(data.msg, {icon: 5});
       }
     });
     console.log(data.field) 
@@ -495,7 +464,7 @@ form.on('submit(edit_homepage)', function(data){
         layer.msg('已修改！', {icon: 1});
       }
       else{
-        layer.msg(data.err_msg, {icon: 5});
+        layer.msg(data.msg, {icon: 5});
       }
     });
     console.log(data.field) 
@@ -503,6 +472,9 @@ form.on('submit(edit_homepage)', function(data){
 });
 //账号设置
 form.on('submit(edit_user)', function(data){
+    data.field.password = $.md5(data.field.password);
+    data.field.newpassword = $.md5(data.field.newpassword);
+    console.log(data.field) 
     $.post('./index.php?c=api&method=edit_user&u='+u,data.field,function(data,status){
 
       if(data.code == 0) {
@@ -511,7 +483,7 @@ form.on('submit(edit_user)', function(data){
         layer.msg('已修改！', {icon: 1});
       }
       else{
-        layer.msg(data.err_msg, {icon: 5});
+        layer.msg(data.msg, {icon: 5});
       }
     });
     console.log(data.field) 
@@ -532,13 +504,25 @@ form.on('submit(edit_category)', function(data){
         layer.msg('已修改！', {icon: 1});
       }
       else{
-        layer.msg(data.err_msg, {icon: 5});
+        layer.msg(data.msg, {icon: 5});
       }
     });
     console.log(data.field) 
     return false; 
 });
-
+//全局配置
+form.on('submit(edit_root)', function(data){
+    console.log(data.field) 
+    $.post('./index.php?c=api&method=edit_root&u='+u,data.field,function(data,status){
+      if(data.code == 0) {
+        layer.msg('已修改！', {icon: 1});
+      }
+      else{
+        layer.msg(data.msg, {icon: 5});
+      }
+    });
+    return false; 
+});  
 //添加链接
 form.on('submit(add_link)', function(data){
     $.post('./index.php?c=api&method=add_link&u='+u,data.field,function(data,status){
@@ -547,7 +531,7 @@ form.on('submit(add_link)', function(data){
         layer.msg('已添加！', {icon: 1});
       }
       else{
-        layer.msg(data.err_msg, {icon: 5});
+        layer.msg(data.msg, {icon: 5});
       }
     });
     console.log(data.field) 
@@ -560,7 +544,7 @@ form.on('submit(get_link_info)', function(data){
         console.log(data);
       }
       else{
-        layer.msg(data.err_msg, {icon: 5});
+        layer.msg(data.msg, {icon: 5});
       }
     });
     console.log(data.field) 
@@ -573,7 +557,7 @@ form.on('submit(edit_link)', function(data){
         layer.msg('已更新！', {icon: 1});
       }
       else{
-        layer.msg(data.err_msg, {icon: 5});
+        layer.msg(data.msg, {icon: 5});
       }
     });
     console.log(data.field) 
@@ -587,7 +571,7 @@ form.on('submit(get_link_info)', function(data){
         console.log(data);
       }
       else{
-        layer.msg(data.err_msg, {icon: 5});
+        layer.msg(data.msg, {icon: 5});
       }
     });
     console.log(data.field) 
@@ -598,15 +582,19 @@ form.on('submit(imp_link)', function(data){
     layer.load(1, {shade:[0.1,'#fff']});//加载层
     //用ajax异步加载
     $.post('./index.php?c=api&method=imp_link&u='+u,data.field,function(data,status){
+        layer.closeAll();//关闭所有层
       //如果添加成功
       if(data.code == 0) {
-          open_msg('800px', '600px',data.msg,data.res);
+          if (data.fail > 0)
+          {open_msg('800px', '600px',data.msg,data.res);}
+          else{layer.open({title:'导入完成',content:data.msg});}
       }
       else{
-        layer.msg(data.err_msg, {icon: 5});
+        layer.msg(data.msg, {icon: 5});
+        
       }
     });
-    layer.closeAll();//关闭所有层
+    
     console.log(data.field) 
     return false; 
 });
@@ -624,7 +612,7 @@ upload.render({
         $("#filename").val(res.file_name);
       }
       else if( res.code < 0) {
-        layer.msg(res.err_msg, {icon: 5});
+        layer.msg(res.msg, {icon: 5});
         layer.close();
       }
     }
@@ -654,7 +642,7 @@ function get_link_info() {
         layer.close(index);
       }
       else{
-        layer.msg(data.err_msg, {icon: 5});
+        layer.msg(data.msg, {icon: 5});
         layer.close(index);
       }
     });

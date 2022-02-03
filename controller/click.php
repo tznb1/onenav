@@ -1,5 +1,7 @@
 <?php
+Visit();//访问控制
 if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
+if($Visit==0){$msg = "<h3>网站正在进行维护,请稍后再试!</h3>";require('./templates/admin/403.php');exit;}
 //获取link.id
 $id = intval($_GET['id']);
 

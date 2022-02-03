@@ -49,7 +49,8 @@
         <option value="baisu|0">百素主题(隐藏描述)</option>
         <option value="baisu|2">百素极速(显示描述)</option>
         <option value="baisu|3">百素极速(隐藏描述)</option>
-        <option value="webstack|0">webstack</option>
+        <option value="liutongxu|0">刘桐序</option>
+        <option value="webstack|0">WebStack</option>
         <option value="SimpleWeb|0">SimpleWeb</option>
         <option value="runoob|0">菜鸟教程</option>
       </select>
