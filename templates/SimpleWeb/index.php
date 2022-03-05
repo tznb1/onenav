@@ -11,15 +11,15 @@
 <link rel="stylesheet" href="<?php echo $Theme?>/css/style.css">
 <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
 <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.5.4/css/layui-icon.css">
-<?php $nw=getconfig("navwidth");if($nw!=''){echo'<style type="text/css">.left-bar{width:'.$nw.'px;}</style>';}//导航宽度?>
-<?php $head=getconfig("head");if($head!=''){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
+<?php // $nw=getconfig("navwidth");if($nw!=''){echo'<style type="text/css">.left-bar{width:'.$nw.'px;}</style>';}//导航宽度?>
+<?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
 </head>
 <body id="nav_body">
 <!-- Header Nav -->
 <header>
 <div class="main">
     <h1 class="logo">
-    <a href="index.php">
+    <a href="./?u=<?php echo $u?>">
     <!--<img src="<?php echo $Theme?>/img/favicon.ico">-->
     <span><?php echo getconfig('title');?></span>
     </a>
@@ -32,7 +32,7 @@ echo '     <li><a href="./index.php?c=admin&u='.$u.'" >后台管理</a></li>'."\
 echo '     <li><a href="./index.php?c=admin&page=logout&u='.$u.'">退出登陆</a></li>';}
 elseif(getconfig('GoAdmin')  == 'on'  ){
      
-        ?><li><a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo getloginC($u);}?>&u=<?php echo $u?>" >登录</a></li>';
+        ?><li><a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" >登录</a></li>';
     <?php }
     ?>
     
@@ -117,8 +117,9 @@ elseif(getconfig('GoAdmin')  == 'on'  ){
                     <div class="col-md-12">
                         <p>
                         Copyright © 2019 KRUNK DESIGN
-                        <?php $ICP=getconfig("ICP"); if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
-                        <?php $footer=getconfig("footer"); if($footer != ''){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
+                        <?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
+                        <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
+                        <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
                         </p>
                     </div>
                 </div>

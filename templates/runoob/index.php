@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
 	<link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.5.4/css/layui-icon.css">
     <script src="<?php echo $libs?>/jquery/jquery-3.6.0.min.js"></script>
+    <?php// $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
 </head>
 <body>
 <!--  头部 -->
@@ -39,13 +40,13 @@
 	<div class="row">
 		<div class="col nav">
 			<ul id="index-nav">
-				<li><a href="/" data-id="index" title="首页" class="current">首页</a></li>
+				<li><a href="" data-id="index" title="首页" class="current">首页</a></li>
 				<?php
             	if($is_login) {
             	?>
             	<li><a href="./index.php?c=admin&u=<?php echo $u?>"   title="后台管理">后台管理</a></li>
 	            <?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
-	            <li><a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo getloginC($u);}?>&u=<?php echo $u?>" title="登录">登录</a></li>
+	            <li><a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" title="登录">登录</a></li>
             	<?php } ?>
 				<li><a href="//c.runoob.com/" target="_blank"  title="不止于工具">菜鸟工具</a></li>
 				<li><a href="//www.runoob.com/w3cnote/" target="_blank" data-id="note" title="菜鸟笔记">菜鸟笔记</a></li>
@@ -130,8 +131,9 @@
    <div class="w-1000 copyright">警告:此模板来自于菜鸟教程,仅供个人学习、研究之用，请勿用于商业用途”。请在下载后24小时内删除
      Copyright &copy; 2013-2022    <strong><a href="//www.runoob.com/" target="_blank">菜鸟教程</a></strong>&nbsp;
     <strong><a href="//www.runoob.com/" target="_blank">runoob.com</a></strong> All Rights Reserved.
-        <?php $ICP=getconfig("ICP"); if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
-    <?php $footer=getconfig("footer"); if($footer != ''){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
+        <?php  if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
+    <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
+    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
    </div>
   </div>
 <?php if(getconfig("gotop") =='on') {?>

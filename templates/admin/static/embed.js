@@ -2,6 +2,8 @@ var u=_GET("u");
 if (u == ''){ u = 'admin'}
 if (_GET("page") == 'edit_homepage'){ 
 $('#TEMPLATE').val(document.getElementById('theme').value);
+$('#TEMPLATE2').val(document.getElementById('theme2').value);
+
 layui.use(['form'],function() {
 var form=layui.form;
 form.render();
@@ -410,7 +412,7 @@ function(obj) {
 		$.post('./index.php?c=api&method=edit_property&u=' + u, {
 			'id': obj.value,
 			'property': sta,
-			'source': 'on_links'
+			'form': 'on_links'
 		},
 		function(data, status) {
 			if (data.code == 0) {
@@ -426,7 +428,7 @@ function(obj) {
 		$.post('./index.php?c=api&method=edit_property&u=' + u, {
 			'id': obj.value,
 			'property': sta,
-			'source': 'on_categorys'
+			'form': 'on_categorys'
 		},
 		function(data, status) {
 			if (data.code == 0) {
@@ -472,27 +474,28 @@ form.on('submit(edit_homepage)', function(data){
 });
 //账号设置
 form.on('submit(edit_user)', function(data){
+    if(data.field.password ==''){layer.msg('为了您账号安全,请输入密码在提交!', {icon: 5});return;}
     data.field.password = $.md5(data.field.password);
-    data.field.newpassword = $.md5(data.field.newpassword);
+    if(data.field.newpassword !=''){
+        data.field.newpassword = $.md5(data.field.newpassword);
+    }
     console.log(data.field) 
     $.post('./index.php?c=api&method=edit_user&u='+u,data.field,function(data,status){
-
       if(data.code == 0) {
           if(data.logout == 1){alert("修改成功,请重新登陆!点击确定返回首页!"); window.location.href = './index.php?u='+data.u;  return false;}//修改了账号密码,跳到主页!
-          
-        layer.msg('已修改！', {icon: 1});
+          layer.msg(data.msg, {icon: 1});
       }
       else{
-        layer.msg(data.msg, {icon: 5});
+          layer.msg(data.msg, {icon: 5});
       }
     });
-    console.log(data.field) 
     return false; 
 });  
 //生成令牌
  form.on('submit(Gtoken)', function(data){
-    document.getElementById("NewToken").value= randomString(32);
-    layer.msg('已生成令牌,请复制保存!遗忘无法找回!', {icon: 1});
+    var Token=randomString(32);
+    document.getElementById("NewToken").value = Token;
+    open_msg('320px', '250px','API Token(令牌) 使用说明','<div style="padding: 15px;">'+Token+'<br>↑这是您的令牌,请妥善保管↑<br>点击保存配置即刻生效!<br></div>');
     return false; 
   }); 
 
@@ -620,6 +623,17 @@ upload.render({
       //请求异常回调
     }
   });
+  
+form.on('select(session)', function (data) {
+    //获取当前选中下拉项的索引
+    var indexGID = data.elem.selectedIndex;
+    //获取当前选中下拉项的 value值
+    var goodsID = data.value;
+    //判断是否选的0
+    if(goodsID == '0'){
+        open_msg('320px', '250px','注意','<div style="padding: 15px;">超过24小时未关闭浏览器也会失效<br></div>');
+    }
+    });
 //结束
 });
 

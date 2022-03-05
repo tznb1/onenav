@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="<?php echo $Theme?>/assets/css/nav.css">
     <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="<?php echo $Theme?>/assets/css/layui-icon.css">
-    <?php $nw=getconfig("navwidth");if($nw!=''){echo'<style type="text/css">.sidebar-menu{width:'.$nw.'px;}</style>';}//导航宽度?>
-    <?php $head=getconfig("head");if($head!=''){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
+    <?php// $nw=getconfig("navwidth");if($nw!=''){echo'<style type="text/css">.sidebar-menu{width:'.$nw.'px;}</style>';}//导航宽度?>
+    <?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
     <script src="<?php echo $libs?>/jquery/jquery-3.6.0.min.js"></script>
 </head>
 <body class="page-body">
@@ -28,10 +28,10 @@
                 <header class="logo-env">
                     <!-- logo -->
                     <div class="logo">
-                        <a href="/" class="logo-expanded">
+                        <a href="" class="logo-expanded">
                             <h1 style = "color:#0099FF;"><?php echo getconfig('logo');?></h1>
                         </a>
-                        <a href="/" class="logo-collapsed">
+                        <a href="" class="logo-collapsed">
                             <img src="<?php echo $Theme?>/assets/images/logo-collapsed@2x.png" width="40" alt="" />
                         </a>
                     </div>
@@ -48,7 +48,7 @@
 	
 	<li><a href="./index.php?c=admin&u=<?php echo $u?>" class="smooth" onclick="window.open('./index.php?c=admin&u=<?php echo $u?>','_self')"><i class="fa fa-user-circle"></i><span class="title">后台管理</span></a></li>
 	<?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
-	<li><a href="" class="smooth" onclick="window.open('./index.php?c=<?php if($login =='login'){echo $login;}else{echo getloginC($u);}?>&u=<?php echo $u?>','_self')"><i class="fa fa-user-circle"></i><span class="title">登录</span></a></li>
+	<li><a href="" class="smooth" onclick="window.open('./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>','_self')"><i class="fa fa-user-circle"></i><span class="title">登录</span></a></li>
 	<?php } ?>    
 	<!-- 左侧登陆和后台End -->   
      <?php
@@ -110,9 +110,10 @@
             <br />
             <footer class="main-footer sticky footer-type-1">
                 <div class="footer-inner">
-                    <?php $ICP=getconfig("ICP"); if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
-                    <?php $footer=getconfig("footer"); if($footer != ''){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
-                    <a href="/index.php?c=login&u=<?php echo $u?>">login</a>
+                    <?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
+                    <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
+                    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
+                    <a href="./index.php?c=login&u=<?php echo $u?>">login</a>
                     </div>
                     <?php if(getconfig("gotop")=='on'){echo '<div class="go-up"><a href="#" rel="go-top"><i class="fa-angle-up"></i></a></div>';}?>
                 </div>

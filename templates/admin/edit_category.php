@@ -9,7 +9,7 @@
     <div class="layui-form-item" style = "display:none;">
     <label class="layui-form-label">分类ID</label>
     <div class="layui-input-block">
-      <input type="text" name="id" required  lay-verify="required" value = '<?php echo $id; ?>' placeholder="请输入分类名称" autocomplete="off" class="layui-input">
+      <input type="text" name="id" required  lay-verify="required" value = '<?php echo $id; ?>' autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">

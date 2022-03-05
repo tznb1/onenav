@@ -1,7 +1,7 @@
 <?php
-Visit();//访问控制
 if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
 if($Visit==0){$msg = "<h3>网站正在进行维护,请稍后再试!</h3>";require('./templates/admin/403.php');exit;}
+Visit();//访问控制
 //获取link.id
 $id = intval($_GET['id']);
 
@@ -47,7 +47,7 @@ if( ( $link['property'] == 0 ) && ($category['property'] == 0) ){
     }
 }
 //如果已经成功登录，直接跳转
-elseif( is_login() ) {
+elseif( is_login2() ) {
     //增加link.id的点击次数
     $click = $link['click'] + 1;
     //更新数据库

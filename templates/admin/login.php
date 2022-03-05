@@ -15,16 +15,16 @@
 </head>
 <body>
 <div class="layui-container">
-	<div class="layui-row">
-		<div class="login-logo">
-		<h1>OneNav登录</h1>
-		</div>
-		<div class="layui-col-lg4 layui-col-md-offset4" style ="margin-top:4em;">
-		<form class="layui-form layui-form-pane" action="">
+<div class="layui-row">
+<div class="login-logo">
+<h1>OneNav登录</h1>
+</div>
+<div class="layui-col-lg4 layui-col-md-offset4" style ="margin-top:4em;">
+<form class="layui-form layui-form-pane" action="">
   <div class="layui-form-item">
     <label class="layui-form-label"><i class="layui-icon layui-icon-username"></i></label>
     <div class="layui-input-block">
-      <input type="text" name="user" required value="<?php echo $u; ?>" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+      <input type="text" name="user" required value="<?php echo Get('u'); ?>" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
@@ -37,8 +37,16 @@
   <div class="layui-form-item">
     <button class="layui-btn" lay-submit lay-filter="login" style = "width:100%;">登录</button>
   </div>
+  <div class="layui-form-item layui-hide-sm layui-hide-md layui-hide-lg">
+    <button class="layui-btn" lay-submit lay-filter="mobile_login" style = "width:100%;">手机登录</button>
+  </div>
 </form>
-<p style="width: 85%"><a href="?c=Register" style="color: #fffbfb;" class="fl">没有账号？立即注册</a></p>
+<?php
+    //若为默认值则显示注册入口
+    if($Register === 'Register'){
+        echo '<p style="width: 85%; margin-top: 10px;"><a href="?c=Register" style="color: #fffbfb;" class="fl">没有账号？立即注册</a></p>';
+    } 
+?>
 </div>
 </div>
 </div>
@@ -46,31 +54,35 @@
 <script src = '<?php echo $libs?>/jquery/jquery.md5.js'></script>
 <script src = '<?php echo $libs?>/Layui/v2.5.4/layui.js'></script>
 <script>
+//登陆
 layui.use(['form'], function(){
-var form = layui.form;
-form.on('submit(login)', function(data){
-    data.field.pass = $.md5(data.field.pass);
-    $.post('./index.php?c='+_GET("c"),data.field,function(data,status){
-      if(data.code == 0) {
-        window.location.href = './index.php?c=admin&u='+data.u;
-      }
-      else{
-        layer.msg(data.msg, {icon: 5});
-      }
-    });
+    var form = layui.form;
+    form.on('submit(login)', function(data){
+        data.field.pass = $.md5(data.field.pass);
+        $.post('./index.php?c=<?php echo $c; ?>&u='+data.field.user,data.field,function(data,status){
+            if(data.code == 0) {
+                window.location.href = './index.php?c=admin&u=<?php echo $u; ?>';
+            }else{
+                layer.msg(data.msg, {icon: 5});
+            }
+        });
     return false; 
-});
+    });
 
-//取Get参数
-function _GET(variable){
-   var query = window.location.search.substring(1);
-   var vars = query.split("&");
-       for (var i=0;i<vars.length;i++) {
-               var pair = vars[i].split("=");
-               if(pair[0] == variable){return pair[1];}
-       }
-       return(false);
-}
+//手机登录 
+    form.on('submit(mobile_login)', function(data){
+        data.field.pass = $.md5(data.field.pass);
+        $.post('./index.php?c=<?php echo $c; ?>&u='+data.field.user,data.field,function(data,status){
+        if(data.code == 0) {
+            window.location.href = './';
+        }else{
+            layer.msg(data.msg, {icon: 5});
+        }
+    });
+    return false;
+    });
+    
+//layui END
 });
 </script>
 </body>

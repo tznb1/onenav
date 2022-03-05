@@ -29,40 +29,58 @@
       <input type="text" name="description"  value = '<?php echo getconfig('description');?>' placeholder="OneNav是一款使用PHP + SQLite3开发的简约导航/书签管理器，免费开源。" autocomplete="off" class="layui-input">
     </div>
   </div>
-  <div class="layui-inline">
-    <label class="layui-form-label">备案号</label>
-    <div class="layui-input-inline">
-       <input type="text" name="ICP"  value = '<?php echo getconfig('ICP');?>' placeholder="备案号,没有可留空" autocomplete="off" class="layui-input">
-    </div>
-  </div>
 </div>  
 <div class="layui-form-item">  
   <div class="layui-inline">
-    <label class="layui-form-label">主题风格</label>
+    <label class="layui-form-label">主题风格1</label>
     <div class="layui-input-inline">
       <input id="theme" type="hidden" value="<?php echo getconfig('Theme')."|".getconfig('Style');?>">
       <select id="TEMPLATE" name="TEMPLATE" lay-filter="aihao" >
         <option value="default|0" selected="">默认主题</option>
         <option value="default|1">默认主题(样式1)</option>
         <option value="default|2">默认主题(样式2)</option>
+        <option value="default|xiaoz">默认主题(原版)</option>
         <option value="baisu|1">百素主题(显示描述)</option>
         <option value="baisu|0">百素主题(隐藏描述)</option>
         <option value="baisu|2">百素极速(显示描述)</option>
         <option value="baisu|3">百素极速(隐藏描述)</option>
+        <option value="baisu-two|0">百素two</option>
         <option value="liutongxu|0">刘桐序</option>
         <option value="webstack|0">WebStack</option>
         <option value="SimpleWeb|0">SimpleWeb</option>
         <option value="runoob|0">菜鸟教程</option>
       </select>
-    </div>
-  </div>  
-  <div class="layui-inline">
-    <label class="layui-form-label">导航宽度</label>
-    <div class="layui-input-inline">
-       <input type="text" name="navwidth"  value = '<?php echo getconfig('navwidth');?>' placeholder="默认:240,建议:150-240" autocomplete="off" class="layui-input">
-    </div>
-    <div class="layui-form-mid layui-word-aux">修改会导致手机端布局异常!</div>
+    </div><div class="layui-form-mid layui-word-aux">PC端上显示的主题</div>
   </div>
+<div class="layui-form-item">  
+  <div class="layui-inline">
+    <label class="layui-form-label">主题风格2</label>
+    <div class="layui-input-inline">
+      <input id="theme2" type="hidden" value="<?php echo getconfig('Theme2','default')."|".getconfig('Style2','0');?>">
+      <select id="TEMPLATE2" name="TEMPLATE2" lay-filter="aihao" >
+        <option value="default|0" selected="">默认主题</option>
+        <option value="default|1">默认主题(样式1)</option>
+        <option value="default|2">默认主题(样式2)</option>
+        <option value="default|xiaoz">默认主题(原版)</option>
+        <option value="baisu|1">百素主题(显示描述)</option>
+        <option value="baisu|0">百素主题(隐藏描述)</option>
+        <option value="baisu|2">百素极速(显示描述)</option>
+        <option value="baisu|3">百素极速(隐藏描述)</option>
+        <option value="baisu-two|0">百素two</option>
+        <option value="liutongxu|0">刘桐序</option>
+        <option value="webstack|0">WebStack</option>
+        <option value="SimpleWeb|0">SimpleWeb</option>
+        <option value="runoob|0">菜鸟教程</option>
+      </select>
+    </div><div class="layui-form-mid layui-word-aux">移动端上显示的主题,有些主题不兼容移动端,所以支持一下单独设置</div>
+  </div>  
+  <!--<div class="layui-inline">-->
+  <!--  <label class="layui-form-label">导航宽度</label>-->
+  <!--  <div class="layui-input-inline">-->
+  <!--     <input type="text" name="navwidth"  value = '<?php echo getconfig('navwidth');?>' placeholder="默认:240,建议:150-240" autocomplete="off" class="layui-input">-->
+  <!--  </div>-->
+  <!--  <div class="layui-form-mid layui-word-aux">修改会导致手机端布局异常!</div>-->
+  <!--</div>-->
  <div class="layui-form-item">
     <label class="layui-form-label">首页功能</label>
     <div class="layui-input-block">
@@ -74,6 +92,9 @@
       <input type="checkbox" name="DefaultDB" title="默认首页" <?php if ($_COOKIE['DefaultDB'] ==$u){echo 'checked=""';}?>>
     </div>
   </div>
+<?php 
+ if($Diy === '1' || $userdb['Level'] === '999'){
+     ?>
   <div class="layui-form-item layui-form-text">
     <label class="layui-form-label">头部代码</label>
     <div class="layui-input-block"> 
@@ -86,6 +107,10 @@
        <textarea name="footer" class="layui-textarea"  placeholder="例如统计代码,又拍云LOGO等,支持HTML,JS,CSS" ><?php echo base64_decode( getconfig('footer'))?></textarea>
     </div>
   </div>
+ <?php }
+?>
+
+  
   <div class="layui-form-item">
     <div class="layui-input-block">
       <button class="layui-btn" lay-submit lay-filter="edit_homepage">保存</button>

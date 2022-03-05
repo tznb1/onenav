@@ -1,3 +1,4 @@
+<?php if($Style =='xiaoz'){require('./templates/default/xiaoze.php');exit;}?>
 <!DOCTYPE html>
 <html lang="zh-ch" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -11,15 +12,15 @@
 <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
 <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.5.4/css/layui-icon.css">
 <link rel="stylesheet" href="<?php echo $Theme?>/static/style<?php echo $Style;?>.css?v=<?php echo $version; ?>">
-<?php $nw=getconfig("navwidth");if($nw!=''){echo'<style type="text/css">.mdui-drawer-body-left{padding-left:'.$nw.'px;}.mdui-drawer-diy{width:'.$nw.'px;}</style>';}//导航宽度?>
-<?php $head=getconfig("head");if($head!=''){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
+<?php// $nw=getconfig("navwidth");if($nw!=''){echo'<style type="text/css">.mdui-drawer-body-left{padding-left:'.$nw.'px;}.mdui-drawer-diy{width:'.$nw.'px;}</style>';}//导航宽度?>
+<?php $head=getconfig("head");if($head!='' && ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
 </head>
 <body class = "mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-primary-indigo mdui-theme-accent-pink mdui-loaded" >
 	<!--导航工具-->
 	<header class = "mdui-appbar mdui-appbar-fixed">
 		<div class="mdui-toolbar mdui-color-theme">
 		<span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-drawer="{target: '#drawer', swipe: true}"><i class="mdui-icon material-icons">menu</i></span>
-		  <a href="/" class = "mdui-typo-headline" ><span class="mdui-typo-title"><?php echo getconfig("logo");?></span></a>
+		  <a href="" class = "mdui-typo-headline" ><span class="mdui-typo-title"><?php echo getconfig("logo");?></span></a>
 		  <div class="mdui-toolbar-spacer"></div>
 		  <!-- 新版搜索框 -->
 		  	<div class="mdui-col-md-4 mdui-col-xs-6">
@@ -61,7 +62,7 @@
 	</li>
 	</a>
 	<?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
-	<a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo getloginC($u);}?>&u=<?php echo $u?>">
+	<a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>">
 	<li class="mdui-list-item mdui-ripple">
 	<div class="mdui-list-item-content category-name"><i class="fa fa-user-circle"></i> 登录</div>
 	</li>
@@ -76,13 +77,7 @@
 		<a href="#category-<?php echo $category['id']; ?>">
 			<li class="mdui-list-item mdui-ripple">
 				<div class="mdui-list-item-content category-name">
-				    <?php 
-			        if (substr($category['Icon'],0, 3) =='lay'){
-			        echo '<i class="layui-icon '.$category['Icon'].'"></i>'; 
-			        }if (substr($category['Icon'],0, 3) =='fa-'){
-			        echo '<i class="fa '.$category['Icon'].'"></i>';  
-		            }?>
-				    <?php echo $category['name']; ?></div>
+				    <?php echo geticon($category['Icon']).$category['name']; ?></div>
 			</li>
 		</a>
 		<?php } ?>
@@ -105,13 +100,7 @@
                 }
             ?>
 			<div id = "category-<?php echo $category['id']; ?>" class = "mdui-col-xs-12 mdui-typo-title cat-title">
-			<?php 
-			if (substr($category['Icon'],0, 3) =='lay'){
-			   echo '<i class="layui-icon '.$category['Icon'].'"></i>'; 
-			}if (substr($category['Icon'],0, 3) =='fa-'){
-			   echo '<i class="fa '.$category['Icon'].'"></i>';  
-			}?>
-			<?php echo $category['name']; ?> <?php echo $property; ?>
+			<?php echo geticon($category['Icon']).$category['name'].$property;?>
 				<span class = "mdui-typo-caption"><?php echo $category['description']; ?></span>
 			</div>
 			<!-- 遍历链接 -->
@@ -160,8 +149,9 @@
 	<!--正文内容部分END-->
 	<!-- footer部分 --> 
 	<footer>
-    <?php $ICP=getconfig("ICP"); if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
-    <?php $footer=getconfig("footer"); if($footer != ''){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
+    <?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
+    <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
+    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
 	</footer>
 	<!-- footerend -->
 <script src = "<?php echo $libs?>/jquery/jquery-3.6.0.min.js"></script>
@@ -173,6 +163,7 @@
 <script src = "<?php echo $Theme?>/static/embed.js?v=<?php echo $version; ?>"></script>
 <?php if(preg_match('/MSIE|Trident/i',$_SERVER['HTTP_USER_AGENT'])){ echo "<script>alert('您的浏览器与本站不兼容,建议您使用谷歌浏览器!或将浏览器设为极速模式')</script>";}?>
 <script>
+var u = '<?php echo $u?>';
 <?php echo $onenav['right_menu']; ?>
 </script>
 <?php echo $onenav['extend']; ?>

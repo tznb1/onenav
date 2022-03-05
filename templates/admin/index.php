@@ -11,6 +11,28 @@
 </ul>
 <div class="layui-tab-content">
 <div class="layui-tab-item layui-show layui-form layui-form-pane"><!--相关信息--> 
+<?php 
+ if($password === md5(md5('admin').$RegTime)){
+     ?>
+      <div class="layui-form-item" style="color:#FF0000">
+      <label class="layui-form-label">风险提示</label>
+      <div class="layui-input-block" >
+        <input value='系统检测到您使用的默认密码，请尽快修改！'disabled class="layui-input" style="color:#FF0000">
+      </div>
+    </div>
+ <?php }
+?>
+<?php 
+ if($Skey ==''){
+     ?>
+      <div class="layui-form-item" style="color:#FF0000">
+      <label class="layui-form-label">配置缺失</label>
+      <div class="layui-input-block" >
+        <input value='系统检测到您Key安全未配置,请到账号设置更新配置！'disabled class="layui-input" style="color:#FF0000">
+      </div>
+    </div>
+ <?php }
+?>
   <div class="layui-form-item">
     <div class="layui-inline">
       <label class="layui-form-label">当前版本</label>
@@ -27,25 +49,25 @@
     <div class="layui-inline">
       <label class="layui-form-label">数据库</label>
         <div class="layui-input-inline">
-        <input value='<?php echo getconfig('db');?>'disabled class="layui-input">
+        <input value='<?php echo $userdb['SQLite3'];?>'disabled class="layui-input">
       </div> 
     </div>
     <div class="layui-inline">
       <label class="layui-form-label">账号</label>
         <div class="layui-input-inline">
-        <input value='<?php echo getconfig('user');?>'disabled class="layui-input">
+        <input value='<?php echo $userdb['User'];?>'disabled class="layui-input">
       </div> 
     </div>    
     <div class="layui-inline">
       <label class="layui-form-label">注册时间</label>
       <div class="layui-input-inline">
-        <input value='<?php echo date("Y-m-d H:i:s",getconfig('RegDate'));;?>'disabled class="layui-input">
+        <input value='<?php echo date("Y-m-d H:i:s",$RegTime);;?>'disabled class="layui-input">
       </div>
     </div>
     <div class="layui-inline">
       <label class="layui-form-label">注册IP</label>
       <div class="layui-input-inline">
-        <input value='<?php echo getconfig('RegIP');?>'disabled class="layui-input">
+        <input value='<?php echo $userdb['RegIP'];?>'disabled class="layui-input">
       </div>
     </div>
     <div class="layui-inline">
@@ -65,7 +87,7 @@
       <div class="layui-input-block">
         <input value='<?php 
         $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' :'http://';
-        echo $http_type.$_SERVER['HTTP_HOST'].'/index.php?c='.getloginC($u).'&u='.$u;?>         注:请保存好您的专属入口,避免特定情况造成无法登陆!'disabled class="layui-input">
+        echo $http_type.$_SERVER['HTTP_HOST'].'/index.php?c='.$Elogin.'&u='.$u;?>         注:请保存好您的专属入口,避免特定情况造成无法登陆!'disabled class="layui-input">
       </div>
     </div>
     <div class="layui-form-item">
@@ -78,6 +100,35 @@
     </div>
   </div><!--表单End-->
 <ul class="layui-timeline">
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年03月05日</h4>
+      <ul>
+        <li>选取原作的一些更新:手机登陆(成功返回主页),登陆漏洞,XSS漏洞,新增默认密码安全检测(仅在后台首页显示,不弹窗!)2.25</li>
+        <li>修复已知bug(内容比较多,不单独列出了)</li>
+        <li>登陆和注册页面优化</li>
+        <li>合并API文件,分开写太麻烦了..</li>
+        <li>允许用户重设登录入口,入口名算法改为随机生成,修复入口可以登陆其他账号的bug</li>
+        <li>登录入口解释:因为允许站长修改入口,如果修改的入口有用户泄漏的话就和公开没太大区别,所以就有了专属入口,当用户不知道公用接口名时只能用专属接口登录</li>
+        <li>站长删除用户时,禁止删除默认用户</li>
+        <li>账号设置新增:Key安全,HttpOnly,登陆保持 注:需要PHP5.2以上</li>
+        <li>管理员免密登陆强制使用HttpOnly,登陆保持为会话,最长有效期1小时!</li>
+        <li>全局配置新增:ICP备案号,自定义代码,底部代码,取消用户设置备案号的权限</li>
+        <li>新增百素大佬的新主题百素two</li>
+        <li>修复首页点击logo文字或图标跳转地址错误</li>
+        <li>修复部分主题二级目录运行出错问题</li>
+        <li>用户管理工具栏新增一个修复按钮,可以修复部分数据库问题,升级时建议点两下看到无可修复项就行</li>
+        <li>网站管理新增:防XSS脚本,防SQL注入! (会忽略自定义头部和底部代码XSS检测,因为检测的话基本上就没法用了..)</li>
+        <li>书签导入调整,加入防XSS,报告标题和URL截取前面30和50位</li>
+        <li>取消修改导航宽度,因为很多主题没有修改空间,准备加入单独的主题设置</li>
+        <li>主页设置新增主题风格2选项,1是PC端主题,2是移动端主题,访问主页时由后端通过浏览器UA识别终端类型来载入不同的主题配置,可以解决部分主题不兼容移动端的尴尬.</li>
+        <li>主题风格增加一个默认主题(原版),最大程度的保留原作的信息和样式!其他默认主题因为之前是没打算分享的,所以是按照自己的喜好精简了一些信息.</li>
+        <li>网站管理>用户管理:支持修改用户组(点击用户行的用户组单元格会弹出提示),支持修改用户密码! 注:不能对自己修改!</li>
+        <li>增加一个脚本,位于: /initial/SetAdmin.php 作用:全局配置错误无法访问时,管理员账号无法使用时强行修改相关配置,内有具体说明!</li>
+      </ul>
+    </div>
+  </li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -293,9 +344,9 @@
 <div class="layui-tab-item"><!--开发文档-->
 
 
-<blockquote class="layui-elem-quote layui-text">此版项目地址：<a href="https://gitee.com/tznb/OneNav" target="_blank">Gitee 码云 (唯一地址)</a></blockquote>
-<blockquote class="layui-elem-quote layui-text">原著项目地址 ：<a href="https://github.com/helloxz/onenav" target="_blank">github</a></blockquote>
-<blockquote class="layui-elem-quote layui-text">帮助文档 ：<a href="https://dwz.ovh/onenav" target="_blank">dwz.ovh/onenav</a></blockquote>
+<blockquote class="layui-elem-quote layui-text">此版项目地址：<a href="https://gitee.com/tznb/OneNav" target="_blank">Gitee 码云 (唯一地址)  </a>&ensp; QQ: 271152681</blockquote>
+<blockquote class="layui-elem-quote layui-text">原著项目地址 ：<a href="https://github.com/helloxz/onenav" target="_blank">github</a>&ensp; QQ群1：147687134 &ensp;QQ群2：932795364&ensp;QQ:337003006</blockquote>
+<blockquote class="layui-elem-quote layui-text">帮助文档 ：<a href="https://doc.xiaoz.me/books/onenav" target="_blank">藏经阁</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">原著博客 ：<a href="https://www.xiaoz.me" target="_blank">www.xiaoz.me</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">社区支持 ：<a href="https://dwz.ovh/vd0bw" target="_blank" >dwz.ovh/vd0bw</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">分类图标 ：<a href="http://www.fontawesome.com.cn/faicons" target="_blank">fontawesome</a></blockquote>

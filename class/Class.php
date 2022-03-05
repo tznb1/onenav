@@ -1,5 +1,9 @@
 <?php
-
+//验证邮箱
+function checkEmail($email){
+    $pregEmail = "/([a-z0-9]*[-_\.]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?/i";
+    return preg_match($pregEmail, $email);
+}
 //写入登陆日志
 function WriteloginLog($name,$pass,$ip,$date,$dbname,$value){
 $db = new Medoo\Medoo([
@@ -65,14 +69,22 @@ elseif($icon ==5){return('//favicon.cccyun.cc/'.$url);}
 elseif($icon ==6){return('//api.iowen.cn/favicon/'.parse_url($url)['host'].'.png');}
 else{return('./favicon/?url='.$url);}//如果参数错误则使用本地服务器
 }
-//读取配置
-function getconfig($name){
+//读取配置 (22/3/2新增一个默认值参数,没找到记录时使用默认值写入并返回默认值)
+function getconfig($name,$default =''){
 global $db;
-return ($db->get("on_config","value",["name"=>$name]));
+$value = $db->get("on_config","value",["name"=>$name]);
+if($value =='' && $default !=''){
+    $count = $db->count("on_config","value",["name"=>$name]);
+    if ($count == 0){
+        $value =$default;
+        $db->insert('on_config',['name'=> $name ,'value'=> $value]);
+    }
 }
-//生成用户登陆接口
-function getloginC($udb){
-return (substr(md5($udb.'6Uc2vFoU'),0, 6).'_login');
+return ($value);
+}
+//生成用户登陆接口(22/2/27改为随机生成,不可逆)
+function getloginC($user){
+return (substr(md5($user.'6Uc2vFoU'.time().rand(5, 15)),0, 6).'_login');
 }
 //生成图标代码
 function geticon($name){
@@ -94,7 +106,7 @@ else{return($name);}
 function Visit(){
     global $Visit,$udb,$u;
     if($Visit==0 ){
-        if($udb->get("user","Level",["User"=>$u]) == 999 && is_login()){
+        if($udb->get("user","Level",["User"=>$u]) == 999 && is_login2()){
             //允许管理员账号在登录的情况下正常使用!
             return;
         }
@@ -115,7 +127,8 @@ function Get($str){
 return inject_check (strip_tags(@$_GET[$str]));;}
 //关键字过滤
 function inject_check($str){
-$tmp=preg_match('/select|insert|and|or|update|delete|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile/', $str); // 进行过滤
+$tmp=preg_match('/select|insert|and|or|update|delete|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile|dump/i', $str); // 进行过滤
+
 if($tmp){msg(-1000,'您的请求带有不合法参数，已被拦截！');}else{return $str;}}
 //获取访客IP
 function getIP() { 
@@ -150,29 +163,52 @@ function get_version(){
         return $version;
     }
 }
-//计算Key
-function Getkey($user,$pass,$Expire){
-    $key = md5($user.$pass.$Expire.$_SERVER['HTTP_USER_AGENT'].'9VKT9Kwh');
+
+//计算Key2
+function Getkey2($user,$pass,$Expire,$Skey,$time){
+    $txt = $user.'-'.$pass.'|'.$Expire;
+    if($Skey == 1){
+        $txt = $txt.'|'.$_SERVER['HTTP_USER_AGENT'];
+    }elseif($Skey == 2){
+        $txt = $txt.'|'.$_SERVER['HTTP_USER_AGENT'];
+        $txt = $txt.'|'.getIP();
+    }
+    $txt = $txt.'|'.'9VKT9Kwh'.$time;
+    $key = md5($txt);
     return $key;
 }
+
+
 //获取到期时间戳,默认30天
-function GetExpire(){
-    return time()+30 * 24 * 60 * 60;
+function GetExpire2($day =30){
+    return time()+($day * 24 * 60 * 60);
 }
-//判断用户是否已经登录
-function is_login(){
-    global $username,$password;
-    $key = Getkey($username,$password,$_COOKIE[$username.'_Expire']);
-    //获取session
-    $session = $_COOKIE[$username.'_key'];
+
+//判断用户是否已经登录2
+function is_login2(){
+    global $username,$password,$Skey;
+    $Ckey= $_COOKIE[$username.'_key2'];
+    preg_match('/(.{32})\.(\d+)\.(\d+)/i',$Ckey,$matches);
+    $Expire = $matches[2];
+    $Ckey = $matches[1];
+    $time = $matches[3];
+    $keyOK = Getkey2($username,$password,$Expire,$Skey,$time);
     //如果已经成功登录
-    if($session == $key && $_COOKIE[$username.'_Expire']>time()) {
+    if($keyOK === $Ckey ) {
+        //Key验证成功,验证到期时间,如果为0说明会话级,直接返回真,否则判断是否到期
+        if($Expire !='0'){
+            if($Expire>time()){
+                return true;
+            }else{
+                return false;
+            }
+        }
         return true;
-    }
-    else{
+    }else{
         return false;
     }
 }
+
 //返回JSON信息(常规信息统一规范)
 function msg($code,$msg){
     $data = ['code'=>$code,'msg'=>$msg];

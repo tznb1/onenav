@@ -3,7 +3,11 @@ include_once('header.php');
 include_once('left.php'); 
 if($udb->get("user","Level",["User"=>$u]) != 999){
     include_once('footer.php');
-    exit;}
+    exit;
+}
+$ICP    = $udb->get("config","Value",["Name"=>'ICP']);
+$footer = $udb->get("config","Value",["Name"=>'footer']);
+$footer = htmlspecialchars_decode(base64_decode($footer));
 ?>
 
 <style type="text/css">
@@ -31,7 +35,7 @@ if($udb->get("user","Level",["User"=>$u]) != 999){
     <div class="layui-inline">
       <label class="layui-form-label">注册用户</label>
      <div class="layui-input-inline">
-      <select id="Reg" name="Reg" lay-filter="aihao" >
+      <select id="Reg" name="Reg"  >
         <option value="0" <?php if($reg==0){echo'selected=""';}?>>禁止注册</option>
         <option value="1" <?php if($reg==1){echo'selected=""';}?>>允许注册</option>
       </select>
@@ -68,25 +72,69 @@ if($udb->get("user","Level",["User"=>$u]) != 999){
       <div class="layui-form-mid layui-word-aux">默认为./static 即本地服务器!建议使用CDN来提高加载速度!</div>
     </div>
  </div> 
- 
+
+ <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">ICP备案号</label>
+      <div class="layui-input-inline">
+    <input type="text" name="ICP"   value = '<?php echo $ICP; ?>' placeholder='工信部ICP备案号'  autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux">因法律风险问题,取消了普通用户自定义备案号!这里设置的是全局显示的!</div>
+    </div>
+ </div> 
+<div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">自定义代码</label>
+      <div class="layui-input-inline">
+      <select id="visit" name="Diy"  >
+        <option value="0" <?php if($Diy==0){echo'selected=""';}?>>禁止</option>
+        <option value="1" <?php if($Diy==1){echo'selected=""';}?>>允许</option>
+      </select>
+      </div>
+      <div class="layui-form-mid " style="color:#FF0000">是否允许普通用户使用自定义头部和底部代码,存在风险请慎用!管理员和防XSS脚本对此无效!</div>
+    </div>
+ </div> 
   <div class="layui-form-item">
     <div class="layui-inline">
       <label class="layui-form-label">访问控制</label>
       <div class="layui-input-inline">
-      <select id="visit" name="visit" lay-filter="aihao" >
+      <select id="visit" name="visit"  >
         <option value="0" <?php if($Visit==0){echo'selected=""';}?>>禁止访问</option>
         <option value="1" <?php if($Visit==1){echo'selected=""';}?>>允许访问</option>
       </select>
       </div>
       <div class="layui-form-mid layui-word-aux">禁止访问时首页无法预览,链接无法跳转,普通用户无法登录后台,同时关闭注册!管理员账号不受影响!</div>
     </div>
+ </div>
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">防XSS脚本</label>
+      <div class="layui-input-inline">
+      <select id="XSS" name="XSS"  >
+        <option value="0" <?php if($XSS==0){echo'selected=""';}?>>关闭</option>
+        <option value="1" <?php if($XSS==1){echo'selected=""';}?>>开启</option>
+      </select>
+      </div>
+      <div class="layui-form-mid layui-word-aux">拦截POST表单中的XSS恶意代码,提升网站安全性!(测试)</div>
+    </div>
  </div> 
-
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">防SQL注入</label>
+      <div class="layui-input-inline">
+      <select id="SQL" name="SQL"  >
+        <option value="0" <?php if($SQL==0){echo'selected=""';}?>>关闭</option>
+        <option value="1" <?php if($SQL==1){echo'selected=""';}?>>开启</option>
+      </select>
+      </div>
+      <div class="layui-form-mid layui-word-aux">拦截POST表单中的SQL注入代码,提升网站安全性!(测试)</div>
+    </div>
+ </div> 
   <div class="layui-form-item">
     <div class="layui-inline">
       <label class="layui-form-label">图标API</label>
       <div class="layui-input-inline">
-      <select id="IconAPI" name="IconAPI" lay-filter="aihao" >
+      <select id="IconAPI" name="IconAPI"  >
         <option value="1" <?php if($IconAPI==1){echo'selected=""';}?>>本地服务(支持缓存)</option>
         <option value="2" <?php if($IconAPI==2){echo'selected=""';}?>>favicon.rss.ink (小图标)</option>
         <option value="3" <?php if($IconAPI==3){echo'selected=""';}?>>ico.hnysnet.com </option>
@@ -98,7 +146,12 @@ if($udb->get("user","Level",["User"=>$u]) != 999){
       <div class="layui-form-mid layui-word-aux">所有API接口均由其他大佬提供!若有异常请尝试更换接口!</div>
     </div>
  </div> 
-
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">底部代码</label>
+    <div class="layui-input-block"> 
+       <textarea name="footer" class="layui-textarea"  placeholder="例如统计代码,又拍云LOGO等,支持HTML,JS,CSS" ><?php echo $footer?></textarea>
+    </div>
+  </div>
 </div>  
   <div class="layui-form-item">
     <div class="layui-input-block">
@@ -125,6 +178,7 @@ if($udb->get("user","Level",["User"=>$u]) != 999){
             <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="Del">删除选中</button>
             <button class="layui-btn layui-btn-sm " lay-event="Reg" >注册账号</button>
             <button class="layui-btn layui-btn-sm " lay-event="help" >帮助</button>
+            <button class="layui-btn layui-btn-sm " lay-event="repair" >修复</button>
         </div>
         </script>
         <!-- 开启表格头部工具栏END -->
@@ -141,6 +195,7 @@ if($udb->get("user","Level",["User"=>$u]) != 999){
 </div>
 <script src = '<?php echo $libs?>/jquery/jquery-3.6.0.min.js'></script>
 <script src = '<?php echo $libs?>/Layui/v2.5.4/layui.js'></script>
+<script src = '<?php echo $libs?>/jquery/jquery.md5.js'></script>
 <script>
 layui.use(['element','table','layer','form','util'], function(){
     var element = layui.element;
@@ -148,14 +203,14 @@ layui.use(['element','table','layer','form','util'], function(){
     var util = layui.util;
     var form = layui.form;
     layer = layui.layer;
-//表头
+//表头 https://www.layui.site/demo/table/cellEvent.html
 var cols=[[ //表头
       {fixed:'left',type:'checkbox'} //开启复选框
       ,{field:'ID',title:'ID',width:60,sort:true}
       ,{field:'User',title:'账号',minWidth:120,sort:true,templet:function(d){
           return '<a style="color:#3c78d8" title="打开用户主页" target="_blank" href="./?u='+d.User+'">'+d.User+'</a>'
       }}
-      ,{field:'Level',title:'用户组',minWidth:90,sort:true ,templet:function(d){
+      ,{field:'Level',title:'用户组',minWidth:90,sort:true ,event: 'group', style:'cursor: pointer;',templet:function(d){
           if(d.Level ==999){return '管理员'}
           else{return '普通会员'}
       }}
@@ -183,19 +238,34 @@ table.render({
     ,id:'user_list'
     ,cols: cols
 });
+
+
 //用户行工具栏事件
 table.on('tool(user_list)', function(obj){
     var data = obj.data;
     console.log(data)
     if(obj.event === 'edit'){
-        layer.prompt({formType: 0,value: '',title: '请输入新密码:'},function(value, index, elem){
-            layer.msg('暂不支持哦', {icon: 1});
+        if('<?php echo $u;?>' === data.User){
+            layer.msg('您不能对自己操作!', {icon: 5});return false;
+        }
+        layer.prompt({formType: 0,value: '12345678',title: '请输入新密码:'},function(value, index, elem){
+            if(value.length<8){
+                layer.msg('密码长度不能小于8个字符!', {icon: 5});
+                return false;
+            }
+            $.post('./index.php?c=api&method=func&u=<?php echo $u;?>',{'fn':'rootu','Set':'Pass','id':data.ID,'Pass':$.md5(value)},function(data,status){
+                if(data.code == 0){
+                    layer.closeAll();//关闭所有层
+                }
+                layer.msg(data.msg, {icon: data.icon});
+            });
+            //layer.msg('暂不支持哦', {icon: 1});
         });
     } else if(obj.event === 'admin'){
         $.post('./index.php?c=api&method=user_list_login&u=<?php echo $u;?>',{'id':obj.data.ID},function(data,status){
             if(data.code == 0){
-                if(data.msg =='successful'){
-                    layer.msg('请勿在公共设备使用!<br>登录有效时间1小时!', {time: 20000,btn: ['知道了']}, function(index){
+                if(data.msg !='Cookie有效'){
+                    layer.msg(data.msg, {time: 20000,btn: ['知道了']}, function(index){
                         window.open('./index.php?c=admin&u=' + obj.data.User);
                     });
                 }else{
@@ -205,6 +275,24 @@ table.on('tool(user_list)', function(obj){
                 layer.msg(data.msg, {icon: 5});
             }
         });
+    } else if(obj.event === 'group'){
+        if('<?php echo $u;?>' === data.User){
+            layer.msg('您不能对自己操作!', {icon: 5});
+        }else if(data.Level === '0'){
+            layer.confirm('是否将 '+data.User+' 设为管理员?',{icon: 3, title:'温馨提示！'}, function(index){
+                $.post('./index.php?c=api&method=func&u=<?php echo $u;?>',{'fn':'rootu','Set':'Level','id':data.ID,'Level':'999'},function(data,status){
+                    if(data.code == 0){obj.update({Level: data.Level});}
+                    layer.msg(data.msg, {icon: data.icon});
+                });
+            });
+        }else if(data.Level === '999'){
+            layer.confirm('是否将 '+data.User+' 设为普通用户?',{icon: 3, title:'温馨提示！'}, function(index){
+                $.post('./index.php?c=api&method=func&u=<?php echo $u;?>',{'fn':'rootu','Set':'Level','id':data.ID,'Level':'0'},function(data,status){
+                    if(data.code == 0){obj.update({Level: data.Level});}
+                    layer.msg(data.msg, {icon: data.icon});
+                });
+            });
+        }
     }
 });
 //表头工具
@@ -235,9 +323,17 @@ table.on('toolbar(user_list)', function(obj){
       window.open('./index.php?c=<?php echo $Register;?>');
       break;
       case 'help':
-      open_msg('300px', '200px','帮助说明','<div style="padding: 15px;">1.点击账号进入用户主页<br>2.点击注册IP查询IP归属地<br>3.点击后台进入用户后台(免密)</div>');
+      open_msg('300px', '300px','帮助说明','<div style="padding: 15px;">1.点击账号进入用户主页<br>2.点击注册IP查询IP归属地<br>3.点击后台进入用户后台(免密)<br>4.点击用户组可以切换用户组<br>5.升级后建议点击两次修复<br>6.管理员账号都是权限一样的!</div>');
       break;
-      
+      case 'repair':
+      $.post('./index.php?c=api&method=func&u=<?php echo $u;?>',{'fn':'repair'},function(data,status){
+          if(data.code == 0){
+              layer.msg(data.msg, {icon: 1});
+          } else{
+              open_msg('88%', '88%','修复详情','<div style="padding: 15px;">'+data.msg+'</div>');
+          }
+      });
+      break;
     }
 });
 //回车和按钮事件

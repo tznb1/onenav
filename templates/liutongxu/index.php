@@ -16,7 +16,7 @@
     <link rel='stylesheet' id='lightbox-css' href='<?php echo $Theme?>/wp-content/themes/onenav/css/jquery.fancybox.min-3.03029.1.css' type='text/css' media='all'>
     <link rel='stylesheet' id='style-css' href='<?php echo $Theme?>/wp-content/themes/onenav/css/style-3.03029.1.css' type='text/css' media='all'>
     <script type='text/javascript' src='<?php echo $Theme?>/wp-content/themes/onenav/js/jquery.min-3.03029.1.js' id='jquery-js'></script>
-    <?php $head=getconfig("head");if($head!=''){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
+    <?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
     <style>
         #footer-tools [data-v-db6ccf64][data-v-41ba7e2c] {
             top: unset !important;
@@ -438,7 +438,7 @@
                 ?>
                       <div class="url-card col-6  col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                         <div class="url-body default">
-                            <a href="/index.php?c=click&id=<?php echo $link['id']; ?>" target="_blank" data-id="689" data-url="/index.php?c=click&id=<?php echo $link['id']; ?>"
+                            <a href="./index.php?c=click&id=<?php echo $link['id']; ?>" target="_blank" data-id="689" data-url="./index.php?c=click&id=<?php echo $link['id']; ?>"
                                 class="card no-c  mb-4 site-689" data-toggle="tooltip" data-placement="bottom" title="<?php echo $link['title']; ?>">
                                 <div class="card-body">
                                     <div class="url-content d-flex align-items-center">
@@ -454,7 +454,7 @@
                                     </div>
                                 </div>
                             </a>
-                            <a href="/index.php?c=click&id=<?php echo $link['url']; ?>" class="togo text-center text-muted is-views" data-id="689" data-toggle="tooltip" data-placement="right" title="直达" rel="nofollow">
+                            <a href="./index.php?c=click&id=<?php echo $link['url']; ?>" class="togo text-center text-muted is-views" data-id="689" data-toggle="tooltip" data-placement="right" title="直达" rel="nofollow">
                                 <i class="iconfont icon-goto"></i>
                             </a>
                         </div>
@@ -478,8 +478,9 @@
                     <div class="footer-text">
                         Copyright © 2021 网址导航 &nbsp;&nbsp;Powered by <a target="_blank" href="https://github.com/helloxz/onenav" title="简约导航/书签管理器" target="_blank" rel="nofollow">OneNav</a>&nbsp;&nbsp;The theme by<a href="https://github.com/liutongxu/liutongxu.github.io" target="_blank" rel="nofollow">LiuTongxu</a>&nbsp;&nbsp;
                     </div>
-                    <?php $ICP=getconfig("ICP"); if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
-                    <?php $footer=getconfig("footer"); if($footer != ''){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
+                    <?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
+                    <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
+                    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
                 </div>
             </footer>
             </div>
