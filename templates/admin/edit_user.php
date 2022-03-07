@@ -44,6 +44,15 @@ $session =getconfig('session');
       <div class="layui-form-mid layui-word-aux">不修改请留空!</div>
     </div>
  </div> 
+ <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">二级密码</label>
+      <div class="layui-input-inline">
+        <input type="password" name="Pass2"  value = '<?php echo getconfig('Pass2');?>' placeholder='二级密码'  autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux">设置后访问后台时需要输入这个密码!不需要则留空!</div>
+    </div>
+ </div> 
 </div>
  <div class="layui-form-item">
     <div class="layui-inline">

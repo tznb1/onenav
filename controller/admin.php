@@ -3,7 +3,29 @@ if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
 Visit();//访问控制
 //后台入口文件
 $ip = getIP(); //获取请求IP
+$Pass2 = getconfig('Pass2');
 check_auth($username,$password);//检查认证
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    if($Pass2 === $_POST['Pass2']){
+        $time = time();
+        $Expire = $time + 43200 ;
+        $key = Getkey2($username,$Pass2,$Expire,2,$time);
+        setcookie($username.'_P2', $key.'.'.$Expire.'.'.$time, 0,"/",'',false,1);
+        msg(0,'successful');
+    }else{
+        msg(-1000,'二级密码错误!');
+    }
+}
+
+if( check_Pass2() || $Pass2 ==''){
+    //验证通过
+}else{
+    //验证不同通过,载入输入页面
+    require('./templates/admin/check_Pass2.php');
+    exit;
+}
+
+
 $page = empty($_GET['page']) ? 'index' : $_GET['page'];
 //如果页面是修改edit_category
 if ($page == 'edit_category' ) {

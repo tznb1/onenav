@@ -32,12 +32,14 @@ if(is_dir($dirdata)) {
                             'User'=>getconfigdb($db,"User"),
                             'SQLite3'=>$file,
                             'Level'=>0,
-                            'Email'=>getconfigdb($db,"Email"),
-                            'Token'=>getconfigdb($db,"Token"),
+                            'Email'=>''.getconfigdb($db,"Email"),
+                            'Token'=>''.getconfigdb($db,"Token"),
                             'Log'=>time().':管理员修复时系统导入(2)',
                             'Login'=>substr(md5($User1.'6Uc2vFoU'),0, 6).'_login'
                             ]);
                             $msg=$msg.'主表缺失,数据库:'.$file.',User:'.$User1.' PassMD5:'.$Pass1.',导入用户名:'.$matches[1].($data->rowCount() == 0 ? '>>>导入数据失败!!!':'')."<br />";
+                            
+                            //$msg=$msg. ($udb ->last())."<br />"; //输出SQL语句,分析错误时用!
                         }elseif(getconfigdb($db,"user") !='' && getconfigdb($db,"password") ){
                             //老版本的数据库处理
                             $User1 = getconfigdb($db,"user");

@@ -18,7 +18,7 @@
 		<!--<link rel="stylesheet" href="https://libs.xiaoz.top/font-awesome/4.7.0/css/font-awesome.css">-->
 		<link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
 		<link rel="stylesheet" type="text/css" href="<?php echo $Theme?>/layui/css/layui.css" />
-		<?php// $nw=getconfig("navwidth"); $il=$nw+20;if($nw!=''){echo'<style type="text/css">.index-nav{width:'.$nw.'px;}.index-main{padding-left:'.$il.'px;}</style>';}//导航宽度?>
+		<?php // $nw=getconfig("navwidth"); $il=$nw+20;if($nw!=''){echo'<style type="text/css">.index-nav{width:'.$nw.'px;}.index-main{padding-left:'.$il.'px;}</style>';}//导航宽度?>
 		<?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
 	</head>
 

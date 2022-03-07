@@ -136,20 +136,20 @@
     <div class="page-container">
         <div id="sidebar" class="sticky sidebar-nav fade mini-sidebar" style="width: 60px;">
             <div class="modal-dialog h-100  sidebar-nav-inner">
-                <div class="sidebar-logo border-bottom border-color">
+                <!--<div class="sidebar-logo border-bottom border-color">-->
                     <!-- logo -->
-                    <div class="logo overflow-hidden">
-                        <a href="" class="logo-expanded">
-                            <img src="<?php echo $Theme?>/img/ywdh-logo-1.png" height="40" class="logo-light" alt="网址导航">
-                            <img src="<?php echo $Theme?>/img/ywdh-logo.png" height="40" class="logo-dark d-none" alt="网址导航">
-                        </a>
-                        <a href="" class="logo-collapsed">
-                            <img src="<?php echo $Theme?>/img/ywdh-logo-bark-ico.png" height="40" class="logo-light" alt="网址导航">
-                            <img src="<?php echo $Theme?>/img/ywdh-logo-ico.png" height="40" class="logo-dark d-none" alt="网址导航">
-                        </a>
-                    </div>
+                <!--    <div class="logo overflow-hidden">-->
+                <!--        <a href="" class="logo-expanded">-->
+                <!--            <img src="<?php echo $Theme?>/img/ywdh-logo-1.png" height="40" class="logo-light" alt="网址导航">-->
+                <!--            <img src="<?php echo $Theme?>/img/ywdh-logo.png" height="40" class="logo-dark d-none" alt="网址导航">-->
+                <!--        </a>-->
+                <!--        <a href="" class="logo-collapsed">-->
+                <!--            <img src="<?php echo $Theme?>/img/ywdh-logo-bark-ico.png" height="40" class="logo-light" alt="网址导航">-->
+                <!--            <img src="<?php echo $Theme?>/img/ywdh-logo-ico.png" height="40" class="logo-dark d-none" alt="网址导航">-->
+                <!--        </a>-->
+                <!--    </div>-->
                     <!-- logo end -->
-                </div>
+                <!--</div>-->
                 <div class="sidebar-menu flex-fill">
                     <div class="sidebar-scroll">
                         <div class="sidebar-menu-inner">
@@ -159,7 +159,7 @@
                                     foreach ($categorys as $category) {
                                 ?>
                                     <li class="sidebar-item">
-                                        <a href="#category-<?php echo $category['id']; ?>" class="smooth change-href"><?php echo geticon($category['Icon']); ?>
+                                        <a href="#category-<?php echo $category['id']; ?>" class="smooth"><?php echo geticon3($category['Icon']); ?>
                                             <?php echo $category['name']; ?>
                                         </a>
                                     </li>
@@ -168,12 +168,23 @@
                         </div>
                     </div>
                 </div>
+                <!--左栏底部-->
                 <div class="border-top py-2 border-color">
                     <div class="flex-bottom">
                         <ul>
+                            <?php if($is_login) { ?>
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-237 sidebar-item">
+                                <a href="./index.php?c=admin&u=<?php echo $u?>" target="_blank"><i class="fa fa-user icon-fw icon-lg mr-2"></i><span>后台管理</span></a>
+                            </li>
+                            <?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-237 sidebar-item">
+                                <a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" target="_blank"><i class="fa fa-user icon-fw icon-lg mr-2"></i><span>登陆</span></a>
+                            </li>
+                            <?php } ?>
                         </ul>
                     </div>
                 </div>
+                <!--左栏底部End-->
         </div>
     </div>
         <div class="main-content flex-fill">
@@ -181,10 +192,10 @@
                 <div id="header" class="page-header sticky">
                     <div class="navbar navbar-expand-md">
                         <div class="container-fluid p-0">
-                            <a href="" class="navbar-brand d-md-none" title="网址导航">
-                                <img src="<?php echo $Theme?>/img/ywdh-logo-bark-ico.png" class="logo-light" alt="网址导航">
-                                <img src="<?php echo $Theme?>/img/ywdh-logo-ico.png" class="logo-dark d-none" alt="网址导航">
-                            </a>
+                            <!--<a href="" class="navbar-brand d-md-none" title="网址导航">-->
+                            <!--    <img src="<?php echo $Theme?>/img/ywdh-logo-bark-ico.png" class="logo-light" alt="网址导航">-->
+                            <!--    <img src="<?php echo $Theme?>/img/ywdh-logo-ico.png" class="logo-dark d-none" alt="网址导航">-->
+                            <!--</a>-->
                             <div class="collapse navbar-collapse order-2 order-md-1">
                                 <div class="header-mini-btn">
                                     <label>
@@ -197,6 +208,14 @@
                                     </label>
                                 </div>
                                 <ul class="navbar-nav site-menu" style="margin-right: 16px;">
+
+                                    
+                                    <?php if($is_login) { ?>
+                                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-281"><a href="./index.php?c=admin&u=<?php echo $u?>"><i class="fa fa-user-circle-o icon-fw icon-lg mr-2"></i><span>管理</span></a></li>
+                                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-281"><a href="./index.php?c=admin&page=logout&u=<?php echo $u?>"><i class="fa fa-sign-out fa-lg mr-2"></i><span>退出</span></a></li>
+                                    <?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
+                                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-281"><a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>"><i class="fa fa-user-circle-o icon-fw icon-lg mr-2"></i><span>登陆</span></a></li>
+                                    <?php } ?>
                                 </ul>
                                 <div class="rounded-circle weather">
                                     <div id="he-plugin-simple" style="display: contents;"></div>
@@ -454,7 +473,7 @@
                                     </div>
                                 </div>
                             </a>
-                            <a href="./index.php?c=click&id=<?php echo $link['url']; ?>" class="togo text-center text-muted is-views" data-id="689" data-toggle="tooltip" data-placement="right" title="直达" rel="nofollow">
+                            <a href="<?php echo $link['url']; ?>" class="togo text-center text-muted is-views" data-id="689" data-toggle="tooltip" data-placement="right" title="直达" rel="nofollow">
                                 <i class="iconfont icon-goto"></i>
                             </a>
                         </div>
@@ -464,9 +483,11 @@
                 <?php } ?>
             <footer class="main-footer footer-type-1 text-xs">
                 <div id="footer-tools" class="d-flex flex-column">
-                    <a href="javascript:" id="go-to-up" class="btn rounded-circle go-up m-1" rel="go-top">
-                        <i class="iconfont icon-to-up"></i>
-                    </a>
+                    <?php if(getconfig("gotop") =='on') {?>
+                    <!-- 返回顶部按钮 -->
+                    <a href="javascript:" id="go-to-up" class="btn rounded-circle go-up m-1" rel="go-top"><i class="iconfont icon-to-up"></i></a>
+	                <!-- 返回顶部END -->
+                	<?php } ?>
                     <a href="javascript:" data-toggle="modal" data-target="#search-modal" class="btn rounded-circle m-1" rel="search" one-link-mark="yes">
                         <i class="iconfont icon-search"></i>
                     </a>
@@ -476,7 +497,7 @@
                 </div>
                 <div class="footer-inner">
                     <div class="footer-text">
-                        Copyright © 2021 网址导航 &nbsp;&nbsp;Powered by <a target="_blank" href="https://github.com/helloxz/onenav" title="简约导航/书签管理器" target="_blank" rel="nofollow">OneNav</a>&nbsp;&nbsp;The theme by<a href="https://github.com/liutongxu/liutongxu.github.io" target="_blank" rel="nofollow">LiuTongxu</a>&nbsp;&nbsp;
+                        Copyright © 2021 网址导航 &nbsp;&nbsp;Powered by <a target="_blank" href="https://github.com/helloxz/onenav" title="简约导航/书签管理器" target="_blank" rel="nofollow">OneNav</a>&nbsp;&nbsp;The theme by<a href="https://github.com/liutongxu/liutongxu.github.io" target="_blank" rel="nofollow">LiuTongxu</a>&nbsp;<a href="https://gitee.com/tznb/OneNav" target="_blank" rel="nofollow">落幕魔改版</a>
                     </div>
                     <?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
                     <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
@@ -486,7 +507,8 @@
             </div>
         </div><!-- main-content end -->
     </div><!-- page-container end -->
-
+    
+<!--右下角搜索图标-->
     <div class="modal fade search-modal" id="search-modal">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -667,19 +689,6 @@
                             <ul></ul>
                         </div>
                     </div>
-                    <div class="px-1 mb-3"><i class="text-xl iconfont icon-hot mr-1" style="color:#f1404b;"></i>
-                        <span class="h6">热门推荐： </span></div>
-                    <div class="mb-3">
-                        <li id="menu-item-332" class="menu-item menu-item-type-taxonomy menu-item-object-post_tag menu-item-332">
-                            <a href="/">黑洞</a>
-                        </li>
-                        <li id="menu-item-333" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-333">
-                            <a href="/">导航主题</a>
-                        </li>
-                        <li id="menu-item-335" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-335">
-                            <a href="E59BBEE6A087.html">图标</a>
-                        </li>
-                    </div>
                 </div>
                 <div style="position: absolute;bottom: -40px;width: 100%;text-align: center;">
                     <a href="javascript:" data-dismiss="modal">
@@ -688,7 +697,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div><!--右下角搜索图标End-->
 <script type='text/javascript' src='<?php echo $Theme?>/ajax/libs/jqueryui/1.12.1/jquery-ui.min-3.03029.1.js' id='jquery-ui-js'></script>
 <script type='text/javascript' src='<?php echo $Theme?>/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min-3.0302.js' id='jqueryui-touch-js'></script>
 <script type='text/javascript' src='<?php echo $Theme?>/wp-includes/js/clipboard.min-5.6.2.js' id='clipboard-js'></script>
@@ -761,23 +770,29 @@ $(document).ready(function(){
 <script>
     //夜间模式
     (function(){
+        //如果没有Cookie,就根据时间设置一个!如果有就根据记录的模式来
     if(document.cookie.replace(/(?:(?:^|.*;\s*)night\s*\=\s*([^;]*).*$)|^.*$/, "$1") === ''){
         if(new Date().getHours() > 22 || new Date().getHours() < 6){
-            document.body.classList.remove('io-black-mode');
-            document.body.classList.add('io-grey-mode');
+            document.body.classList.remove('io-grey-mode');
+            document.body.classList.add('io-black-mode');
             document.cookie = "night=1;path=/";
-            console.log('夜间模式开启');
+            console.log('设为:夜间模式');
         }else{
             document.body.classList.remove('night');
             document.cookie = "night=0;path=/";
-            console.log('夜间模式关闭');
+            console.log('设为:白天模式');
         }
     }else{
-        var night = document.cookie.replace(/(?:(?:^|.*;\s*)night\s*\=\s*([^;]*).*$)|^.*$/, "$1") || '0';
+        var night = document.cookie.replace(/(?:(?:^|.*;\s*)night\s*\=\s*([^;]*).*$)|^.*$/, "$1") || '0'; //正则取night值
         if(night == '0'){
-            document.body.classList.remove('night');
+            //document.body.classList.remove('night');
+            document.body.classList.remove('io-black-mode');
+            document.body.classList.add('io-grey-mode');
+            console.log('恢复:白天模式');
         }else if(night == '1'){
-            document.body.classList.add('night');
+            document.body.classList.remove('io-grey-mode');
+            document.body.classList.add('io-black-mode');
+            console.log('恢复:夜间模式');
         }
     }
 })();
@@ -788,7 +803,7 @@ function switchNightMode(){
         document.body.classList.remove('io-grey-mode');
         document.body.classList.add('io-black-mode');
         document.cookie = "night=1;path=/"
-        console.log(' ');
+        console.log('切换:夜间模式');
         $(".switch-dark-mode").attr("data-original-title","日间模式");
         $(".mode-ico").removeClass("icon-night");
         $(".mode-ico").addClass("icon-light");
@@ -796,13 +811,32 @@ function switchNightMode(){
         document.body.classList.remove('io-black-mode');
         document.body.classList.add('io-grey-mode');
         document.cookie = "night=0;path=/"
-        console.log(' ');
+        console.log('切换:日间模式');
         $(".switch-dark-mode").attr("data-original-title","夜间模式");
         $(".mode-ico").removeClass("icon-light");
         $(".mode-ico").addClass("icon-night");
     }
 }
-
+function open_add_link(){
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+        layer.open({
+        type: 2,
+        title: '添加链接',
+        shadeClose: true, //点击遮罩关闭层
+        area : ['100%' , '100%'],
+        content: './index.php?c=admin&page=add_link_tpl_m&u='+u
+        });
+    }else{
+        layer.open({
+        type: 2,
+        title: '添加链接',
+        maxmin: true,
+        shadeClose: true, //点击遮罩关闭层
+        area : ['800px' , '520px'],
+        content: './index.php?c=admin&page=add_link_tpl&u='+u
+        });
+    }
+}
 </script>
 </body>
 </html>

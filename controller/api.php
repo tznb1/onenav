@@ -2,11 +2,16 @@
 if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
 Visit();//访问控制
 header("Access-Control-Allow-Origin: *"); //允许跨域访问
-//鉴权验证
+
+//鉴权验证 Cookie验证通过,验证二级密码,Cookie验证失败时尝试验证token
 if(!is_login2()){
     if($_POST['token'] === $ApiToken){}else{
         msg(-1000,'鉴权失败!'); //错误代码待整理..
     }
+}elseif( getconfig('Pass2') =='' || check_Pass2()){
+    //二级密码验证成功
+}else{
+    msg(-2222,'请先验证二级密码!');
 }
 //获取方法
 $method =$_GET['method'];
@@ -565,6 +570,7 @@ function edit_user(){
     $NewSkey = intval($_POST['Skey']);
     $HttpOnly = $_POST['HttpOnly'];
     $session  = intval($_POST['session']);
+    $Pass2 = $_POST['Pass2'];
     if(md5($pass.$RegTime) !== $password){
         msg(-1102,'密码错误,请核对后再试！');
     }elseif(!empty($newpassword)  &&  strlen($newpassword)!=32){
@@ -589,11 +595,16 @@ function edit_user(){
     //对比Cookie相关配置,如有变动则重新生成Key
     if($NewSkey != $Skey || $session !== intval(getconfig('session')) || $HttpOnly != getconfig('HttpOnly')){
         $Expire = $session == 0 ? time()+86400 : GetExpire2($session);
-        $time =time();
+        $time = time();
         $key = Getkey2($username,$password,$Expire,$NewSkey,$time);
         setcookie($username.'_key2', $key.'.'.$Expire.'.'.$time, $session == 0 ? 0 : $Expire,"/",'',false,$HttpOnly==1);
     }
-    
+    if($Pass2 != getconfig('Pass2')){
+        $time = time();
+        $Expire = $time + 43200 ;
+        $key = Getkey2($username,$Pass2,$Expire,2,$time);
+        setcookie($username.'_P2', $key.'.'.$Expire.'.'.$time, 0,"/",'',false,1);
+    }
     //判断是否修改邮箱(仅判断不为空就写入)
     if (!empty($Email)   ) {
         Writeconfig('Email',$Email);
@@ -607,6 +618,7 @@ function edit_user(){
     Writeconfig('Skey',$NewSkey);  //Skey(Key安全)
     Writeconfig('HttpOnly',$HttpOnly);  //HttpOnly
     Writeconfig('session',$session);  //session 保持登陆
+    Writeconfig('Pass2',$Pass2);  //二级密码
     //判断是否重设专属登陆入口
     if ($_POST['Elogin'] ==='1') {
         $Elogin = getloginC($username);
@@ -910,7 +922,44 @@ function rootu(){
         }
     break;//修改密码
     
-    default:       msg(-1000,'Set参数错误!');      break;//错误的方法
+    //修改用户名
+    case 'SetName':
+        //检查账号和否满足条件
+        $user = $_POST['NewName'];
+        $dir = dirname(dirname(__FILE__));
+        $dbPath = $dir.'/data/'.$user.'.db3';//新数据库路径
+        if(!preg_match('/^[A-Za-z0-9]{4,13}$/', $user)){
+            msgA(['code'=>-1111,'msg'=>'账号只能是4到13位的数字和字母!','icon'=>5]);
+        }elseif($udb->count("user",["User"=>$user]) != 0 ){
+            msgA(['code'=>-1111,'msg'=>'账号已存在!','icon'=>5]);
+        }elseif(file_exists($dbPath)){
+            msgA(['code'=>-1111,'msg'=>'数据库:'.$user.'.db3 已存在!','icon'=>5]);
+        }elseif($ud["ID"] == $userdb['ID']){
+            msgA(['code'=>-1111,'msg'=>'您不能对自己操作!','icon'=>5]);
+        }
+        $SQLite3 = $dir.'/data/'.$ud["SQLite3"];//老数据库路径
+        if(!rename($SQLite3,$dbPath)){
+            msgA(['code'=>-1111,'msg'=>'重命名数据库文件失败!','icon'=>5]);
+        }
+        
+        $Re = $udb->update('user',['User'=>$user],['ID' => $id]);
+        if($Re->rowCount() == 1){
+            $DUser = $udb->get("config","Value",["Name"=>'DUser']);
+            //如果修改的账号是默认用户的话就一起修改!
+            if($DUser == $ud["User"]){
+                Writeconfigd($udb,'config','DUser',$user);
+                $du = '1';
+            }
+            $db = new Medoo\Medoo(['database_type' => 'sqlite','database_file' => $dbPath]);
+            Writeconfigd($db,'on_config','User',$user);
+            Writeconfigd($db,'on_config','SQLite3',$user.'.db3');
+            $udb->update('user',['SQLite3'=>$user.'.db3'],['ID' => $id]);
+            msgA(['code'=>0,'msg'=>'修改成功!','icon'=>1,'du'=>$du]);
+        }else{
+            msgA(['code'=>-1111,'msg'=>'修改失败','icon'=>5]);
+        }
+    break;//修改用户名
+    default:       msg(-1000,'Set参数错误!');      break;//错误的方法 Writeconfigd($udb,'config','DUser',$DUser);
 }
     
     

@@ -32,7 +32,7 @@ echo '     <li><a href="./index.php?c=admin&u='.$u.'" >后台管理</a></li>'."\
 echo '     <li><a href="./index.php?c=admin&page=logout&u='.$u.'">退出登陆</a></li>';}
 elseif(getconfig('GoAdmin')  == 'on'  ){
      
-        ?><li><a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" >登录</a></li>';
+        ?><li><a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" >登录</a></li>
     <?php }
     ?>
     

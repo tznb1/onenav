@@ -1,5 +1,6 @@
 <?php
 if(!file_exists('./data/lm.user.db3')){
+    if (!is_dir('./data')) mkdir('./data',0777,true) or exit('<h3>创建数据库目录失败.</h3>');
     if (!copy('./initial/User.db3','./data/lm.user.db3')){
         exit('<h3>创建数据库失败.</h3>');}
     else{

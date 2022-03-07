@@ -103,6 +103,19 @@
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年02月--日</h4>
+      <ul>
+        <li>修复PHP8报错的问题,但还是建议使用7.4,因为我开发测试都是在7.4的!其他版本有问题在反馈吧!</li>
+        <li>支持管理员修改用户账号.(修改前建议先备份data文件夹)</li>
+        <li>SimpleWeb主题细节调整</li>
+        <li>修复刘桐序主题直达连接错误的bug,白天/夜间模式的bug,新增后台入口,去除logo</li>
+        <li>新增二级密码功能,设置后进入后台需要验证二级密码!包括首页的添加链接,删除链接均需验证!说白了不验证时只能阅览首页!(浏览器关闭时退出验证)</li>
+      </ul>
+    </div>
+  </li>
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年03月05日</h4>
       <ul>
         <li>选取原作的一些更新:手机登陆(成功返回主页),登陆漏洞,XSS漏洞,新增默认密码安全检测(仅在后台首页显示,不弹窗!)2.25</li>
@@ -344,7 +357,7 @@
 <div class="layui-tab-item"><!--开发文档-->
 
 
-<blockquote class="layui-elem-quote layui-text">此版项目地址：<a href="https://gitee.com/tznb/OneNav" target="_blank">Gitee 码云 (唯一地址)  </a>&ensp; QQ: 271152681</blockquote>
+<blockquote class="layui-elem-quote layui-text">此版项目地址：<a href="https://gitee.com/tznb/OneNav" target="_blank">Gitee 码云 (唯一地址)  </a>&ensp; QQ: 271152681&ensp; PS:各位大哥,如果可以的话麻烦大家帮忙宣传一下..目前用户数太少了,根本没动力更新!</blockquote>
 <blockquote class="layui-elem-quote layui-text">原著项目地址 ：<a href="https://github.com/helloxz/onenav" target="_blank">github</a>&ensp; QQ群1：147687134 &ensp;QQ群2：932795364&ensp;QQ:337003006</blockquote>
 <blockquote class="layui-elem-quote layui-text">帮助文档 ：<a href="https://doc.xiaoz.me/books/onenav" target="_blank">藏经阁</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">原著博客 ：<a href="https://www.xiaoz.me" target="_blank">www.xiaoz.me</a></blockquote>

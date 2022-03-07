@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="<?php echo $Theme?>/assets/css/nav.css">
     <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="<?php echo $Theme?>/assets/css/layui-icon.css">
-    <?php// $nw=getconfig("navwidth");if($nw!=''){echo'<style type="text/css">.sidebar-menu{width:'.$nw.'px;}</style>';}//导航宽度?>
+    <?php // $nw=getconfig("navwidth");if($nw!=''){echo'<style type="text/css">.sidebar-menu{width:'.$nw.'px;}</style>';}//导航宽度?>
     <?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
     <script src="<?php echo $libs?>/jquery/jquery-3.6.0.min.js"></script>
 </head>

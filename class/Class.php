@@ -102,6 +102,15 @@ elseif (substr($name,0, 3) =='fa-')
 {return('class="fa '.$name.'"');}
 else{return($name);}
 }
+
+//生成图标代码3 刘桐序专用
+function geticon3($name){
+if (substr($name,0, 3) =='lay')
+{return('<i class="layui-icon '.$name.' icon-fw icon-lg mr-2"></i>');}
+elseif (substr($name,0, 3) =='fa-')
+{return('<i class="fa '.$name.' icon-fw icon-lg mr-2"></i>');}
+else{return($name);}
+}
 //访问控制
 function Visit(){
     global $Visit,$udb,$u;
@@ -209,6 +218,31 @@ function is_login2(){
     }
 }
 
+//验证二级密码
+function check_Pass2(){
+    global $username,$password,$Skey;
+    $Ckey= $_COOKIE[$username.'_P2'];
+    preg_match('/(.{32})\.(\d+)\.(\d+)/i',$Ckey,$matches);
+    $Expire = $matches[2];
+    $Ckey = $matches[1];
+    $time = $matches[3];
+    $keyOK = Getkey2($username,getconfig('Pass2'),$Expire,2,$time);
+
+    //如果已经成功登录
+    if($keyOK === $Ckey ) {
+        //Key验证成功,验证到期时间,如果为0说明会话级,直接返回真,否则判断是否到期
+        if($Expire !='0'){
+            if($Expire>time()){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }else{
+        return false;
+    }
+}
 //返回JSON信息(常规信息统一规范)
 function msg($code,$msg){
     $data = ['code'=>$code,'msg'=>$msg];

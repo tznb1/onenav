@@ -436,7 +436,7 @@ input::-webkit-input-placeholder {
     color: gray;
     font-size: 12px;
     padding-top: 5px;
-    height: 35px;
+    height: 38px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;

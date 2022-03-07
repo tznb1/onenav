@@ -19,7 +19,7 @@ function deleteUrl(id) {
 			$("#id_" + id).remove();
 		} else {
 			//删除失败
-			layer.msg('删除失败，请重试！', {
+			layer.msg(data.msg, {
 				icon: 5,
 			});
 		}
