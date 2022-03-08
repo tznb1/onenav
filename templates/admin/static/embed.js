@@ -11,13 +11,28 @@ form.render();
 }
 
 layui.use(['element','table','layer','form','upload','util'], function(){
-    var element = layui.element;
-    var table = layui.table;
-    var util = layui.util;
-    var form = layui.form;
-    var upload = layui.upload;
-    layer = layui.layer;
-
+    var element = layui.element,
+    table = layui.table,
+    util = layui.util,
+    form = layui.form,
+    upload = layui.upload,
+    layer = layui.layer,
+    $ = layui.$;
+  
+    //头部事件
+    util.event('lay-header-event', {
+        menuRight: function(){
+        layer.open({
+            type: 1
+            ,content: '<div style="padding: 15px;">使用前请先看一遍后台都有什么功能!<br />在看一遍更新信息!然后再去使用!<br />不明白的地方可以搭个测试站整明白了在用!<br />有说明且很容易明白的问题我不做回复!</div>'
+            ,area: ['360px', '100%']
+            ,offset: 'rt' //右上角
+            ,anim: 5
+            ,shadeClose: true
+        });
+        }
+    });
+  
 //分类列表
 table.render({
     elem: '#category_list'
@@ -27,16 +42,17 @@ table.render({
     ,limit:20  //默认每页显示行数
     ,even:true //隔行背景色
     ,id:'category_list'
-    ,loading:true
+    ,loading:true //加载条
+    ,cellMinWidth: 150 //最小宽度
     ,cols: [[ //表头
-    {type: 'checkbox', fixed: 'left'},
-      {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}
+    {type: 'checkbox'},
+      {field: 'id', title: 'ID', width:80, sort: true}
       ,{field: 'name', title: '分类名称', width:160, edit: 'text',templet: function(d){ 
           if ( d.Icon == null){ return d.name; }{
           if (d.Icon.substr(0,3) =='lay'){
-            return '<i class="layui-icon '+d.Icon+'"></i>'+d.name;
+            return '<i class="layui-icon '+d.Icon+'"></i> '+d.name;
           } else {
-            return  '<i class="fa '+d.Icon+'"></i>'+d.name;
+            return  '<i class="fa '+d.Icon+'"></i> '+d.name;
           } return d.name;}
       }}
       ,{field: 'add_time', title: '添加时间', width:160, sort: true,templet:function(d){
@@ -57,7 +73,7 @@ table.render({
          return "<input type='checkbox' value='" + d.id + "' lay-filter='stat' id='property' name='category'  lay-skin='switch' lay-text='私有|公开' >";}
       }}
       ,{field: 'description', title: '描述', edit: 'text'}
-      ,{fixed: 'right', title:'操作', toolbar: '#nav_operate', width:150}
+      ,{ title:'操作', toolbar: '#nav_operate', width:150}
     ]]
 });
 //监听单元格编辑(分类)
@@ -100,7 +116,7 @@ C_ForceDel:function(){category_del(1);}
 };
 //链接搜索
 function link_q(){
-var fid = document.getElementById("TEMPLATE").value;
+var fid = document.getElementById("fid").value;
 var keyword = document.getElementById("link_keyword").value;//获取输入内容
 console.log(fid,keyword);
 table.reload('link_list', {
@@ -218,7 +234,7 @@ var link_list_cols=[[ //表头
          return "<input type='checkbox' value='" + d.id + "' lay-filter='stat' id='list'  name='status'  lay-skin='switch' lay-text='私有|公开' >";}
       }}
       ,{field: 'click', title: '点击数',width:90,sort:true}
-      ,{fixed: 'right', title:'操作', toolbar: '#link_operate',width:128}
+      ,{ title:'操作', toolbar: '#link_operate',width:128}
     ]]
 intCols();
 function intCols()
@@ -248,6 +264,7 @@ table.render({
     ,limit:20  //默认每页显示行数
     ,even:true //隔行背景色
     ,loading:true //加载条
+    ,cellMinWidth: 150 //最小宽度
     ,toolbar: '#linktool'
     ,id:'link_list'
     ,cols: link_list_cols

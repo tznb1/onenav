@@ -1,10 +1,9 @@
 <?php include_once('header.php'); ?>
 <?php include_once('left.php'); ?>
-
 <style type="text/css">
 .layui-layout-admin .layui-body {top: 40px;}
 </style>
-<div class="layui-tab layui-tab-card layui-body layui-row content-body">
+<div class="layui-tab layui-tab-brief layui-body " >
 <ul class="layui-tab-title">
  <li class="layui-this">相关信息</li>
  <li>开发文档</li>
@@ -103,7 +102,18 @@
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
-      <h4 class="layui-timeline-title">2022年02月--日</h4>
+      <h4 class="layui-timeline-title">2022年02月08日</h4>
+      <ul>
+        <li>Layui v2.5.4 升级到 v2.6.8 ,配置中静态路径不是./static的请同步更新到服务器!2.5.4资源暂留!</li>
+        <li>后台UI优化移动端的兼容性</li>
+        <li>百素主题:Layui,holmes.js路径改到配置中静态路径,删除主题目录下的layui,holmes.js重复资源!</li>
+      </ul>
+    </div>
+  </li>
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年02月07日</h4>
       <ul>
         <li>修复PHP8报错的问题,但还是建议使用7.4,因为我开发测试都是在7.4的!其他版本有问题在反馈吧!</li>
         <li>支持管理员修改用户账号.(修改前建议先备份data文件夹)</li>
@@ -388,4 +398,5 @@
 </div><!--开发文档End-->
 </div>
 </div>
+  
 <?php include_once('footer.php'); ?>

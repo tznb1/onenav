@@ -4,7 +4,7 @@
 	<meta charset="utf-8" />
 	<title>OneNav注册账号</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel='stylesheet' href='<?php echo $libs?>/Layui/v2.5.4/css/layui.css'>
+	<link rel='stylesheet' href='<?php echo $libs?>/Layui/v2.6.8/css/layui.css'>
 	<link rel='stylesheet' href='./templates/admin/static/style.css?v=<?php echo $version;?>'>
 	<style>
 	body{
@@ -56,7 +56,7 @@
 </div>
 <script src = '<?php echo $libs?>/jquery/jquery-3.6.0.min.js'></script>
 <script src = '<?php echo $libs?>/jquery/jquery.md5.js'></script>
-<script src = '<?php echo $libs?>/Layui/v2.5.4/layui.js'></script>
+<script src = '<?php echo $libs?>/Layui/v2.6.8/layui.js'></script>
 <script>
 layui.use(['form'], function(){
     var form = layui.form;

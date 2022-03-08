@@ -17,7 +17,7 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo $Theme?>/css/style.css" />
 		<!--<link rel="stylesheet" href="https://libs.xiaoz.top/font-awesome/4.7.0/css/font-awesome.css">-->
 		<link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
-		<link rel="stylesheet" type="text/css" href="<?php echo $Theme?>/layui/css/layui.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $libs?>/Layui/v2.6.8/css/layui.css" />
 		<?php // $nw=getconfig("navwidth"); $il=$nw+20;if($nw!=''){echo'<style type="text/css">.index-nav{width:'.$nw.'px;}.index-main{padding-left:'.$il.'px;}</style>';}//导航宽度?>
 		<?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
 	</head>
@@ -268,10 +268,9 @@
 		<script src="//at.alicdn.com/t/font_3000268_oov6h4vru0h.js" type="text/javascript" charset="utf-8"></script>
 		<!--JS-->
 		<script src ="<?php echo $libs?>/jquery/jquery-3.6.0.min.js" type="text/javascript" charset="utf-8"></script>
-		<!--<script src="<?php echo $Theme?>/js/jquery-3.5.1.min.js" type="text/javascript" charset="utf-8"></script>-->
-		<script src="<?php echo $Theme?>/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="<?php echo $libs?>/Layui/v2.6.8/layui.js" type="text/javascript" charset="utf-8"></script>
 		<script src="<?php echo $Theme?>/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="<?php echo $Theme?>/js/holmes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="<?php echo $libs?>/Other/holmes.js" type="text/javascript" charset="utf-8"></script>
 		<script src="<?php echo $Theme?>/js/lunar.js" type="text/javascript" charset="utf-8"></script>
 		<script src="<?php echo $Theme?>/js/common.js" type="text/javascript" charset="utf-8"></script>
 		<script>

@@ -13,7 +13,7 @@ $footer = htmlspecialchars_decode(base64_decode($footer));
 <style type="text/css">
 .layui-layout-admin .layui-body {top: 40px;}
 </style>
-<div class="layui-tab layui-tab-card layui-body layui-row content-body" lay-filter="root">
+<div class="layui-tab layui-tab-brief layui-body layui-row content-body" lay-filter="root">
 <ul class="layui-tab-title">
  <li class="layui-this">全局配置</li>
  <li >用户管理</li>
@@ -170,7 +170,7 @@ $footer = htmlspecialchars_decode(base64_decode($footer));
         <input class="layui-input" name="keyword" id="user_keyword" placeholder='请输入账号,邮箱,注册IP' value=''autocomplete="off" >
         </div>
         <div class="layui-btn-group ">
-        <button class="layui-btn layui-btn layui-border-green" data-type="user_search">搜索</button>
+        <button class="layui-btn layui-btn " data-type="user_search">搜索</button>
         </div>
         <table id="user_list" lay-filter="user_list"></table>
         <script type="text/html" id="user_tool">
@@ -194,7 +194,7 @@ $footer = htmlspecialchars_decode(base64_decode($footer));
 </div>
 </div>
 <script src = '<?php echo $libs?>/jquery/jquery-3.6.0.min.js'></script>
-<script src = '<?php echo $libs?>/Layui/v2.5.4/layui.js'></script>
+<script src = '<?php echo $libs?>/Layui/v2.6.8/layui.js'></script>
 <script src = '<?php echo $libs?>/jquery/jquery.md5.js'></script>
 <script>
 layui.use(['element','table','layer','form','util'], function(){
@@ -205,7 +205,7 @@ layui.use(['element','table','layer','form','util'], function(){
     layer = layui.layer;
 //表头 https://www.layui.site/demo/table/cellEvent.html
 var cols=[[ //表头
-      {fixed:'left',type:'checkbox'} //开启复选框
+      {type:'checkbox'} //开启复选框
       ,{field:'ID',title:'ID',width:60,sort:true}
       ,{field:'User',title:'账号',minWidth:120,sort:true,templet:function(d){
           return '<a style="color:#3c78d8" title="打开用户主页" target="_blank" href="./?u='+d.User+'">'+d.User+'</a>'
@@ -223,7 +223,7 @@ var cols=[[ //表头
       ,{field:'RegTime',title: '注册时间',minWidth:160,sort:true,templet:function(d){
           if(d.RegTime == null){return '';}
           else{return timestampToTime(d.RegTime);}}} 
-      ,{fixed:'right',title:'操作',toolbar:'#link_operate',width:130}
+      ,{title:'操作',toolbar:'#link_operate',width:130}
     ]]
 //用户表渲染
 table.render({

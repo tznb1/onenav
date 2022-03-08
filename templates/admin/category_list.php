@@ -10,7 +10,7 @@
         <input class="layui-input" name="keyword" id="C_keyword" placeholder='请输入分类名称或描述' value=''autocomplete="off" style="height: 32px;">
         </div>
         <div class="layui-btn-group">
-        <button class="layui-btn layui-btn-sm layui-border-green" data-type="C_reload">搜索</button>
+        <button class="layui-btn layui-btn-sm " data-type="C_reload">搜索</button>
         <button class="layui-btn layui-btn-sm layui-btn-danger"   data-type="C_Delete">删除选中</button>
         <button class="layui-btn layui-btn-sm layui-btn-danger"   data-type="C_ForceDel">强行删除</button></div>
         <table id="category_list" lay-filter="category_list"></table>

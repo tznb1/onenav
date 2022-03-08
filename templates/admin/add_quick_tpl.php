@@ -11,7 +11,7 @@
 		<meta name="HandheldFriendly" content="true">
 		<title>快速添加</title>
 		<link rel="stylesheet" type="text/css" href="./templates/admin/static/add_quick_tpl.css" />
-		<link rel="stylesheet" type="text/css" href="<?php echo $libs?>/Layui/v2.5.4/css/layui.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $libs?>/Layui/v2.6.8/css/layui.css" />
 	</head>
 
 	<body>
@@ -60,7 +60,7 @@
 		<!--JQ-->
         <script src="<?php echo $libs?>/jquery/jquery-3.6.0.min.js" type="text/javascript" charset="utf-8"></script>
         <!--Layui-->
-		<script src="<?php echo $libs?>/Layui/v2.5.4/layui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="<?php echo $libs?>/Layui/v2.6.8/layui.js" type="text/javascript" charset="utf-8"></script>
 		<!--iconfont-->
 		<link rel="stylesheet" type="text/css" href="<?php echo $libs?>/Other/font_2474757_xsupv5wqpn.css" />
 		<script src="<?php echo $libs?>/Other/font_2474757_xsupv5wqpn.js" type="text/javascript" charset="utf-8"></script>

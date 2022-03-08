@@ -1,23 +1,43 @@
-.layui-layout-admin .layui-body {
-    bottom: 0px
+/* 移动端 */
+@media screen and (max-width: 768px) {
+    .layui-layout-admin .layui-layout-left,
+    .layui-layout-admin .layui-body,
+    .layui-layout-admin .layui-footer{left: 0;}
+    .layui-layout-admin .layui-side{left: -300px;}
+    /* 顶部栏高度调小,字体调大 */ 
+    .layui-header{height: 40px;} 
+    .layui-nav .layui-nav-item {height: 40px; line-height: 40px; }
+    .layui-nav a { font-size: 18px;}
+    
+    .layui-form {margin-top: 3px;}
+    .layui-input-inline {width: 212px;}
+    .layui-form-item { margin-bottom: 6px;}
+    
+    .layui-form-item .layui-inline {margin-bottom: 2px;margin-right: auto;}
 }
+
+.layui-body {
+    padding: 15px;
+    bottom: auto;
+}
+
+/* 修改左侧栏宽度 */ 
 .layui-layout-admin .layui-side{
     top:60px;
-    width:130px;
-}
-.layui-side-scroll{
-    width:130px;
+    width:138px;
 }
 .layui-body {
-    left: 130px;
+    left: 138px;
 }
 .layui-nav-tree{
-    width:130px;
+    width:138px;
 }
-.content-body{
-    margin-top:2em;
-    margin-left:1em;
-    margin-right:1em;
+
+
+/* 登陆/注册 */
+.login-logo h1{
+    color:#FFFFFF;
+    text-align: center;
 }
 .login-logo{
     max-width: 400px;
@@ -26,46 +46,7 @@
     margin-right: auto;
     margin-top:5em;
 }
-.login-logo h1{
-    color:#FFFFFF;
-    text-align: center;
-}
-.analyze{
-    background-color:#009688;
-    text-align:center;
-    color:#FFFFFF;
-}
-.analyze h3{
-    line-height: 2.4em;
-}
-.analyze p{
-    line-height: 2em;
-}
-.analyze a{
-    color:#FFFFFF;
-}
 
-.item{
-	/*height:8em;*/
-	/* background-color: #F0F0F0; */
-    /*border:1px solid #e2e2e2;*/
-    border-radius: 2px;
-    background-color: #009688;
-    color:#FFFFFF;
-    text-align:center;
-    margin-bottom:1em;
-    line-height:3em;
-    
-}
-.item a{
-	color:#F2F2F2;
-}
-.item:hover{
-	-webkit-box-shadow: 2px 2px 8px 1px rgba(20, 20, 20, 0.15); -moz-box-shadow: 2px 2px 8px 1px rgba(20, 20, 20, 0.15);box-shadow: 2px 2px 8px 1px rgba(20, 20, 20, 0.15);
-}
-.item i{
-    font-size: 1em;
-}
 /* msg弹窗提醒 */
 .msg{
     width:auto;
@@ -115,7 +96,3 @@
 	-ms-box-sizing: border-box; /*IE8*/
 	box-sizing: border-box; 
 }
-.setting-msg a{
-    color:#01AAED;
-}
-
