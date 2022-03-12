@@ -6,6 +6,36 @@ $msg ='';
 
 $dir = dirname(dirname(__FILE__));//取网站运行目录
 
+// //待更新的数据库文件目录
+// $sql_dir = 'initial/sql/';
+// //待更新的sql文件列表，默认为空
+// $sql_files_all = [];
+// //打开一个目录，读取里面的文件列表
+// if (is_dir($sql_dir)){
+//     if ($dh = opendir($sql_dir)){
+//         while (($file = readdir($dh)) !== false){
+//             //排除.和..
+//             if ( ($file != ".") && ($file != "..") ) {
+//                 array_push($sql_files_all,$file);
+//                 $msg=$msg.$file.'<br />';
+//             }
+//         }
+//         closedir($dh); //关闭句柄
+//     }
+// }
+
+// class MyDB extends SQLite3{
+//     function __construct(){
+//         $this->open('data/lm.user.db3');
+//     }
+// }
+// $db2 = new MyDB();
+//   if(!$db2){
+//       //打开数据库失败!
+//   } else {
+//       $msg=$msg.'打开数据库成功<br />';
+//   }
+// $db2->close();
 //扫描文件,用于解决存在用户库,但用户表中没有该用户信息!基本兼容本项目发布的版本!
 $dirdata = $dir.'/data';
 if(is_dir($dirdata)) { 
@@ -156,6 +186,21 @@ foreach ($userl as $user) {
         $msg=$msg.'ID:'.$ID.',用户名:'.$name.',HttpOnly为空:设开启!'."<br />";
     }   
     //参数缺失检测END
+    
+    //数据库升级检测
+    //判断数据库日志表是否存在
+    $sql = "SELECT count(*) AS num FROM sqlite_master WHERE type='table' AND name='on_db_logs'";
+    //查询结果
+    $q_result = $db->query($sql)->fetchAll();
+    //如果数量为0，则说明on_db_logs这个表不存在，需要提前导入
+    $num = intval($q_result[0]['num']);
+    if ( $num === 0 ) {
+        //$db2->open('data/lm.user.db3');
+
+        $msg=$msg.'ID:'.$ID.',用户名:'.$name.',on_db_logs表不存在:请手动进入用户后台触发数据库升级!'."<br />";
+    }else{
+    
+    }
    
 
 }

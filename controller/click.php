@@ -13,7 +13,7 @@ if(empty($id)) {
 }
 
 //查询链接信息
-$link = $db->get('on_links',['id','fid','url','property','click'],[
+$link = $db->get('on_links',['id','fid','url','url_standby','property','click','title','description'],[
     'id'    =>  $id
 ]);
 
@@ -23,6 +23,8 @@ if( !$link ){
     require('./templates/admin/403.php');
     exit();
 }
+
+$is_login = is_login2();
 
 //查询该ID的父及ID信息
 $category = $db->get('on_categorys',['id','property'],[
@@ -42,12 +44,14 @@ if( ( $link['property'] == 0 ) && ($category['property'] == 0) ){
     //如果更新成功
     if($update) {
         //进行header跳转
-        header('location:'.$link['url']);
+        // header('location:'.$link['url']);
+        // exit;
+        require('./templates/admin/click.php');
         exit;
     }
 }
 //如果已经成功登录，直接跳转
-elseif( is_login2() ) {
+elseif( $is_login ) {
     //增加link.id的点击次数
     $click = $link['click'] + 1;
     //更新数据库
@@ -59,7 +63,9 @@ elseif( is_login2() ) {
     //如果更新成功
     if($update) {
         //进行header跳转
-        header('location:'.$link['url']);
+        // header('location:'.$link['url']);
+        // exit;
+        require('./templates/admin/click.php');
         exit;
     }
 }

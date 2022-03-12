@@ -178,7 +178,7 @@ $footer = htmlspecialchars_decode(base64_decode($footer));
             <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="Del">删除选中</button>
             <button class="layui-btn layui-btn-sm " lay-event="Reg" >注册账号</button>
             <button class="layui-btn layui-btn-sm " lay-event="help" >帮助</button>
-            <button class="layui-btn layui-btn-sm " lay-event="repair" >修复</button>
+            <button class="layui-btn layui-btn-sm " lay-event="repair" >修复/升级</button>
         </div>
         </script>
         <!-- 开启表格头部工具栏END -->

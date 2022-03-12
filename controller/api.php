@@ -2,7 +2,6 @@
 if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
 Visit();//访问控制
 header("Access-Control-Allow-Origin: *"); //允许跨域访问
-
 //鉴权验证 Cookie验证通过,验证二级密码,Cookie验证失败时尝试验证token
 if(!is_login2()){
     if($_POST['token'] === $ApiToken){}else{
@@ -13,35 +12,15 @@ if(!is_login2()){
 }else{
     msg(-2222,'请先验证二级密码!');
 }
-//获取方法
-$method =$_GET['method'];
-if($XSS == 1 || $SQL == 1){require ('./class/WAF.php');}//是否加载防火墙
 
-//对方法进行判断
-switch ($method) {
-    case 'category_list':   category_list();    break;//分类列表
-    case 'add_category':    add_category();     break;//添加分类
-    case 'edit_category':   edit_category();    break;//修改分类
-    case 'del_category':    del_category();     break;//删除分类
-    case 'link_list':       link_list();        break;//链接列表
-    case 'add_link':        add_link();         break;//添加链接
-    case 'edit_link':       edit_link();        break;//修改链接
-    case 'del_link':        del_link();         break;//删除链接
-    case 'get_a_link':      get_a_link();       break;//单个链接
-    case 'get_link_info':   get_link_info();    break;//链接信息
-    case 'upload':          upload();           break;//上传书签
-    case 'imp_link':        imp_link();         break;//导入书签
-    case 'edit_homepage':   edit_homepage();    break;//主页设置
-    case 'edit_user':       edit_user();        break;//账号设置
-    case 'edit_danyuan':    edit_danyuan();     break;//单元格编辑(链接和分类共用)
-    case 'edit_property':   edit_property();    break;//修改私有/公开属性(链接和分类共用)
-    case 'Mobile_class':    Mobile_class();     break;//转移链接分类
-    case 'edit_tiquan':     edit_tiquan();      break;//链接提权
-    case 'edit_root':       edit_root();        break;//全局配置
-    case 'user_list':       user_list();        break;//用户列表
-    case 'user_list_del':   user_list_del();    break;//删除用户
-    case 'user_list_login': user_list_login();  break;//管理员免密登陆用户后台
-    default:                func();             break;//其他请求(通过POST表单fn来识别方法)
+//是否加载防火墙
+if($XSS == 1 || $SQL == 1){require ('./class/WAF.php');}
+//获取方法并过滤,判断是否存在函数,存在则调用!反正报错!
+$method = htmlspecialchars(trim($_GET['method']),ENT_QUOTES);
+if ( function_exists($method) ) {
+    $method();
+}else{
+    msg(-1000,'method not found!');;
 }
 
 //分类列表
@@ -207,14 +186,16 @@ function add_link(){
     $fid = intval(@$_POST['fid']); //获取分类ID
     $title = $_POST['title'];
     $url = $_POST['url'];
+    $url_standby = $_POST['url_standby'];
     $description = empty($_POST['description']) ? '' : $_POST['description'];
     $weight = empty($_POST['weight']) ? 0 : intval($_POST['weight']);
     $property = empty($_POST['property']) ? 0 : 1;
-    check_link($fid,$title,$url); //检测链接是否合法
+    check_link($fid,$title,$url,$url_standby); //检测链接是否合法
     $data = [
             'fid'           =>  $fid,
             'title'         =>  htmlspecialchars($title,ENT_QUOTES),
             'url'           =>  $url,
+            'url_standby'   =>  $url_standby,
             'description'   =>  htmlspecialchars($description,ENT_QUOTES),
             'add_time'      =>  time(),
             'weight'        =>  $weight,
@@ -237,14 +218,16 @@ function edit_link(){
     $fid = intval(@$_POST['fid']); //获取分类ID
     $title = $_POST['title'];
     $url = $_POST['url'];
+    $url_standby = $_POST['url_standby'];
     $description = empty($_POST['description']) ? '' : $_POST['description'];
     $weight = empty($_POST['weight']) ? 0 : intval($_POST['weight']);
     $property = empty($_POST['property']) ? 0 : 1;
-    check_link($fid,$title,$url); //检测链接是否合法
+    check_link($fid,$title,$url,$url_standby); //检测链接是否合法
     $data = [
             'fid'           =>  $fid,
             'title'         =>  htmlspecialchars($title,ENT_QUOTES),
             'url'           =>  $url,
+            'url_standby'   =>  $url_standby,
             'description'   =>  htmlspecialchars($description,ENT_QUOTES),
             'up_time'       =>  time(),
             'weight'        =>  $weight,
@@ -874,6 +857,112 @@ switch ($_POST['fn']) {
     case 'test':   msg(0,'测试成功.'.time());   break;//测试
     default:       msg(-1000,'方法错误!');      break;//错误的方法
 }}
+
+function get_sql_update_list() {
+    global $db;
+        //待更新的数据库文件目录
+        $sql_dir = 'initial/sql/';
+        //待更新的sql文件列表，默认为空
+        $sql_files_all = [];
+        //打开一个目录，读取里面的文件列表
+        if (is_dir($sql_dir)){
+            if ($dh = opendir($sql_dir)){
+                while (($file = readdir($dh)) !== false){
+                //排除.和..
+                if ( ($file != ".") && ($file != "..") ) {
+                    array_push($sql_files_all,$file);
+
+                }
+            }
+                //关闭句柄
+                closedir($dh);
+            }
+        }
+        //判断数据库日志表是否存在
+        $sql = "SELECT count(*) AS num FROM sqlite_master WHERE type='table' AND name='on_db_logs'";
+        //查询结果
+        $q_result = $db->query($sql)->fetchAll();
+        //如果数量为0，则说明on_db_logs这个表不存在，需要提前导入
+        $num = intval($q_result[0]['num']);
+        if ( $num === 0 ) {
+            $data = [
+                "code"      =>  0,
+                "data"      =>  ['on_db_logs.sql']
+            ];
+            msgA($data);
+        }else{
+            //如果不为0，则需要查询数据库更新表里面的数据进行差集比对
+            $get_on_db_logs = $db->select("on_db_logs",[
+                "sql_name"
+            ],[
+                "status"    =>  "TRUE"
+            ]);
+            //声明一个空数组，存储已更新的数据库列表
+            $already_dbs = [];
+            foreach ($get_on_db_logs as $value) {
+                array_push($already_dbs,$value['sql_name']);
+            }
+            
+            //array_diff() 函数返回两个数组的差集数组
+            $diff_result = array_diff($sql_files_all,$already_dbs);
+            //去掉键
+            $diff_result = array_values($diff_result);
+            sort($diff_result);
+            
+            $data = [
+                "code"      =>  0,
+                "data"      =>  $diff_result,
+                "num"       =>  $num
+            ];
+            msgA($data);
+        }
+
+    }
+function exe_sql() {
+    global $db,$SQLite3;
+        //数据库sql目录
+        $sql_dir = 'initial/sql/';
+        $name = $_GET['name'];
+        $sql_name = $sql_dir.$name;
+        //如果文件不存在，直接返回错误
+        if ( !file_exists($sql_name) ) {
+            msg(-2000,$name.'不存在!');
+        }
+        //读取需要更新的SQL内容
+        try {
+            $sql_content = file_get_contents($sql_name);
+            class MyDB extends SQLite3 {
+                function __construct() {
+                    global $SQLite3;
+                    $this->open($SQLite3);
+                }
+            }
+            $db2 = new MyDB();
+            if(!$db2){
+                msgA(["code" => -2000,"data" => "打开数据库失败！",'error' => $db2->lastErrorMsg()]);
+            }elseif($sql_content ==''){
+                msg(-2000,$name." 文件内容为空,更新失败！");
+            }
+            //执行更新
+            $result = $db2->exec($sql_content);
+            //如果SQL执行成功，则返回
+            if( $result ) {
+                //写入更新记录
+                $insert_re = $db->insert("on_db_logs",["sql_name" => $name, "update_time" => time(), "status" => "TRUE" ]);
+                if( $insert_re ) {
+                    msg(0,$name." 更新完成！");
+                }else {
+                    msgA(["code" => -2000,"data" => " 更新失败,请人工检查！(写入on_db_logs失败.)",'error' => $db2->lastErrorMsg()]);
+                }
+            }else{
+                //如果执行失败
+                msgA(["code" => -2000,"data" => " 更新失败,请人工检查！",'error' => $db2->lastErrorMsg()]);
+            }
+            $db2->close();
+        } catch(Exception $e){
+            msg(-2000,$e->getMessage());
+        }
+    }
 function repair(){require ('./class/Repair.php');}//修复
 function rootu(){
     global $u,$udb,$userdb;
@@ -1016,7 +1105,7 @@ function is_login_o($username){
 }
 
 //检查链接
-function check_link($fid,$title,$url){
+function check_link($fid,$title,$url,$url_standby){
     global $db;
     if(empty($fid)) {msg(-1007,'分类id(fid)不能为空！');}
     $count = $db->count("on_categorys", ["id" => $fid]);
@@ -1025,6 +1114,7 @@ function check_link($fid,$title,$url){
     if (empty($url)){msg(-1009,'URL不能为空！');}
     if (preg_match('/<(iframe|script|body|img|layer|div|meta|style|base|object|input)|">/i',$url)){msg(-1010,'URL存在非法字符！');}
     if (!filter_var($url, FILTER_VALIDATE_URL)){msg(-1010,'URL无效！');}
+    if ( ( !empty($url_standby) ) && ( !filter_var($url_standby, FILTER_VALIDATE_URL) ) ) {msg(-1010,'备选URL无效！');}
     return true;
 }
 
@@ -1035,3 +1125,17 @@ function check_xss($value){
         return false;
     }
 }
+
+function get_http_code($url) { 
+        $curl = curl_init(); 
+        curl_setopt($curl, CURLOPT_URL, $url); //设置URL 
+        curl_setopt($curl, CURLOPT_HEADER, 1); //获取Header 
+        curl_setopt($curl, CURLOPT_NOBODY, true); //Body就不要了吧，我们只是需要Head 
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //数据存到成字符串吧，别给我直接输出到屏幕了 
+        $data = curl_exec($curl); //开始执行啦～ 
+        $return = curl_getinfo($curl, CURLINFO_HTTP_CODE); //我知道HTTPSTAT码哦～ 
+           
+        curl_close($curl); //用完记得关掉他 
+           
+        return $return; 
+    }

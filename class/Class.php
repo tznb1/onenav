@@ -323,3 +323,23 @@ function secondChanage($second = 0)
     return $newtime;
   
 }
+
+function initial($User,$PassMD5,$RegTime,$Email,$Elogin,$RegIP){
+    Writeconfig('User',$User);
+    Writeconfig('Pass',$PassMD5);
+    Writeconfig('SQLite3',$User.'.db3');
+    Writeconfig('RegIP',$RegIP);
+    Writeconfig('RegTime',$RegTime);
+    Writeconfig('LoginFailed',0);
+    Writeconfig('Style','0');
+    Writeconfig("urlz", 'on');
+    Writeconfig('gotop','on');
+    Writeconfig('quickAdd','on');
+    Writeconfig('GoAdmin','on');
+    Writeconfig('LoadIcon','on');
+    Writeconfig('Email',$Email);
+    Writeconfig('Login',$Elogin);
+    Writeconfig('session','360');
+    Writeconfig('Skey','1');
+    Writeconfig('HttpOnly','1');
+}

@@ -1,12 +1,40 @@
-<?php include_once('header.php'); ?>
-<?php include_once('left.php'); ?>
+<?php 
+include_once('header.php'); 
+include_once('left.php');
+$http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' :'http://';
+$HOST = $http_type.$_SERVER['HTTP_HOST'];
+$NewVer = $udb->get("config","Value",["Name"=>'NewVer']); //缓存的版本号
+$NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当前版本!
+$NewVerGetTime = $udb->get("config","Value",["Name"=>'NewVerGetTime']); //上次从Git获取版本号的时间
+
+//如果缓存时间大于1800秒(30分钟),则重新从Git获取!
+if( time() - intval($NewVerT) >= 1800 ) {
+    //设置参数Get请求,3秒超时!
+    $opts = array( 'http'=>array( 'method'=>"GET", 'timeout'=>3, )); 
+    //获取git上面的版本号
+    $NewVer = file_get_contents('https://gitee.com/tznb/OneNav/raw/master/initial/version.txt', false, stream_context_create($opts)); 
+    if(preg_match('/^v.+-(\d{8})$/i',$NewVer,$matches)){
+        $NewVerGetTime = time();
+        Writeconfigd($udb,'config','NewVer',$NewVer);
+        Writeconfigd($udb,'config','NewVerGetTime',$NewVerGetTime);
+    }else{
+        //读取失败,不做处理!
+    }
+}
+preg_match('/^v.+-(\d{8})$/i',$NewVer,$matches);
+$NewVerTime = $matches[1];
+preg_match('/^v.+-(\d{8})$/i',$version,$matches);
+$VerTime = $matches[1];
+?>
+
 <style type="text/css">
 .layui-layout-admin .layui-body {top: 40px;}
 </style>
-<div class="layui-tab layui-tab-brief layui-body " >
+<div class="layui-tab layui-tab-brief layui-body " lay-filter="index">
 <ul class="layui-tab-title">
- <li class="layui-this">相关信息</li>
- <li>开发文档</li>
+ <li lay-id="1" class="layui-this">相关信息</li>
+ <li lay-id="2" >开发文档</li>
+ <li lay-id="3" >日志输出</li>
 </ul>
 <div class="layui-tab-content">
 <div class="layui-tab-item layui-show layui-form layui-form-pane"><!--相关信息--> 
@@ -21,30 +49,19 @@
     </div>
  <?php }
 ?>
-<?php 
- if($Skey ==''){
-     ?>
-      <div class="layui-form-item" style="color:#FF0000">
-      <label class="layui-form-label">配置缺失</label>
-      <div class="layui-input-block" >
-        <input value='系统检测到您Key安全未配置,请到账号设置更新配置！'disabled class="layui-input" style="color:#FF0000">
-      </div>
-    </div>
- <?php }
-?>
   <div class="layui-form-item">
     <div class="layui-inline">
       <label class="layui-form-label">当前版本</label>
         <div class="layui-input-inline">
-        <input value='<?php echo get_version(); ?>'disabled class="layui-input">
+        <input value='<?php echo $version; ?>'disabled class="layui-input">
       </div> 
     </div>
-    <!--<div class="layui-inline">-->
-    <!--  <label class="layui-form-label">最新版本</label>-->
-    <!--    <div class="layui-input-inline">-->
-    <!--    <input value='<?php echo file_get_contents('https://gitee.com/tznb/OneNav/raw/master/initial/version.txt'); ?>'disabled class="layui-input">-->
-    <!--  </div> -->
-    <!--</div>-->
+    <div class="layui-inline">
+      <label class="layui-form-label">最新版本</label>
+        <div class="layui-input-inline">
+        <input value='<?php echo $NewVer; ?>'disabled class="layui-input" <?php if ($NewVerTime > $VerTime ) {echo 'style="color:#FF0000"';}?>>
+      </div> 
+    </div>
     <div class="layui-inline">
       <label class="layui-form-label">数据库</label>
         <div class="layui-input-inline">
@@ -85,16 +102,14 @@
       <label class="layui-form-label">登录入口</label>
       <div class="layui-input-block">
         <input value='<?php 
-        $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' :'http://';
-        echo $http_type.$_SERVER['HTTP_HOST'].'/index.php?c='.$Elogin.'&u='.$u;?>         注:请保存好您的专属入口,避免特定情况造成无法登陆!'disabled class="layui-input">
+        echo $HOST.'/index.php?c='.$Elogin.'&u='.$u;?>         注:请保存好您的专属入口,避免特定情况造成无法登陆!'disabled class="layui-input">
       </div>
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label">我的首页</label>
       <div class="layui-input-block">
         <input value='<?php 
-        $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' :'http://';
-        echo $http_type.$_SERVER['HTTP_HOST'].'/index.php?u='.$u;?>'disabled class="layui-input">
+        echo $HOST.'/index.php?u='.$u;?>'disabled class="layui-input">
       </div>
     </div>
   </div><!--表单End-->
@@ -102,7 +117,28 @@
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
-      <h4 class="layui-timeline-title">2022年02月08日</h4>
+      <h4 class="layui-timeline-title">2022年03月12日</h4>
+      <ul>
+        <li>新增安装引导,未检测到lm.user.db3时自动进入安装引导</li>
+        <li>支持从原版升级安装(检测是否存在onenav.db3和config.php).可保留除主题配置外的所有数据!</li>
+        <li>支持全新安装(如果存在原版库请自行删除!未检测到原版数据库时安装模式为全新安装)</li>
+        <li>注:全新安装时如果检测到用户数据库会询问是否保留,仅支持保留落幕魔改版的数据库!</li>
+        <li>修复链接列表修改连接分类失效(上个版本带来的bug,我的锅)</li>
+        <li>新增安全检测:db3数据库能否被下载,存在隐患时给出提示(管理员账号访问后台首页时触发)</li>
+        <li>后台相关信息显示最新版本号(存在缓存机制,30分钟内不会重复获取!版本不同时仅显示红色文字!暂不弹窗提示!)</li>
+        <li>简化API入口代码</li>
+        <li>新增数据库更新功能 (暂不支持管理员批量升级用户数据库,访问后台首页时触发)</li>
+        <li>新增备用链接功能   (开启直连模式时无效)</li>
+        <li>新增过渡跳转页面   (开启直连模式时无效,已登录时1秒后跳转,未登录时5秒后跳转!存在备用链接时需手动点击)</li>
+        <li>初始数据库更新</li>
+        <li>注:关于API的问题,本项目和原版不同处:原版允许访客使用API读取公开数据,本项目不允许访客使用API</li>
+      </ul>
+    </div>
+  </li>
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年03月08日</h4>
       <ul>
         <li>Layui v2.5.4 升级到 v2.6.8 ,配置中静态路径不是./static的请同步更新到服务器!2.5.4资源暂留!</li>
         <li>后台UI优化移动端的兼容性</li>
@@ -113,7 +149,7 @@
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
-      <h4 class="layui-timeline-title">2022年02月07日</h4>
+      <h4 class="layui-timeline-title">2022年03月07日</h4>
       <ul>
         <li>修复PHP8报错的问题,但还是建议使用7.4,因为我开发测试都是在7.4的!其他版本有问题在反馈吧!</li>
         <li>支持管理员修改用户账号.(修改前建议先备份data文件夹)</li>
@@ -396,7 +432,77 @@
 <blockquote class="layui-elem-quote layui-text">getFavicon：<a href="https://github.com/owen0o0/getFavicon" target="_blank">官方文档</a></blockquote>
 
 </div><!--开发文档End-->
+<div class="layui-tab-item" ><!--日志输出--> 
+    <div class="layui-col-lg12">
+      <p><h3 style = "padding-bottom:1em;">日志输出：</h3></p>
+       <textarea id = "console_log" name="desc" rows="20" placeholder="日志输出控制台" class="layui-textarea" readonly="readonly"></textarea>
+    </div>
+</div><!--日志输出-->
 </div>
 </div>
-  
-<?php include_once('footer.php'); ?>
+
+<?php include_once('footer.php'); ?> 
+<script>
+layui.use(["element", "layer"], function(){
+    var element = layui.element;
+    var layer = layui.layer;
+    //element.tabChange('index', '3'); 
+    <?php if($udb->get("user","Level",["User"=>$u]) === '999'){ 
+    ?>check_db_down();
+    function check_db_down(){
+        $.ajax({
+            type:"HEAD",
+            url:"./data/<?php echo $u;?>.db3",
+            statusCode: {
+                200: function() {
+                    $("#console_log").append("安全检测:数据库可被下载(非常危险)，请尽快参考弹窗信息加固安全设置！\n\n");
+                    var a = '#安全设置<br />location ~* ^/(class|controller|db|initial|data|functions|templates)/.*.(db3|php|php5|sql)$ {<br />    return 403;<br />}<br />location /db {<br />        deny all;<br />}<br /><br />#伪静态<br />rewrite ^/click/(.*) /index.php?c=click&id=$1 break;<br />rewrite ^/api/(.*)?(.*) /index.php?c=api&method=$1&$2 break;<br />rewrite /login /index.php?c=login break;';
+                    var html = '<div style="padding: 15px; color:#01AAED;" ><h3 style="color:#DC143C;">检测到您的服务器未做安全配置,数据库可能被下载(非常危险),请尽快配置!</h3><h4>如果您使用得Nginx，请务必将以下规则添加到站点配置中:</h4><pre class="layui-code">' + a + '</pre><h4>如果使用得Apache则无需设置，已内置.htaccess进行屏蔽。</h4></div>';
+                    layer.open({type: 1,maxmin: false,shadeClose: false,resize: false,title: '高危风险提示！',area: ['auto', 'auto'],content: html});
+                    element.tabChange('index', '3'); 
+                },
+                403:function() {
+                    //$("#console_log").append("安全检测:您的数据库看起来是安全的！\n\n");
+                }
+            }
+        });
+    } 
+    <?php } ?> 
+    
+get_sql_update_list();
+//获取待更新数据库列表
+function get_sql_update_list() {
+  $("#console_log").append("更新检测:正在检查数据库更新...\n");
+  $.get("./index.php?c=api&method=get_sql_update_list&u=<?php echo $u;?>",function(data,status){
+    if ( data.code == 0 ) {
+      //如果没有可用更新，直接结束
+      if ( data.data.length == 0 ) {
+        $("#console_log").append("更新检测:当前无可用更新！\n");
+        return false;
+      }else{
+        $("#console_log").append("更新检测:检查到可更新SQL列表：\n");
+        $("#console_log").append("更新检测:正在准备更新...\n");
+        for(i in data.data) {
+          sqlname = data.data[i];
+          //$("#console_log").append(data.data[i] + "\n");
+          exe_sql(sqlname);
+        }
+      }
+    }
+  });
+}
+//更新SQL函数
+function exe_sql(sqlname) {
+    element.tabChange('index', '3'); 
+    $.ajax({ url: "./index.php?c=api&method=exe_sql&name=" + sqlname+'&u=<?php echo $u;?>', async:false, success: function(data,status){
+        if( data.code == 0 ){
+            $("#console_log").append(sqlname + "更新完毕！请刷新页面直到提示:当前无可用更新！\n");
+            element.tabChange('index', '3'); 
+        }else{
+            $("#console_log").append(sqlname + "更新失败！\n");
+        }
+    }});
+}
+
+});
+</script>

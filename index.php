@@ -1,6 +1,9 @@
 <?php  //入口(落幕修改:2022/03/02)
 error_reporting(E_ALL^E_NOTICE^E_WARNING^E_DEPRECATED);
-require ('./initial/initial.php');//初始数据!
+if(!file_exists('./data/lm.user.db3')){
+    require ('./initial/initial.php');//初始数据!
+}
+
 require ('./class/Medoo.php');//数据库框架
 require ('./class/Class.php');//载入函数库
 $udb = new Medoo\Medoo(['database_type'=>'sqlite','database_file'=>'./data/lm.user.db3']);

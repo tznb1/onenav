@@ -11,6 +11,12 @@
       <input type="url" id = "url" name="url" required  lay-verify="required|url" placeholder="请输入有效链接" autocomplete="off" class="layui-input">
     </div>
   </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">备用URL</label>
+    <div class="layui-input-block">
+      <input type="url" id = "url_standby" name="url_standby" value = "<?php echo $link['url_standby']; ?>" placeholder="请输入备用链接，如果没有，请留空" autocomplete="off" class="layui-input">
+    </div>
+  </div>
   <div class="layui-form-item">
     <label class="layui-form-label">链接名称</label>
     <div class="layui-input-block">

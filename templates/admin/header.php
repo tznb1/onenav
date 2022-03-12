@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>OneNav后台管理 - 落幕修改</title>
+  <title>OneNav后台管理 - <?php echo $u; ?></title>
   <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui.css">
-  <link rel='stylesheet' href='./templates/admin/static/style.css?v=<?php echo $version; ?>'>
+  <link rel='stylesheet' href='./templates/admin/static/style.css?v=<?php echo $version.time(); ?>'>
 </head>
 <body>
 <div class="layui-layout layui-layout-admin">
@@ -22,7 +22,6 @@
       <li class="layui-nav-item layui-hide-sm">
         <a href="javascript:;"><i class="layui-icon layui-icon-set layui-hide-sm" ></i> 菜单</a>
         <dl class="layui-nav-child">
-          <dd><a href="./?u=<?php echo $u; ?>"><i class="layui-icon layui-icon-home"></i> 前台首页</a></dd>
           <?php if($udb->get("user","Level",["User"=>$u]) == 999){
             echo'<dd><a href="./index.php?c=admin&page=root&u='.$u.'"><i class="layui-icon layui-icon-website"></i> 网站管理</a></dd>';
             }?>
@@ -45,6 +44,7 @@
         <dl class="layui-nav-child">
           <dd><a href="./index.php?c=admin&page=logout&u=<?php echo $u?>"><i class="layui-icon layui-icon-return"></i> 退出登录</a></dd>
           <dd><a href="https://gitee.com/tznb/OneNav" target="_blank"><i class="layui-icon layui-icon-star"></i> 查看gitee</a></dd>
+          <dd><a href="https://doc.xiaoz.me/books/onenav-JqQ" target="_blank"><i class="layui-icon layui-icon-note"></i> 帮助文档</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>

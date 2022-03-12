@@ -9,7 +9,7 @@ var form=layui.form;
 form.render();
 }); 
 }
-
+ 
 layui.use(['element','table','layer','form','upload','util'], function(){
     var element = layui.element,
     table = layui.table,
@@ -32,7 +32,6 @@ layui.use(['element','table','layer','form','upload','util'], function(){
         });
         }
     });
-  
 //分类列表
 table.render({
     elem: '#category_list'
@@ -345,7 +344,7 @@ table.on('toolbar(mylink)', function(obj){
         //提交批量修改分类
         else{
             for (let i = 0; i < data.length; i++) {if (i < data.length-1){id +=data[i].id+','}else{id +=data[i].id}} //生成id表
-            var fid=document.getElementById("TEMPLATE");
+            var fid=document.getElementById("fid");
             var index=fid.selectedIndex ;
             text=fid.options[index].text;
             fid=fid.options[index].value;
@@ -719,4 +718,13 @@ function _GET(variable){
                if(pair[0] == variable){return pair[1];}
        }
        return(false);
+}
+
+function check_weak_password(){
+  
+        layer.open({
+          title:'风险提示！',
+          content: '系统检测到您使用的默认密码，请参考<a href = "https://dwz.ovh/ze1ts" target = "_blank" style = "color:#01AAED;">帮助文档</a>尽快修改！' //这里content是一个普通的String
+        });
+     
 }
