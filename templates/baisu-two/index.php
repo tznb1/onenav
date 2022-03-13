@@ -11,19 +11,26 @@
 		<meta name="MobileOptimized" content="width">
 		<meta name="HandheldFriendly" content="true">
 		<meta name="author" content="BaiSu" />
-		<title><?php echo getconfig('title');?></title>
-		<?php $keywords=getconfig("keywords"); if($keywords !=''){echo '<meta name="keywords" content="'.$keywords.'"/>'."\n";}?>
-		<?php $description=getconfig("description"); if($description !=''){echo '<meta name="description" content="'.$description.'"/>'."\n";}?>
+		<title>
+			<?php echo getconfig('title');?>
+		</title>
+		<meta name="keywords" content="<?php echo getconfig("keywords"); ?>" />
+		<meta name="description" content="<?php echo getconfig("description"); ?>" />
 		<link rel="stylesheet" type="text/css" href="<?php echo $Theme?>/css/style.css" />
-		<!--<link rel="stylesheet" href="https://libs.xiaoz.top/font-awesome/4.7.0/css/font-awesome.css">-->
 		<link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
 		<link rel="stylesheet" type="text/css" href="<?php echo $libs?>/Layui/v2.6.8/css/layui.css" />
-		<?php // $nw=getconfig("navwidth"); $il=$nw+20;if($nw!=''){echo'<style type="text/css">.index-nav{width:'.$nw.'px;}.index-main{padding-left:'.$il.'px;}</style>';}//导航宽度?>
 		<?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
+		<style type="text/css">
+			/*链接描述是否显示*/
+			.site-main .site-list .list .desc {
+				/*none：不显示，block:显示*/
+				display: none;
+			}
+		</style>
 	</head>
 
 	<body>
-	    <!--手机顶部 S-->
+		<!--手机顶部 S-->
 		<div class="m-header">
 			<div class="logo">
 				<a href=""><img src="<?php echo $Theme?>/images/logo.png" /></a>
@@ -32,27 +39,32 @@
 				<i class="iconfont icon-caidan"></i>
 			</div>
 			<div class="m-navlist-w">
-			<div class="m-navlist">
-				<?php
+				<div class="m-navlist">
+					<?php
+					if($is_login){
+				    echo('<a href="./index.php?c=admin&u='.$u.'" class="list fa fa-user-circle">&ensp;后台管理</a>');
+				}
 			foreach ($categorys as $category) {
+			
 		?>
 					<a href="#category-<?php echo $category['id']; ?>" class="list"><?php echo geticon($category['Icon']).$category['name'];?></a>
-					<?php } ?>
-			</div>
+						<?php } ?>
+				</div>
 			</div>
 		</div>
 		<!--手机顶部 E-->
 		<!--左侧分类栏 S-->
 		<div class="index-nav">
 			<div class="logo">
-				<a href=""><img src="<?php echo $Theme?>/images/logo.png" /></a>
+				<a href="./?u=<?php echo $u?>"><img src="<?php echo $Theme?>/images/logo.png" /></a>
 			</div>
 			<div class="type-list">
 
 				<?php
 			foreach ($categorys as $category) {
+			
 		?>
-					<a href="#category-<?php echo $category['id']; ?>" class="list"><?php echo geticon($category['Icon']).$category['name'];?></a>    
+					<a href="#category-<?php echo $category['id']; ?>" class="list"><?php echo geticon($category['Icon']).$category['name'];?></a> 
 					<?php } ?>
 
 			</div>
@@ -122,7 +134,7 @@
 								<img src="搜索引擎图标路径" />搜索引擎名称
 							</div>-->
 							<!--此处添加搜索引擎 E-->
-							
+
 							<div class="list kongs"></div>
 						</div>
 					</div>
@@ -138,7 +150,12 @@
 				<div class="weather-main" id="he-plugin-standard"></div>
 			</div>
 
-
+			<div class="search">
+				<div class="list">
+					<input type="text" name="search" id="search" value="" class="kw" placeholder="输入关键词进行搜索，回车键百度搜索" autocomplete="off" />
+					<button><i class="iconfont icon-sousuo"></i></button>
+				</div>
+			</div>
 			<!--搜索 E-->
 			<div class="site-main">
 				<!-- 遍历分类目录 -->
@@ -196,7 +213,7 @@
             <?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
             <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
             <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
-		</footer>
+            </footer>
 		<!--底部版权 E-->
 		<!--返回顶部 S-->
 		<div class="tool-list">
@@ -220,7 +237,7 @@
 		<!--添加链接 S-->
 		<div class="addsite-main" id="addsiteBox">
 			<div class="title">
-				添加连接
+				添加链接
 			</div>
 			<form class="layui-form list-w">
 				<div class="list">
@@ -263,11 +280,58 @@
 		</div>
 		<!--添加链接 E-->
 
+		<!--修改链接 S-->
+		<div class="addsite-main" id="editsiteBox">
+			<div class="title">
+				修改链接
+			</div>
+			<form class="layui-form list-w" lay-filter="editsite">
+				<input type="hidden" name="id" id="fid" value="" required lay-verify="required" />
+				<div class="list">
+					<span class="icon"><i class="iconfont icon-charulianjie"></i></span>
+					<input type="text" class="text" name="url" id="url" required lay-verify="required|url" placeholder="请输入完整的网址链接" autocomplete="off">
+				</div>
+				<div class="list">
+					<span class="icon"><i class="iconfont icon-bianji"></i></span>
+					<input type="text" class="text" name="title" id="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off">
+				</div>
+				<div class="list type">
+					<input type="hidden" name="fid" id="fid" value="" required lay-verify="required" />
+					<?php foreach ($categorys as $category) {
+        ?>
+					<span class="fid editfid-<?php echo $category['id'] ?>" data-fid="<?php echo $category['id'] ?>"><?php echo htmlspecialchars_decode($category['name']); ?></span>
+					<?php } ?>
+					<span class="kongs"></span>
+					<span class="kongs"></span>
+					<span class="kongs"></span>
+				</div>
+
+				<div class="list list-2">
+					<div class="li">
+						<span>权重：</span>
+						<input type="text" class="num" name="weight" min="0" max="999" value="0" required lay-verify="required|number" autocomplete="off">
+					</div>
+					<div class="li">
+						私有：
+						<input type="checkbox" lay-skin="switch" lay-text="是|否" name="property" value="1">
+					</div>
+				</div>
+				<div class="list">
+					<textarea name="description" id="description" placeholder="请输入站点描述（选填）"></textarea>
+				</div>
+				<div class="list">
+					<button lay-submit lay-filter="edit_link">修改</button>
+				</div>
+
+			</form>
+		</div>
+		<!--修改链接 E-->
+
 		<!--iconfont-->
 		<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_3000268_oov6h4vru0h.css" />
 		<script src="//at.alicdn.com/t/font_3000268_oov6h4vru0h.js" type="text/javascript" charset="utf-8"></script>
 		<!--JS-->
-		<script src ="<?php echo $libs?>/jquery/jquery-3.6.0.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="<?php echo $libs?>/jquery/jquery-3.6.0.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="<?php echo $libs?>/Layui/v2.6.8/layui.js" type="text/javascript" charset="utf-8"></script>
 		<script src="<?php echo $Theme?>/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="<?php echo $libs?>/Other/holmes.js" type="text/javascript" charset="utf-8"></script>

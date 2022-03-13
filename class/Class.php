@@ -16,7 +16,12 @@ $data = $db->query("select * from sqlite_master where name = 'loginlog'")->fetch
     }
 $db->insert('loginlog',['name'=> $name ,'pass'=> $pass,'ip'=> $ip,'date'=> $date,'db'=> $dbname.'.db3','value'=>$value]);
 }
-
+//获取首页地址
+function getindexurl(){
+    $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' :'http://';
+    $HOST = $http_type.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+    return($HOST);
+}
 //写入登陆限制
 function Writeloginlimit($name,$value){
 $db = new Medoo\Medoo([

@@ -1,8 +1,7 @@
 <?php 
 include_once('header.php'); 
 include_once('left.php');
-$http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' :'http://';
-$HOST = $http_type.$_SERVER['HTTP_HOST'];
+$HOST = getindexurl();
 $NewVer = $udb->get("config","Value",["Name"=>'NewVer']); //缓存的版本号
 $NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当前版本!
 $NewVerGetTime = $udb->get("config","Value",["Name"=>'NewVerGetTime']); //上次从Git获取版本号的时间
@@ -102,18 +101,28 @@ $VerTime = $matches[1];
       <label class="layui-form-label">登录入口</label>
       <div class="layui-input-block">
         <input value='<?php 
-        echo $HOST.'/index.php?c='.$Elogin.'&u='.$u;?>         注:请保存好您的专属入口,避免特定情况造成无法登陆!'disabled class="layui-input">
+        echo $HOST.'?c='.$Elogin.'&u='.$u;?>         注:请保存好您的专属入口,避免特定情况造成无法登陆!'disabled class="layui-input">
       </div>
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label">我的首页</label>
       <div class="layui-input-block">
         <input value='<?php 
-        echo $HOST.'/index.php?u='.$u;?>'disabled class="layui-input">
+        echo $HOST.'?u='.$u;?>'disabled class="layui-input">
       </div>
     </div>
   </div><!--表单End-->
 <ul class="layui-timeline">
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年03月15日</h4>
+      <ul>
+        <li>百素two:同步原作更新,手机端分类列表处添加后台入口</li>
+        <li>修复后台首页地址和一键添加生成的URL在二级目录时不正确的问题!</li>
+      </ul>
+    </div>
+  </li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">

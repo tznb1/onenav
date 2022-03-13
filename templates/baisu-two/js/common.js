@@ -1,5 +1,5 @@
 var bodyH = $('.index-main').height();
-var winH = $(window).height();
+var winH = $(window).height()  - 100;
 if(bodyH > winH) {
 	$('footer').addClass('show');
 };
@@ -19,7 +19,7 @@ function deleteUrl(id) {
 			$("#id_" + id).remove();
 		} else {
 			//删除失败
-			layer.msg(data.msg, {
+			layer.msg('删除失败，请重试！', {
 				icon: 5,
 			});
 		}
