@@ -34,8 +34,8 @@
             <div class="layui-btn-container">
             <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="getCheckData">删除选中</button>
             <button class="layui-btn layui-btn-sm " lay-event="MC">修改分类</button>
-            
             <button class="layui-btn layui-btn-sm " lay-event="zhiding">置顶</button>
+            <button class="layui-btn layui-btn-sm " lay-event="addlink">添加</button>
         </div>
         </script>
         <!-- 开启表格头部工具栏END -->

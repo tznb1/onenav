@@ -19,6 +19,7 @@ $Visit    = $udb->get("config","Value",["Name"=>'Visit']); //访问控制
 $Diy      = $udb->get("config","Value",["Name"=>'Diy']); //自定义代码
 $XSS      = $udb->get("config","Value",["Name"=>'XSS']);  //防XSS脚本
 $SQL      = $udb->get("config","Value",["Name"=>'SQL']);  //防SQL注入
+
 $u = !empty($u)?$u:(!empty($CookieU)?$CookieU:(!empty($Duser)?$Duser:'admin'));//优先级:Get>Cookie>默认用户>admin
 $version  = get_version();//全局版本号
 if($c !== $Register){
@@ -53,9 +54,6 @@ if($c !== $Register){
 
 //根据不同的请求载入不同的控制器
 if((!isset($c)) or ($c == '') or ($c == 'index')){
-    $ICP    = $udb->get("config","Value",["Name"=>'ICP']);
-    $Ofooter = $udb->get("config","Value",["Name"=>'footer']);
-    $Ofooter = htmlspecialchars_decode(base64_decode($Ofooter));
     include_once("./controller/index.php");}//主页
 elseif($c == 'admin'){
 	include_once("./controller/admin.php");}//后台

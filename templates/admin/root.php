@@ -8,6 +8,7 @@ if($udb->get("user","Level",["User"=>$u]) != 999){
 $ICP    = $udb->get("config","Value",["Name"=>'ICP']);
 $footer = $udb->get("config","Value",["Name"=>'footer']);
 $footer = htmlspecialchars_decode(base64_decode($footer));
+$Plug     = $udb->get("config","Value",["Name"=>'Plug']);
 ?>
 
 <style type="text/css">
@@ -128,6 +129,19 @@ $footer = htmlspecialchars_decode(base64_decode($footer));
       </select>
       </div>
       <div class="layui-form-mid layui-word-aux">拦截POST表单中的SQL注入代码,提升网站安全性!(测试)</div>
+    </div>
+ </div> 
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">插件支持</label>
+      <div class="layui-input-inline">
+      <select id="Plug" name="Plug"  >
+        <option value="0" <?php if($Plug==0){echo'selected=""';}?>>默认模式</option>
+        <option value="1" <?php if($Plug==1){echo'selected=""';}?>>兼容模式1</option>
+        <option value="2" <?php if($Plug==2){echo'selected=""';}?>>兼容模式2</option>
+      </select>
+      </div>
+      <div class="layui-form-mid layui-word-aux">选择兼容模式时,可以使用xiaoz开发的uTools插件 <a href="https://doc.xiaoz.me/books/onenav-extend/page/utools" target="_blank">帮助</a></div>
     </div>
  </div> 
   <div class="layui-form-item">

@@ -11,6 +11,7 @@
         </div>
         <div class="layui-btn-group">
         <button class="layui-btn layui-btn-sm " data-type="C_reload">搜索</button>
+        <button class="layui-btn layui-btn-sm " data-type="addcategory">添加</button>
         <button class="layui-btn layui-btn-sm layui-btn-danger"   data-type="C_Delete">删除选中</button>
         <button class="layui-btn layui-btn-sm layui-btn-danger"   data-type="C_ForceDel">强行删除</button></div>
         <table id="category_list" lay-filter="category_list"></table>

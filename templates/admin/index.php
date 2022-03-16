@@ -118,6 +118,17 @@ $VerTime = $matches[1];
     <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年03月15日</h4>
       <ul>
+        <li>网站管理新增:插件支持,选择兼容模式时,可以使用xiaoz开发的uTools插件</li>
+        <li>注:使用兼容模式2时,API将允许访客调用公开数据(分类和链接)</li>
+        <li>新增API：根据ID查询单个分类信息,id支持get和post提交</li>
+      </ul>
+    </div>
+  </li>
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年03月12日</h4>
+      <ul>
         <li>百素two:同步原作更新,手机端分类列表处添加后台入口</li>
         <li>修复后台首页地址和一键添加生成的URL在二级目录时不正确的问题!</li>
       </ul>
@@ -414,7 +425,7 @@ $VerTime = $matches[1];
 
 <blockquote class="layui-elem-quote layui-text">此版项目地址：<a href="https://gitee.com/tznb/OneNav" target="_blank">Gitee 码云 (唯一地址)  </a>&ensp; QQ: 271152681&ensp; PS:各位大哥,如果可以的话麻烦大家帮忙宣传一下..目前用户数太少了,根本没动力更新!</blockquote>
 <blockquote class="layui-elem-quote layui-text">原著项目地址 ：<a href="https://github.com/helloxz/onenav" target="_blank">github</a>&ensp; QQ群1：147687134 &ensp;QQ群2：932795364&ensp;QQ:337003006</blockquote>
-<blockquote class="layui-elem-quote layui-text">帮助文档 ：<a href="https://doc.xiaoz.me/books/onenav" target="_blank">藏经阁</a></blockquote>
+<blockquote class="layui-elem-quote layui-text">帮助文档 ：<a href="https://doc.xiaoz.me/books/onenav-extend" target="_blank">藏经阁</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">原著博客 ：<a href="https://www.xiaoz.me" target="_blank">www.xiaoz.me</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">社区支持 ：<a href="https://dwz.ovh/vd0bw" target="_blank" >dwz.ovh/vd0bw</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">分类图标 ：<a href="http://www.fontawesome.com.cn/faicons" target="_blank">fontawesome</a></blockquote>

@@ -31,6 +31,9 @@ $category = $db->get('on_categorys',['id','property'],[
     'id'    =>  $link['fid']
 ]);
 
+$ICP    = $udb->get("config","Value",["Name"=>'ICP']);
+$Ofooter = $udb->get("config","Value",["Name"=>'footer']);
+$Ofooter = htmlspecialchars_decode(base64_decode($Ofooter));
 //link.id为公有，且category.id为公有
 if( ( $link['property'] == 0 ) && ($category['property'] == 0) ){
     //增加link.id的点击次数

@@ -1,9 +1,6 @@
-var u=_GET("u");
-if (u == ''){ u = 'admin'}
 if (_GET("page") == 'edit_homepage'){ 
 $('#TEMPLATE').val(document.getElementById('theme').value);
 $('#TEMPLATE2').val(document.getElementById('theme2').value);
-
 layui.use(['form'],function() {
 var form=layui.form;
 form.render();
@@ -111,7 +108,8 @@ var active = {
 link_reload:function(){link_q();},
 C_reload: function(){category_q();},
 C_Delete: function(){category_del(0);},
-C_ForceDel:function(){category_del(1);}
+C_ForceDel:function(){category_del(1);},
+addcategory:function(){window.open('./index.php?c=admin&page=add_category&u='+u,"_self");},
 };
 //链接搜索
 function link_q(){
@@ -365,8 +363,8 @@ table.on('toolbar(mylink)', function(obj){
              });
         };
           break;
-      case 'tiquan':
-          layer.msg('啊,这个还没支持呢', {icon: 2});
+      case 'addlink':
+          window.open('./index.php?c=admin&page=add_link&u='+u,"_self");
           break;
       case 'zhiding':
         var data = checkStatus.data;

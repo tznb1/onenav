@@ -62,9 +62,12 @@ else{
     //右键菜单标识
     $onenav['right_menu'] = 'user_menu();';
 }
+// ICP备案号和底部代码
+$ICP    = $udb->get("config","Value",["Name"=>'ICP']);
+$Ofooter = $udb->get("config","Value",["Name"=>'footer']);
+$Ofooter = htmlspecialchars_decode(base64_decode($Ofooter));
 
-
-//允许只用参数载入指定主题,如需禁止屏蔽或删掉此段!
+//允许使用参数载入指定主题,如需禁止屏蔽或删掉此段!
 $Style= $_GET['Style']==''? '0':$_GET['Style'] ;
 $Theme='./templates/'.$_GET['Theme'];
 $templates = $Theme.'/index.php';

@@ -79,7 +79,7 @@
             // 是否开启搜索：true/false，默认true
             search: true,
             // 是否开启分页：true/false，默认true
-            page: true,
+            page: false,
             // 每页显示数量，默认100
             limit: 100,
             // 点击回调
@@ -106,7 +106,7 @@
             // 是否开启搜索：true/false，默认true
             search: true,
             // 是否开启分页：true/false，默认true
-            page: true,
+            page: false,
             // 每页显示数量，默认100
             limit: 100,
             // 点击回调

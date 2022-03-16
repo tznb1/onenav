@@ -2,21 +2,37 @@
 if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
 Visit();//访问控制
 header("Access-Control-Allow-Origin: *"); //允许跨域访问
+$method = htmlspecialchars(trim($_GET['method']),ENT_QUOTES);
 //鉴权验证 Cookie验证通过,验证二级密码,Cookie验证失败时尝试验证token
 if(!is_login2()){
-    if($_POST['token'] === $ApiToken){}else{
-        msg(-1000,'鉴权失败!'); //错误代码待整理..
+    $Plug  = $udb->get("config","Value",["Name"=>'Plug']);// 1:兼容模式
+    $token = trim($_POST['token']);
+    if(strlen($token) >= 32){
+        if( $token === $ApiToken ){
+            // token鉴权成功(默认模式)
+        }elseif( ($Plug === '1' || $Plug === '2') && $token === md5($u.$ApiToken)){
+            // token鉴权成功(兼容模式)
+        }else{
+            msg(-1000,'-1:鉴权失败!'); 
+        }
+    }elseif(strlen($token) == 0){
+        if( $Plug === '2' && ( $method =='link_list' || $method ==='category_list' || $method ==='get_a_link' | $method === 'get_a_category')){
+            $OnlyOpen = TRUE;
+            // 开启兼容模时:接口白名单,允许访问公开数据
+        }else{
+            msg(-1000,'-2:鉴权失败!');
+        }
     }
 }elseif( getconfig('Pass2') =='' || check_Pass2()){
-    //二级密码验证成功
+    // Cookie 二级密码验证成功(未设置时也认为成功)
 }else{
     msg(-2222,'请先验证二级密码!');
 }
 
 //是否加载防火墙
 if($XSS == 1 || $SQL == 1){require ('./class/WAF.php');}
-//获取方法并过滤,判断是否存在函数,存在则调用!反正报错!
-$method = htmlspecialchars(trim($_GET['method']),ENT_QUOTES);
+//获取方法并过滤,判断是否存在函数,存在则调用!反之报错!
+
 if ( function_exists($method) ) {
     $method();
 }else{
@@ -25,13 +41,20 @@ if ( function_exists($method) ) {
 
 //分类列表
 function category_list(){
-    global $db;
+    global $db,$OnlyOpen;
     $q = inject_check($_POST['query']);//获取关键字(防止SQL注入)
     $page  = empty(intval($_GET['page']))  ? 1 : intval($_GET['page']);  //页码
     $limit = empty(intval($_GET['limit'])) ? 20: intval($_GET['limit']); //每页条数
     $offset = ($page - 1) * $limit; //起始行号
-    $sql = "SELECT *,(SELECT count(*) FROM on_links  WHERE fid = on_categorys.id ) AS count  FROM on_categorys  WHERE name LIKE '%".$q."%' or description LIKE '%".$q."%' ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
-    $count = $db->count('on_categorys','*',["OR" =>['name[~]'=>$q,'description[~]'=>$q]]); //统计总数
+    $property = $OnlyOpen == true ? ' And property = 0 ':''; //访客模式,添加查询语句只查询公开分类
+    $sql = "SELECT *,(SELECT count(*) FROM on_links  WHERE fid = on_categorys.id ) AS count  FROM on_categorys  WHERE (name LIKE '%{$q}%' or description LIKE '%{$q}%' ) {$property} ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
+    if ($OnlyOpen){
+        //游客/访客模式,取公开数量
+        $count = $db->count('on_categorys','*',[ "AND"=>["OR"=>['name[~]'=>$q,'description[~]'=>$q],"property"=>'0']] );
+    }else{
+        $count = $db->count('on_categorys','*',["OR" =>['name[~]'=>$q,'description[~]'=>$q]]); //统计总数
+    }
+    
     $datas = $db->query($sql)->fetchAll(); //原生查询
     msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas]);
 }
@@ -159,9 +182,9 @@ function del_category(){
     }
 }
 
-//链接列表
+//链接列表 
 function link_list(){
-    global $db;
+    global $db,$OnlyOpen;
     $q = inject_check($_POST['query']);//获取关键字(防止SQL注入)
     $page  = empty(intval($_GET['page']))  ? 1 : intval($_GET['page']);  //页码
     $limit = empty(intval($_GET['limit'])) ? 20: intval($_GET['limit']); //每页条数
@@ -169,13 +192,24 @@ function link_list(){
     $fid = intval(@$_POST['fid']); //获取分类ID
     //判断分类筛选,统计条数
     if ($fid ==0 ){
-        $cn ='';
-        $count = $db->count('on_links','*',["OR" =>['title[~]'=>$q,'description[~]'=>$q,'url[~]'=>$q]]);
+        $class ='';
+        if($OnlyOpen){
+            $count = $db->count('on_links','*',[ "AND"=>["OR"=>['title[~]'=>$q,'description[~]'=>$q,'url[~]'=>$q],"property"=>"0"]]);
+        }else{
+            $count = $db->count('on_links','*',["OR" =>['title[~]'=>$q,'description[~]'=>$q,'url[~]'=>$q]]);
+        }
+        
     }else{
-        $cn =' And fid ='.intval($fid); //查询语句
-        $count = $db->count('on_links','*',[ "AND"=>["OR"=>['title[~]'=>$q,'description[~]'=>$q,'url[~]'=>$q],"fid"=>$fid]]);
+        $class =' And fid ='.intval($fid); //查询语句
+         if($OnlyOpen){
+             $count = $db->count('on_links','*',[ "AND"=>["OR"=>['title[~]'=>$q,'description[~]'=>$q,'url[~]'=>$q],"fid"=>$fid,"property"=>"0"]]);
+         }else{
+             $count = $db->count('on_links','*',[ "AND"=>["OR"=>['title[~]'=>$q,'description[~]'=>$q,'url[~]'=>$q],"fid"=>$fid]]);
+         }
+        
     }
-    $sql = "SELECT *,(SELECT name FROM on_categorys WHERE id = on_links.fid) AS category_name FROM on_links WHERE (title LIKE '%".$q."%' or description LIKE '%".$q."%' or url LIKE '%".$q."%')".$cn." ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
+    $property = $OnlyOpen == true ? ' And property = 0 ':'';
+    $sql = "SELECT *,(SELECT name FROM on_categorys WHERE id = on_links.fid) AS category_name FROM on_links WHERE (title LIKE '%{$q}%' or description LIKE '%{$q}%' or url LIKE '%{$q}%') {$class} {$property} ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
     $datas = $db->query($sql)->fetchAll();
     msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas]);
 }
@@ -278,13 +312,41 @@ function del_link(){
 
 //获取单个链接信息
 function get_a_link(){
-    $id = $_GET['id'];
-    if(empty($id)){msg(-1010,'链接id不能为空！');}
-    global $db;
+    global $db,$OnlyOpen;
+    $id = intval(trim($_GET['id']));
+    if(empty($id)){ $id = intval(trim($_POST['id'])); }
+    if(empty($id)){ msg(-1010,'id不能为空！'); }
     $link_info = $db->get("on_links","*",["id" => intval($id)]);
-    msgA(['code'=>0,'data'=>$link_info]);
+    //访客模式,如果链接是私有就返回空
+    if($OnlyOpen){
+        if ( $link_info['property'] == "0" ) {
+            msgA( ['code'=>0,'data'=>$link_info] );
+        }else{
+            msgA( ['code'=>0,'data'=>[] ] );
+        }
+    }else{
+        msgA(['code'=>0,'data'=>$link_info]);
+    }
 }
-    
+//获取单个分类信息
+function get_a_category() {
+    global $db,$OnlyOpen;
+    $id = intval(trim($_GET['id']));
+    if(empty($id)){ $id = intval(trim($_POST['id'])); }
+    if(empty($id)){ msg(-1010,'id不能为空！'); }
+    $category_info = $db->get("on_categorys","*",["id" => $id]);
+    //var_dump($category_info);
+    //访客模式,如果分类是私有就返回空
+    if($OnlyOpen){
+        if ( $category_info['property'] == "0" ) {
+            msgA( ['code'=>0,'data'=>$category_info] );
+        }else{
+            msgA( ['code'=>0,'data'=>[] ] );
+        }
+    }else{
+        msgA(['code'=>0,'data'=>$category_info]);
+    }
+}
 //获取链接信息
 function get_link_info() {
     $url = @$_POST['url']; //获取URL
@@ -342,6 +404,9 @@ function upload(){
 function imp_link() {
     global $db;
     $filename = trim($_POST['filename']);//书签路径
+    //过滤$filename
+    $filename = str_replace('../','',$filename);
+    $filename = str_replace('./','',$filename);
     $fid = intval($_POST['fid']); //所属分类
     $property = intval(@$_POST['property']); //私有属性
     $all =intval(@$_POST['all']); //保留属性
@@ -640,6 +705,7 @@ function edit_root(){
     $footer     = $_POST['footer'];  //自定义开关
     $XSS        = $_POST['XSS'];  //防XSS脚本
     $SQL        = $_POST['SQL'];  //防SQL注入
+    $Plug       = $_POST['Plug'];  //插件支持
     if($udb->get("user","Level",["User"=>$u]) !== '999'){ //权限判断
         msg(-1102,'您没有权限修改全局配置!');
     }elseif($udb->count("user",["User"=>$DUser]) === 0 ){ //账号检测
@@ -665,7 +731,17 @@ function edit_root(){
     }elseif($SQL !== '0' && $SQL !== '1'){
         msg(-1103,'防SQL注入参数错误!');
     }
+    // $Re = $udb->query("select * from sqlite_master where name = 'user' and sql like '%".'"'."VisitorKey".'"'."%'")->fetchAll();
+    // $num = intval($Re[0]['num']);
+    // if($num ==0){
+    //     $udb->query('ALTER TABLE "user"  ADD COLUMN "VisitorKey" TEXT(32)');
+    // }
     
+    // $Re = $udb->query("select * from sqlite_master where name = 'user' and sql like '%".'"'."AuthoKey".'"'."%'")->fetchAll();
+    // $num = intval($Re[0]['num']);
+    // if($num ==0){
+    //     $udb->query('ALTER TABLE "user"  ADD COLUMN "AuthoKey" TEXT(32)');
+    // }
     Writeconfigd($udb,'config','DUser',$DUser);
     Writeconfigd($udb,'config','Register',$Register);
     Writeconfigd($udb,'config','Login',$login);
@@ -677,6 +753,7 @@ function edit_root(){
     Writeconfigd($udb,'config','Diy',$Diy);
     Writeconfigd($udb,'config','XSS',$XSS);
     Writeconfigd($udb,'config','SQL',$SQL);
+    Writeconfigd($udb,'config','Plug',$Plug);
     Writeconfigd($udb,'config','footer',base64_encode($footer));
     msg(0,'successful');
 }

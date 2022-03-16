@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="https://lib.sinaapp.com/js/bootstrap/4.3.1/css/bootstrap.min.css" type="" media=""/>
 	<style>
 		.prevent-overflow{
-			width:280px;
+			width:260px;
 			overflow: hidden;/*超出部分隐藏*/
 			white-space: nowrap;/*不换行*/
 			text-overflow:ellipsis;/*超出部分文字以...显示dsds*/
@@ -32,7 +32,7 @@
 <body>
 	<div class="container" style = "margin-top:2em;">
 		<div class="row">
-			<div class="col-sm-6 offset-sm-3">
+			<div class="col-sm-8 offset-sm-2">
 				<!-- 新建一个表格 -->
 				<h2>链接信息：</h2>
 				<table class="table">
@@ -92,9 +92,12 @@
 					<?php echo $msg; ?>
 				</div>
 				<hr>
-				<div class="xcdn-footer">Powered by <a href="https://www.xiaoz.me/" title = "小z博客" rel = "nofollow" target = "_blank">xiaoz</a> and <a href="https://gitee.com/tznb/OneNav"  rel = "nofollow" target = "_blank">落幕</a></div>
+				<div class="xcdn-footer"><?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>&copy;2022 Powered by <a href="https://www.xiaoz.me/" title = "小z博客" rel = "nofollow" target = "_blank">xiaoz</a> and <a href="https://gitee.com/tznb/OneNav"  rel = "nofollow" target = "_blank">落幕</a></div>
+				
 			</div>
 		</div>
 	</div>
+	<?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
+    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
 </body>
 </html>
