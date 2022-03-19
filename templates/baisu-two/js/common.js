@@ -57,6 +57,7 @@ function addUrl(data) {
 
 	$.post("./index.php?c=api&method=add_link&u="+u, {
 		url: data.url,
+		url_standby: data.url_standby,
 		title: data.title,
 		fid: data.fid,
 		weight: data.weight,
@@ -192,7 +193,7 @@ function keyClick() {
 keyClick();
 
 //锚点、返回顶部
-$("a.list").click(function() {
+$("a.catlist").click(function() {
 	$("html, body").animate({
 		scrollTop: $($(this).attr("href")).offset().top - 5 + "px"
 	}, 500);

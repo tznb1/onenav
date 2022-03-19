@@ -116,6 +116,16 @@ $VerTime = $matches[1];
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年03月19日</h4>
+      <ul>
+        <li>修复默认主题右键菜单生成二维码错误</li>
+        <li>百素two:同步原作更新,添加/修改分类时:取消字体图标必填,修正修改分类提示语错误</li>
+      </ul>
+    </div>
+  </li>
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年03月15日</h4>
       <ul>
         <li>网站管理新增:插件支持,选择兼容模式时,可以使用xiaoz开发的uTools插件</li>
@@ -476,7 +486,7 @@ layui.use(["element", "layer"], function(){
             statusCode: {
                 200: function() {
                     $("#console_log").append("安全检测:数据库可被下载(非常危险)，请尽快参考弹窗信息加固安全设置！\n\n");
-                    var a = '#安全设置<br />location ~* ^/(class|controller|db|initial|data|functions|templates)/.*.(db3|php|php5|sql)$ {<br />    return 403;<br />}<br />location /db {<br />        deny all;<br />}<br /><br />#伪静态<br />rewrite ^/click/(.*) /index.php?c=click&id=$1 break;<br />rewrite ^/api/(.*)?(.*) /index.php?c=api&method=$1&$2 break;<br />rewrite /login /index.php?c=login break;';
+                    var a = '#安全设置<br />location ~* ^/(class|controller|initial|data|templates)/.*.(db3|php|php5|sql)$ {<br />    return 403;<br />}<br />location ~* ^/(data)/(upload)/.*.(html)$ {<br />        deny all;<br />}<br />location /initial {<br />        deny all;<br />}<br /><br />#伪静态<br />rewrite ^/click/(.*) /index.php?c=click&id=$1 break;<br />rewrite ^/api/(.*)?(.*) /index.php?c=api&method=$1&$2 break;<br />rewrite /login /index.php?c=login break;<br />#伪静态-插件支持<br />rewrite ^/(.*)/index.php /index.php?u=$1 break;';
                     var html = '<div style="padding: 15px; color:#01AAED;" ><h3 style="color:#DC143C;">检测到您的服务器未做安全配置,数据库可能被下载(非常危险),请尽快配置!</h3><h4>如果您使用得Nginx，请务必将以下规则添加到站点配置中:</h4><pre class="layui-code">' + a + '</pre><h4>如果使用得Apache则无需设置，已内置.htaccess进行屏蔽。</h4></div>';
                     layer.open({type: 1,maxmin: false,shadeClose: false,resize: false,title: '高危风险提示！',area: ['auto', 'auto'],content: html});
                     element.tabChange('index', '3'); 

@@ -411,9 +411,8 @@ form.on('switch(stat)',
 function(obj) {
 	var sta;
 	var contexts;
-	var swt = $(obj.elem);
-	var data = obj.data;
 	var x = obj.elem.checked; //判断开关状态
+	console.log(x) 
 	obj.elem.checked = x;
 	if (x == true) {
 		sta = 1;
@@ -430,6 +429,8 @@ function(obj) {
 		},
 		function(data, status) {
 			if (data.code == 0) {
+			    //obj.elem.checked = x;
+			    //form.render();
 				layer.msg('ID:' + obj.value + ',已转为' + contexts + '!');
 			} else {
 				layer.msg('ID:' + obj.value + ',转为' + contexts + '失败!');

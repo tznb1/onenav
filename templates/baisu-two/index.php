@@ -16,7 +16,7 @@
 		</title>
 		<meta name="keywords" content="<?php echo getconfig("keywords"); ?>" />
 		<meta name="description" content="<?php echo getconfig("description"); ?>" />
-		<link rel="stylesheet" type="text/css" href="<?php echo $Theme?>/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $Theme?>/css/style.css?v=<?php echo $version; ?>" />
 		<link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
 		<link rel="stylesheet" type="text/css" href="<?php echo $libs?>/Layui/v2.6.8/css/layui.css" />
 		<?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
@@ -47,7 +47,7 @@
 			foreach ($categorys as $category) {
 			
 		?>
-					<a href="#category-<?php echo $category['id']; ?>" class="list"><?php echo geticon($category['Icon']).$category['name'];?></a>
+					<a href="#category-<?php echo $category['id']; ?>" class="list catlist"><?php echo geticon($category['Icon']).$category['name'];?></a>
 						<?php } ?>
 				</div>
 			</div>
@@ -64,9 +64,14 @@
 			foreach ($categorys as $category) {
 			
 		?>
-					<a href="#category-<?php echo $category['id']; ?>" class="list"><?php echo geticon($category['Icon']).$category['name'];?></a> 
+					<div class="list"><a href="#category-<?php echo $category['id']; ?>" class="catlist"><?php echo geticon($category['Icon']).$category['name'];?></a> 
+					<span class="editFid" data-fid = "<?php echo $category['id']; ?>"><i class="iconfont icon-bianji"></i></span></div>
 					<?php } ?>
 
+			<div class="list add" id="addCat">
+						<a>
+							<i class="iconfont icon-tianjia"></i>添加分类</a>
+					</div>
 			</div>
 			<div class="user-info">
 				<div class="pic">
@@ -245,6 +250,10 @@
 					<input type="text" class="text" name="url" id="url" required lay-verify="required|url" placeholder="请输入完整的网址链接" autocomplete="off">
 				</div>
 				<div class="list">
+					<span class="icon"><i class="iconfont icon-charulianjie"></i></span>
+					<input type="text" class="text" name="url_standby" id="url_standby" placeholder="请输入备用链接，如果没有，请留空" autocomplete="off">
+				</div>
+				<div class="list">
 					<span class="icon"><i class="iconfont icon-bianji"></i></span>
 					<input type="text" class="text" name="title" id="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off">
 				</div>
@@ -286,10 +295,14 @@
 				修改链接
 			</div>
 			<form class="layui-form list-w" lay-filter="editsite">
-				<input type="hidden" name="id" id="fid" value="" required lay-verify="required" />
+				<input type="hidden" name="id" id="id" value="" required lay-verify="required" />
 				<div class="list">
 					<span class="icon"><i class="iconfont icon-charulianjie"></i></span>
 					<input type="text" class="text" name="url" id="url" required lay-verify="required|url" placeholder="请输入完整的网址链接" autocomplete="off">
+				</div>
+				<div class="list">
+					<span class="icon"><i class="iconfont icon-charulianjie"></i></span>
+					<input type="text" class="text" name="url_standby" id="url_standby" placeholder="请输入备用链接，如果没有，请留空" autocomplete="off">
 				</div>
 				<div class="list">
 					<span class="icon"><i class="iconfont icon-bianji"></i></span>
@@ -326,6 +339,78 @@
 			</form>
 		</div>
 		<!--修改链接 E-->
+		<!--添加分类 S-->
+		<div class="addsite-main" id="addFidBox">
+			<div class="title">
+				添加分类
+			</div>
+			<form class="layui-form list-w" lay-filter="editsite">
+				<div class="list">
+					<span class="icon"><i class="iconfont icon-bianji"></i></span>
+					<input type="text" class="text" name="name" id="name" required lay-verify="required" placeholder="请输入分类名称" autocomplete="off">
+				</div>
+				<div class="list">
+					<span class="icon"><i class="iconfont icon-shezhi1"></i></span>
+					<input type="text" class="text" name="font_icon" id="font_icon" required  placeholder="请输入或选择分类图标" autocomplete="off">
+				</div>
+
+				<div class="list list-2">
+					<div class="li">
+						<span>权重：</span>
+						<input type="text" class="num" name="weight" min="0" max="999" value="0" required lay-verify="required|number" autocomplete="off">
+					</div>
+					<div class="li">
+						私有：
+						<input type="checkbox" lay-skin="switch" lay-text="是|否" name="property" value="1">
+					</div>
+				</div>
+				<div class="list">
+					<textarea name="description" id="description" placeholder="请输入分类描述（选填）"></textarea>
+				</div>
+				<div class="list">
+					<button lay-submit lay-filter="add_fid">添加</button>
+				</div>
+
+			</form>
+		</div>
+		<!--添加分类 E-->
+
+		<!--修改分类 S-->
+		<div class="addsite-main" id="editFidBox">
+			<div class="title">
+				修改分类
+			</div>
+			<form class="layui-form list-w" lay-filter="editfid">
+				<input type="hidden" name="id" id="id" value="" required lay-verify="required" />
+				<div class="list">
+					<span class="icon"><i class="iconfont icon-bianji"></i></span>
+					<input type="text" class="text" name="name" id="name" required lay-verify="required" placeholder="请输入分类名称" autocomplete="off">
+				</div>
+				<div class="list">
+					<span class="icon"><i class="iconfont icon-shezhi1"></i></span>
+					<input type="text" class="text" name="font_icon" id="font_icon" required  placeholder="请输入或选择分类图标" autocomplete="off">
+				</div>
+
+				<div class="list list-2">
+					<div class="li">
+						<span>权重：</span>
+						<input type="text" class="num" name="weight" min="0" max="999" value="0" required lay-verify="required|number" autocomplete="off">
+					</div>
+					<div class="li">
+						私有：
+						<input type="checkbox" lay-skin="switch" lay-text="是|否" name="property" value="1">
+					</div>
+				</div>
+				<div class="list">
+					<textarea name="description" id="description" placeholder="请输入分类描述（选填）"></textarea>
+				</div>
+				<div class="list">
+					<button lay-submit lay-filter="edit_fid">修改</button>
+				</div>
+
+			</form>
+		</div>
+		<!--修改分类 E-->
 
 		<!--iconfont-->
 		<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_3000268_oov6h4vru0h.css" />
@@ -336,14 +421,14 @@
 		<script src="<?php echo $Theme?>/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="<?php echo $libs?>/Other/holmes.js" type="text/javascript" charset="utf-8"></script>
 		<script src="<?php echo $Theme?>/js/lunar.js" type="text/javascript" charset="utf-8"></script>
-		<script src="<?php echo $Theme?>/js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="<?php echo $Theme?>/js/common.js?v=<?php echo $version; ?>" type="text/javascript" charset="utf-8"></script>
 		<script>
         var u = '<?php echo $u?>';
         </script>
 		<?php
 		if( $is_login ) {
 	  ?>
-			<script src="<?php echo $Theme?>/js/admin.js" type="text/javascript" charset="utf-8"></script>
+			<script src="<?php echo $Theme?>/js/admin.js?v=<?php echo $version; ?>" type="text/javascript" charset="utf-8"></script>
 
 			<?php } ?>
 

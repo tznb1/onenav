@@ -38,7 +38,6 @@ layui.use(['dropdown', 'layer', 'form'], function() {
 					console.log('复制' + listId);
 					break;
 				case 3:
-					//					window.open('index.php?c=admin&page=edit_link&id=' + listId, '_blank');
 					layer.open({
 						type: 1,
 						title: false,
@@ -66,7 +65,7 @@ layui.use(['dropdown', 'layer', 'form'], function() {
 			}
 		}
 	});
-	//添加弹窗
+	//添加链接弹窗
 	$('#addsite').click(function() {
 		layer.open({
 			type: 1,
@@ -76,24 +75,36 @@ layui.use(['dropdown', 'layer', 'form'], function() {
 			skin: 'addsiteBox',
 			content: $('#addsiteBox')
 		});
-	})
+	});
 	$('.addsite-main .list.type span.fid').click(function() {
 		var fid = $(this).data('fid');
 		$('#addsiteBox input#fid').val(fid);
 		$('#editsiteBox input#fid').val(fid);
 		$(this).addClass("hover").siblings().removeClass('hover');
 	});
-	//监听提交-添加
+	//监听提交-添加链接
 	form.on('submit(add_link)', function(data) {
 		//		layer.msg(JSON.stringify(data.field));
 		var datas = JSON.stringify(data.field);
 		addUrl(data.field);
 		return false;
 	});
-	//监听提交-修改
+	//监听提交-修改添加链接
 	form.on('submit(edit_link)', function(data) {
 		console.log(data.field)
 		editUrl(data.field)
+		return false;
+	});
+	//监听提交-添加分类
+	form.on('submit(add_fid)', function(data) {
+		console.log(data.field);
+		addFID(data.field)
+		return false;
+	});
+	//监听提交-修改分类
+	form.on('submit(edit_fid)', function(data) {
+		console.log(data.field);
+		editFID(data.field)
 		return false;
 	});
 
@@ -107,6 +118,32 @@ layui.use(['dropdown', 'layer', 'form'], function() {
 			});
 			getUrlinfo(urlval)
 		}
+	});
+	//添加分类弹窗
+	$('#addCat').click(function() {
+		layer.open({
+			type: 1,
+			title: false,
+			closeBtn: 0,
+			shadeClose: true,
+			skin: 'addsiteBox',
+			content: $('#addFidBox')
+		});
+	});
+
+	// 修改分类弹窗
+	$('span.editFid').click(function() {
+		layer.open({
+			type: 1,
+			title: false,
+			closeBtn: 0,
+			shadeClose: true,
+			skin: 'addsiteBox',
+			content: $('#editFidBox')
+		});
+		var fid = $(this).data('fid');
+		get_a_category(fid)
+		console.log('编辑' + fid);
 	});
 
 	//查询单个链接信息
@@ -128,6 +165,7 @@ layui.use(['dropdown', 'layer', 'form'], function() {
 				form.val('editsite', {
 					"id": data.data.id,
 					"url": data.data.url,
+					"url_standby": data.data.url_standby,
 					"title": data.data.title,
 					"description": data.data.description,
 					"fid": data.data.fid,
@@ -143,16 +181,46 @@ layui.use(['dropdown', 'layer', 'form'], function() {
 		});
 
 	}
+	//查询单个分类信息
+	function get_a_category(id) {
+		$.post("./index.php?c=api&method=get_a_category&u=" + u, {
+			id: id
+		}, function(data, status) {
+						console.log(data);
+			if(data.code == 0) {
+				console.log(data);
+				if(data.data.property == 0) {
+					var property = false
+				} else {
+					var property = true
+				};
+				form.val('editfid', {
+					"id": data.data.id,
+					"name": data.data.name,
+					"font_icon": data.data.font_icon,
+					"description": data.data.description,
+					"weight": data.data.weight,
+					"property": property,
+				});
+			} else {
+				//获取信息失败
+				layer.msg('获取信息失败，请重试！', {
+					icon: 5,
+				});
+			}
+		});
+
+	};
 
 });
 
 //修改链接
 function editUrl(data) {
-
 	$.post("./index.php?c=api&method=edit_link&u="+u, {
 		fid: data.fid,
 		id: data.id,
-		url: data.url,                                                                                                                                                          
+		url: data.url,
+		url_standby: data.url_standby,
 		title: data.title,
 		weight: data.weight,
 		property: data.property,
@@ -177,13 +245,61 @@ function editUrl(data) {
 		}
 	});
 }
+//添加分类
+function addFID(data) {
+	$.post("./index.php?c=api&method=add_category&u="+u, {
+		name: data.name,
+		font_icon: data.font_icon,
+		weight: data.weight,
+		property: data.property,
+		description: data.description,
+	}, function(data, status) {
+		console.log(data)
+		console.log(status)
+		if(data.code == 0) {
+			layer.msg('添加成功！', {
+				icon: 6,
+				time: 600,
+				end: function() {
+					window.location.reload();
+					return false;
+				}
+			});
+		} else {
+			//修改失败
+			layer.msg('添加失败，请重试！', {
+				icon: 5,
+			});
+		}
+	});
+}
 
-
-//
-//		fid: data.fid,
-//		id: data.id,
-//		url: data.url,
-//		title: data.title,
-//		weight: data.weight,
-//		property: data.property,
-//		description: data.description,
+//修改分类
+function editFID(data) {
+	$.post("./index.php?c=api&method=edit_category&u="+u, {
+		id: data.id,
+		name: data.name,
+		font_icon: data.font_icon,
+		weight: data.weight,
+		property: data.property,
+		description: data.description,
+	}, function(data, status) {
+		console.log(data)
+		console.log(status)
+		if(data.code == 0) {
+			layer.msg('修改成功！', {
+				icon: 6,
+				time: 600,
+				end: function() {
+					window.location.reload();
+					return false;
+				}
+			});
+		} else {
+			//修改失败
+			layer.msg('修改失败，请重试！', {
+				icon: 5,
+			});
+		}
+	});
+}
