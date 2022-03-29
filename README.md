@@ -1,8 +1,6 @@
 * PS:各位大哥,如果可以的话麻烦大家帮忙宣传一下..目前用户数太少了 :sob: !
 * CDN加速服务 //libs.xiaoz.top/lm21/onenav 感谢小z提供的支持
 
-OneNav Extend 是一款开源免费的书签（导航）管理程序，使用PHP + SQLite 3开发，界面简洁，安装简单，使用方便。OneNav可帮助你你将浏览器书签集中式管理，解决跨设备、跨平台、跨浏览器之间同步和访问困难问题，做到一处部署，随处访问。
-
 OneNav Extend ( 原:魔改版 ) 是基于xiaoz原创的OneNav基础上进行大量的修改,实现了更多的功能!现与xiaoz版是分开发布,独立维护的!
 
 - 演示站 : [https://demo.lm21.top]( https://demo.lm21.top) 	
