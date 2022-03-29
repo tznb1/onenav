@@ -191,6 +191,9 @@
 									<img src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>">
 									<?php echo $link['title']; ?>
 								</p>
+								<p class="desc">
+									<?php echo $link['description']; ?>
+								</p>
 							</a>
 							<?php if($link['property'] == 1 ) { ?>
 							<span><i class="one iconfont icon-suo"></i></span>

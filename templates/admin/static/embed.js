@@ -15,20 +15,7 @@ layui.use(['element','table','layer','form','upload','util'], function(){
     upload = layui.upload,
     layer = layui.layer,
     $ = layui.$;
-  
-    //头部事件
-    util.event('lay-header-event', {
-        menuRight: function(){
-        layer.open({
-            type: 1
-            ,content: '<div style="padding: 15px;">使用前请先看一遍后台都有什么功能!<br />在看一遍更新信息!然后再去使用!<br />不明白的地方可以搭个测试站整明白了在用!<br />有说明且很容易明白的问题我不做回复!</div>'
-            ,area: ['360px', '100%']
-            ,offset: 'rt' //右上角
-            ,anim: 5
-            ,shadeClose: true
-        });
-        }
-    });
+
 //分类列表
 table.render({
     elem: '#category_list'

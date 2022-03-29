@@ -197,7 +197,7 @@ layui.use(['dropdown', 'layer', 'form'], function() {
 				form.val('editfid', {
 					"id": data.data.id,
 					"name": data.data.name,
-					"font_icon": data.data.font_icon,
+					"font_icon": data.data.Icon,
 					"description": data.data.description,
 					"weight": data.data.weight,
 					"property": property,
@@ -249,7 +249,7 @@ function editUrl(data) {
 function addFID(data) {
 	$.post("./index.php?c=api&method=add_category&u="+u, {
 		name: data.name,
-		font_icon: data.font_icon,
+		Icon: data.font_icon,
 		weight: data.weight,
 		property: data.property,
 		description: data.description,
@@ -279,7 +279,7 @@ function editFID(data) {
 	$.post("./index.php?c=api&method=edit_category&u="+u, {
 		id: data.id,
 		name: data.name,
-		font_icon: data.font_icon,
+		Icon: data.font_icon,
 		weight: data.weight,
 		property: data.property,
 		description: data.description,
