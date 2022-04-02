@@ -457,7 +457,7 @@
                 ?>
                       <div class="url-card col-6  col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                         <div class="url-body default">
-                            <a href="./index.php?c=click&id=<?php echo $link['id']; ?>" target="_blank" data-id="689" data-url="./index.php?c=click&id=<?php echo $link['id']; ?>"
+                            <a href="./index.php?c=click&id=<?php echo $link['id']; ?>&u=<?php echo $u?>" target="_blank" data-id="689" data-url="./index.php?c=click&id=<?php echo $link['id']; ?>&u=<?php echo $u?>"
                                 class="card no-c  mb-4 site-689" data-toggle="tooltip" data-placement="bottom" title="<?php echo $link['title']; ?>">
                                 <div class="card-body">
                                     <div class="url-content d-flex align-items-center">

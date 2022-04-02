@@ -116,6 +116,17 @@ $VerTime = $matches[1];
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年04月02日</h4>
+      <ul>
+        <li>修复分类和链接列表搜索后无法翻页的问题(#金秋十月)</li>
+        <li>新增主题模板:六零导航(#六度)</li>
+        <li>修复刘桐序主题未完全适配多用户的问题(#羽峰)</li>
+      </ul>
+    </div>
+  </li>
+  <li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年03月29日</h4>
       <ul>
         <li>修复禁止访问时管理员账号也无法跳转</li>

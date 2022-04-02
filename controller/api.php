@@ -43,8 +43,17 @@ if ( function_exists($method) ) {
 function category_list(){
     global $db,$OnlyOpen;
     $q = inject_check($_POST['query']);//获取关键字(防止SQL注入)
-    $page  = empty(intval($_GET['page']))  ? 1 : intval($_GET['page']);  //页码
-    $limit = empty(intval($_GET['limit'])) ? 20: intval($_GET['limit']); //每页条数
+    if ( !empty ($_GET['page'])){
+        $page  = empty(intval($_GET['page']))  ? 1 : intval($_GET['page']);  //页码
+    }else{
+        $page  = empty(intval($_POST['page']))  ? 1 : intval($_POST['page']);  //页码
+    }
+    if ( !empty ($_GET['page'])){
+        $limit = empty(intval($_GET['limit'])) ? 20: intval($_GET['limit']); //每页条数
+    }else{
+        $limit = empty(intval($_POST['limit'])) ? 20: intval($_POST['limit']); //每页条数
+    }
+    
     $offset = ($page - 1) * $limit; //起始行号
     $property = $OnlyOpen == true ? ' And property = 0 ':''; //访客模式,添加查询语句只查询公开分类
     $sql = "SELECT *,(SELECT count(*) FROM on_links  WHERE fid = on_categorys.id ) AS count  FROM on_categorys  WHERE (name LIKE '%{$q}%' or description LIKE '%{$q}%' ) {$property} ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
@@ -186,8 +195,17 @@ function del_category(){
 function link_list(){
     global $db,$OnlyOpen;
     $q = inject_check($_POST['query']);//获取关键字(防止SQL注入)
-    $page  = empty(intval($_GET['page']))  ? 1 : intval($_GET['page']);  //页码
-    $limit = empty(intval($_GET['limit'])) ? 20: intval($_GET['limit']); //每页条数
+    if ( !empty ($_GET['page'])){
+        $page  = empty(intval($_GET['page']))  ? 1 : intval($_GET['page']);  //页码
+    }else{
+        $page  = empty(intval($_POST['page']))  ? 1 : intval($_POST['page']);  //页码
+    }
+    if ( !empty ($_GET['limit'])){
+        $limit = empty(intval($_GET['limit'])) ? 20: intval($_GET['limit']); //每页条数
+    }else{
+        $limit = empty(intval($_POST['limit'])) ? 20: intval($_POST['limit']); //每页条数
+    }
+    
     $offset = ($page - 1) * $limit; //起始行号
     $fid = intval(@$_POST['fid']); //获取分类ID
     //判断分类筛选,统计条数

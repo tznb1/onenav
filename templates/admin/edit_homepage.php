@@ -48,6 +48,7 @@
         <option value="liutongxu|0">刘桐序</option>
         <option value="webstack|0">WebStack</option>
         <option value="SimpleWeb|0">SimpleWeb</option>
+        <option value="lylme_spage|0">六零导航页</option>
         <option value="runoob|0">菜鸟教程</option>
       </select>
     </div><div class="layui-form-mid layui-word-aux">PC端上显示的主题</div>
@@ -70,6 +71,7 @@
         <option value="liutongxu|0">刘桐序</option>
         <option value="webstack|0">WebStack</option>
         <option value="SimpleWeb|0">SimpleWeb</option>
+        <option value="lylme_spage|0">六零导航页</option>
         <option value="runoob|0">菜鸟教程</option>
       </select>
     </div><div class="layui-form-mid layui-word-aux">移动端上显示的主题,有些主题不兼容移动端,所以支持一下单独设置</div>
