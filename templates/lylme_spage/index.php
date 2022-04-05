@@ -21,6 +21,7 @@
 		<link rel="stylesheet" href="<?php echo $Theme?>/css/bootstrap.min.css" type="text/css">
 		<link rel="stylesheet" href="<?php echo $Theme?>/css/style.css" type="text/css">
 		<link rel="stylesheet" href="<?php echo $Theme?>/css/font.css" type="text/css">
+		<?php $head=getconfig("head");if($head!='' && ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
 	</head>
     <body onload="FocusOnInput()">
         <div class="banner-video">
