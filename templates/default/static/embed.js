@@ -196,6 +196,19 @@ $.contextMenu({
     // 加载游客右键菜单END
 };
 
+// 主题设置
+$("#config").click(function(){
+        layer.open({
+        type: 2,
+        title: '主题自定义',
+        shadeClose: true, //点击遮罩关闭层
+        area : ['600px' , '99%'],
+        anim: 5,
+        offset: 'rt',
+        content: './index.php?fn=config&u='+u
+        });
+});
+
 // 添加链接按钮
 $("#add").click(function(){
   open_add_link();

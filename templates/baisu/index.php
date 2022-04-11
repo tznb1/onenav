@@ -1,3 +1,9 @@
+<?php
+$T = 'Theme-'.getconfig('Theme').'-';
+$fonts = intval( getconfig($T.'fonts','1') );
+$Descr = intval( getconfig($T.'Descr','1') );
+$Width = intval( getconfig($T.'LeftColumnWidth','260') );
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,8 +20,36 @@
 <?php $description=getconfig("description"); if($description !=''){echo '<meta name="description" content="'.$description.'"/>'."\n";}?>
 <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
 <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui-icon.css">
-<link rel="stylesheet" href="<?php echo $Theme?>/static/style<?php if($Style=='2'||$Style=='3'){echo '1';}?>.css?v=<?php echo $version; ?>" />
-<?php // $nw=getconfig("navwidth");if($nw!=''){echo'<style type="text/css">.main{padding-left:'.$nw.'px;}header{width:'.$nw.'px;}</style>';}//导航宽度?>
+<link rel="stylesheet" href="<?php echo $Theme?>/static/style.css?v=<?php echo $version; ?>" />
+<style>
+<?php if( $fonts == 1 ) {?>
+/*Logo个性字体*/
+@font-face {
+	font-family: youshe;
+	src: url('<?php echo $Theme?>/static/youshe.ttf');
+}
+<?php } ?>
+/*导航宽度*/
+header{
+    width:<?php echo $Width?>px;
+}
+nav.main-top {
+    padding: 0px 20px 0px <?php echo $Width+20?>px;
+}
+.main{
+    padding-left:<?php echo $Width?>px;
+}
+@media only screen and (max-width: 1200px) {
+    .main {
+        padding-left: 0;
+        padding-top: 0px;
+    }
+    nav.main-top {
+        padding: 0 4% 0;
+    }
+    
+}
+</style>
 <?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
 </head>
 <body>
@@ -51,6 +85,7 @@ foreach ($categorys as $category) {//遍历分类?>
 <div class="main-top-r">
 <span class="theme" ><i class="fa fa-magic" title="深色模式"></i></span>
 <?php if($is_login){?>
+    <span class="config" ><i class="layui-icon layui-icon-theme" title="主题配置"></i></span>
     <span class="bs-addUrl"><i class="fa fa-plus" title="快速添加"></i></span>
     <a href="./index.php?c=admin&u=<?php echo $u?>" title="后台管理" target="_blank"><i class="fa fa-user-circle-o"></i></a>
 <?php }elseif(getconfig('GoAdmin')  == 'on'  ){?>
@@ -82,7 +117,7 @@ $property = '<span><i class="fa fa-low-vision"></i></span>';} else  {$property =
 		<img src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>">
 		<?php echo $link['title'];?>
 		</p>
-		<?php if($Style=='1'||$Style=='2' ){echo '<p class="desc">'."\n".$link['description']."\n</p>";}//描述输出 ?>
+		<?php if( $Descr == 1 ){echo '<p class="desc">'.$link['description']."</p>";}//描述输出 ?>
 		<?php if($link['property'] == 1 ) { ?>
 		<span class="private"><i class="fa fa-low-vision"></i></span>
 		<?php } ?>
@@ -118,8 +153,6 @@ if($on){echo '</div>';}
 <script src = "<?php echo $libs?>/Layer/v3.3.0/layer.js"></script>
 <script src = "<?php echo $libs?>/Other/holmes.js"></script>
 <script src = "<?php echo $Theme?>/static/embed.js?v=<?php echo $version; ?>"></script>
-
-<?php if(preg_match('/MSIE|Trident/i',$_SERVER['HTTP_USER_AGENT'])){ echo "<script>alert('您的浏览器与本站不兼容,建议您使用谷歌浏览器!或将浏览器设为极速模式')</script>";}?>
 <script type="text/javascript">
     var u = '<?php echo $u?>';
 	var bodyh = $(document.body).height();

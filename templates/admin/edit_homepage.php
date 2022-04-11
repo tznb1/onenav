@@ -36,14 +36,9 @@
     <div class="layui-input-inline">
       <input id="theme" type="hidden" value="<?php echo getconfig('Theme')."|".getconfig('Style');?>">
       <select id="TEMPLATE" name="TEMPLATE" lay-filter="aihao" >
-        <option value="default|0" selected="">默认主题</option>
-        <option value="default|1">默认主题(样式1)</option>
-        <option value="default|2">默认主题(样式2)</option>
+        <option value="default|0">默认主题(加强)</option>
         <option value="default|xiaoz">默认主题(原版)</option>
-        <option value="baisu|1">百素主题(显示描述)</option>
-        <option value="baisu|0">百素主题(隐藏描述)</option>
-        <option value="baisu|2">百素极速(显示描述)</option>
-        <option value="baisu|3">百素极速(隐藏描述)</option>
+        <option value="baisu|0">百素</option>
         <option value="baisu-two|0">百素two</option>
         <option value="liutongxu|0">刘桐序</option>
         <option value="webstack|0">WebStack</option>
@@ -51,7 +46,6 @@
         <option value="lylme_spage|0">六零导航页</option>
         <option value="webjike|0">小呆导航</option>
         <option value="fz|0">疯子</option>
-        <option value="runoob|0">菜鸟教程</option>
       </select>
     </div><div class="layui-form-mid layui-word-aux">PC端上显示的主题</div>
   </div>
@@ -61,14 +55,9 @@
     <div class="layui-input-inline">
       <input id="theme2" type="hidden" value="<?php echo getconfig('Theme2','default')."|".getconfig('Style2','0');?>">
       <select id="TEMPLATE2" name="TEMPLATE2" lay-filter="aihao" >
-        <option value="default|0" selected="">默认主题</option>
-        <option value="default|1">默认主题(样式1)</option>
-        <option value="default|2">默认主题(样式2)</option>
+        <option value="default|0">默认主题(加强)</option>
         <option value="default|xiaoz">默认主题(原版)</option>
-        <option value="baisu|1">百素主题(显示描述)</option>
-        <option value="baisu|0">百素主题(隐藏描述)</option>
-        <option value="baisu|2">百素极速(显示描述)</option>
-        <option value="baisu|3">百素极速(隐藏描述)</option>
+        <option value="baisu|0">百素</option>
         <option value="baisu-two|0">百素two</option>
         <option value="liutongxu|0">刘桐序</option>
         <option value="webstack|0">WebStack</option>
@@ -76,17 +65,9 @@
         <option value="lylme_spage|0">六零导航页</option>
         <option value="webjike|0">小呆导航</option>
         <option value="fz|0">疯子</option>
-        <option value="runoob|0">菜鸟教程</option>
       </select>
     </div><div class="layui-form-mid layui-word-aux">移动端上显示的主题,有些主题不兼容移动端,所以支持一下单独设置</div>
   </div>  
-  <!--<div class="layui-inline">-->
-  <!--  <label class="layui-form-label">导航宽度</label>-->
-  <!--  <div class="layui-input-inline">-->
-  <!--     <input type="text" name="navwidth"  value = '<?php echo getconfig('navwidth');?>' placeholder="默认:240,建议:150-240" autocomplete="off" class="layui-input">-->
-  <!--  </div>-->
-  <!--  <div class="layui-form-mid layui-word-aux">修改会导致手机端布局异常!</div>-->
-  <!--</div>-->
  <div class="layui-form-item">
     <label class="layui-form-label">首页功能</label>
     <div class="layui-input-block">

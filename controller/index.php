@@ -1,28 +1,17 @@
 <?php //首页模板入口
 if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
 Visit();//访问控制
-//如果数据库不存在则转入错误提示或注册页面
-if(!file_exists('./data/'.$u.'.db3' )){
-    $Redirect = 0; //1,账号不存且未隐藏接口时自动载入注册页面! 非1.载入错误提示页面,如果允许注册则显示注册连接!
-    if ( $Redirect == 1 && $login =='login'){
-        header('location:index.php?c='.$login.'&u='.$u); //库不存在,载入注册页面
-    }else{
-        if ( $login !='login'){
-            $msg = "<h3>未找到账号数据！<br />注册接口已隐藏！<br />请联系管理员！</h3>";
-        }else if ($reg ==1 or $reg ==2){//如果允许注册则显示注册连接!
-            $msg = "<h3>未找到账号数据，请<a href = 'index.php?c=".$login."&u=".$u."'>注册账号</a>！</h3>";
-        }else if ($reg == 0 ){
-            $msg = "<h3>未找到账号数据！<br />管理员不允许注册账号！<br />请联系管理员！</h3>";
-        }else {
-            $msg = "<h3>未找到账号数据！<br />注册配置错误！<br />请联系管理员！</h3>";
-        }
-        require('./templates/admin/403.php');
-    }
-    exit;
-}
 
 //如果已经登录，获取所有分类和链接
 $is_login=is_login2();
+
+//前台载入主题配置
+if($_GET['fn'] == 'config'){
+    $Theme='./templates/'.getconfig('Theme','default');
+	include_once($Theme.'/config.php');
+    exit;
+}
+    
 if($is_login){
     //查询分类目录
     $categorys = $db->select('on_categorys','*',[
@@ -67,6 +56,16 @@ $ICP    = $udb->get("config","Value",["Name"=>'ICP']);
 $Ofooter = $udb->get("config","Value",["Name"=>'footer']);
 $Ofooter = htmlspecialchars_decode(base64_decode($Ofooter));
 
+//原版主题兼容(注意:原版为单用户设计,使用时用户账号为默认账号,不兼容多用户!仅兼容标题,logo,关键字,描述,其他设置对其无效!)
+$compatible = false ; //true or false
+if ($compatible) {
+    define('TEMPLATE',getconfig('Theme'));
+    $site_setting['title']          =   getconfig("title");
+    $site_setting['logo']           =   getconfig("logo");
+    $site_setting['keywords']       =   getconfig("keywords");
+    $site_setting['description']    =   getconfig("description");
+}
+
 //允许使用参数载入指定主题,如需禁止屏蔽或删掉此段!
 $Style= $_GET['Style']==''? '0':$_GET['Style'] ;
 $Theme='./templates/'.$_GET['Theme'];
@@ -101,6 +100,7 @@ if(preg_match('/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i'
     }
 }
 
-
 require($templates);
+$t2 = microtime(true);
+echo '<!--Powered by 落幕,QQ:271152681 执行耗时：'.round(($t2-$t1)*1000,3).'ms. -->';
 ?>

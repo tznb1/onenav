@@ -136,20 +136,6 @@
     <div class="page-container">
         <div id="sidebar" class="sticky sidebar-nav fade mini-sidebar" style="width: 60px;">
             <div class="modal-dialog h-100  sidebar-nav-inner">
-                <!--<div class="sidebar-logo border-bottom border-color">-->
-                    <!-- logo -->
-                <!--    <div class="logo overflow-hidden">-->
-                <!--        <a href="" class="logo-expanded">-->
-                <!--            <img src="<?php echo $Theme?>/img/ywdh-logo-1.png" height="40" class="logo-light" alt="网址导航">-->
-                <!--            <img src="<?php echo $Theme?>/img/ywdh-logo.png" height="40" class="logo-dark d-none" alt="网址导航">-->
-                <!--        </a>-->
-                <!--        <a href="" class="logo-collapsed">-->
-                <!--            <img src="<?php echo $Theme?>/img/ywdh-logo-bark-ico.png" height="40" class="logo-light" alt="网址导航">-->
-                <!--            <img src="<?php echo $Theme?>/img/ywdh-logo-ico.png" height="40" class="logo-dark d-none" alt="网址导航">-->
-                <!--        </a>-->
-                <!--    </div>-->
-                    <!-- logo end -->
-                <!--</div>-->
                 <div class="sidebar-menu flex-fill">
                     <div class="sidebar-scroll">
                         <div class="sidebar-menu-inner">
@@ -192,10 +178,6 @@
                 <div id="header" class="page-header sticky">
                     <div class="navbar navbar-expand-md">
                         <div class="container-fluid p-0">
-                            <!--<a href="" class="navbar-brand d-md-none" title="网址导航">-->
-                            <!--    <img src="<?php echo $Theme?>/img/ywdh-logo-bark-ico.png" class="logo-light" alt="网址导航">-->
-                            <!--    <img src="<?php echo $Theme?>/img/ywdh-logo-ico.png" class="logo-dark d-none" alt="网址导航">-->
-                            <!--</a>-->
                             <div class="collapse navbar-collapse order-2 order-md-1">
                                 <div class="header-mini-btn">
                                     <label>
@@ -430,12 +412,7 @@
                         $fid = $category['id'];
                         $links = get_links($fid);
                         //如果分类是私有的
-                        if( $category['property'] == 1 ) {
-                            $property = '<i class="fa fa-lock" style = "color:#5FB878"></i>';
-                        }
-                        else {
-                            $property = '';
-                        }
+                        $property = $category['property'] == 1 ? $property = '<i class="fa fa-lock" style = "color:#5FB878"></i>':'';
                 ?>
                 <div id="content" class="content-site customize-site" style="padding-left: 10px;">
                     <div id="category-<?php echo $category['id']; ?>" class="d-flex flex-fill ">
@@ -447,22 +424,14 @@
                 foreach ($links as $link) {
                     //遍历链接
                     $link['description'] = empty($link['description']) ? '作者很懒，没有填写描述。' : $link['description'];
-                    //判断是否是私有
-                    if( $link['property'] == 1 ) {
-                        $privacy_class = 'property';
-                    }
-                    else {
-                        $privacy_class = '';
-                    }
-                ?>
+              ?>
                       <div class="url-card col-6  col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                         <div class="url-body default">
-                            <a href="./index.php?c=click&id=<?php echo $link['id']; ?>&u=<?php echo $u?>" target="_blank" data-id="689" data-url="./index.php?c=click&id=<?php echo $link['id']; ?>&u=<?php echo $u?>"
-                                class="card no-c  mb-4 site-689" data-toggle="tooltip" data-placement="bottom" title="<?php echo $link['title']; ?>">
+                            <a href="<?php echo geturl($link); ?>" target="_blank"  class="card no-c mb-4 " data-toggle="tooltip" data-placement="bottom" title="<?php echo $link['title']; ?>">
                                 <div class="card-body">
                                     <div class="url-content d-flex align-items-center">
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
-                                            <img class="lazy" src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" data-src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" onerror="javascript:this.src='<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>'" alt="<?php echo $link['title']; ?>">
+                                            <img class="lazy" src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="<?php echo $link['title']; ?>">
                                         </div>
                                         <div class="url-info flex-fill">
                                             <div class="text-sm overflowClip_1">
@@ -473,7 +442,7 @@
                                     </div>
                                 </div>
                             </a>
-                            <a href="<?php echo $link['url']; ?>" class="togo text-center text-muted is-views" data-id="689" data-toggle="tooltip" data-placement="right" title="直达" rel="nofollow">
+                            <a href="<?php echo $link['url']; ?>" class="togo text-center text-muted is-views"  data-toggle="tooltip" data-placement="right" title="直达" rel="nofollow">
                                 <i class="iconfont icon-goto"></i>
                             </a>
                         </div>
@@ -815,26 +784,6 @@ function switchNightMode(){
         $(".switch-dark-mode").attr("data-original-title","夜间模式");
         $(".mode-ico").removeClass("icon-light");
         $(".mode-ico").addClass("icon-night");
-    }
-}
-function open_add_link(){
-    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-        layer.open({
-        type: 2,
-        title: '添加链接',
-        shadeClose: true, //点击遮罩关闭层
-        area : ['100%' , '100%'],
-        content: './index.php?c=admin&page=add_link_tpl_m&u='+u
-        });
-    }else{
-        layer.open({
-        type: 2,
-        title: '添加链接',
-        maxmin: true,
-        shadeClose: true, //点击遮罩关闭层
-        area : ['800px' , '520px'],
-        content: './index.php?c=admin&page=add_link_tpl&u='+u
-        });
     }
 }
 </script>

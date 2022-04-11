@@ -67,16 +67,11 @@
 					<div class="list"><a href="#category-<?php echo $category['id']; ?>" class="catlist"><?php echo geticon($category['Icon']).$category['name'];?></a> 
 					<span class="editFid" data-fid = "<?php echo $category['id']; ?>"><i class="iconfont icon-bianji"></i></span></div>
 					<?php } ?>
-
-			<div class="list add" id="addCat">
-						<a>
-							<i class="iconfont icon-tianjia"></i>添加分类</a>
-					</div>
+			<div class="list add" id="addCat"><a><i class="iconfont icon-tianjia"></i>添加分类</a></div>
 			</div>
 			<div class="user-info">
-				<div class="pic">
-					<a href="./?u=<?php echo $u?>">
-						<img src="<?php echo $Theme?>/images/touxiang.png" /></a>
+				<div class="pic" id="config">
+				    <img src="<?php echo $Theme?>/images/touxiang.png" />
 				</div>
 				<div class="text">
 					<?php
@@ -86,7 +81,7 @@
 							<p class="t1">
 								<?php echo $site_setting['title']; ?>
 							</p>
-							<p class="t2">管理后台</p>
+							<p class="t2" title="点击左边的头像可以设置主题" >管理后台</p>
 						</a>
 						<?php }elseif(getconfig('GoAdmin')  == 'on'  ){ ?>
 						<a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" target="_blank">

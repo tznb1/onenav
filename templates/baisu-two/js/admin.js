@@ -76,6 +76,10 @@ layui.use(['dropdown', 'layer', 'form'], function() {
 			content: $('#addsiteBox')
 		});
 	});
+	//主题设置
+	$('#config').click(function() {
+		console.log('config');
+	});
 	$('.addsite-main .list.type span.fid').click(function() {
 		var fid = $(this).data('fid');
 		$('#addsiteBox input#fid').val(fid);

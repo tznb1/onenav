@@ -99,7 +99,7 @@ function admin_menu() {
                     }
                     else{
                       //删除失败
-                      mdui.alert(data.err_msg);
+                      mdui.alert(data.msg);
                     }
                   });
               },

@@ -102,7 +102,7 @@ function getUrlinfo(url) {
 			$("input#title").val(data.data.title);
 			$("textarea#description").val(data.data.description);
 		} else {
-			layer.msg(data.err_msg, {
+			layer.msg(data.msg, {
 				icon: 5,
 				time: 1000,
 			});
@@ -246,7 +246,7 @@ $('.date-main').click(function() {
 });
 //获取农历
 var lunarD = Lunar.fromDate(myDate);
-console.log(lunarD);
+//console.log(lunarD);
 var lunarNowDate = lunarD.getYearInGanZhi() + '年' + lunarD.getMonthInChinese() + "月" + lunarD.getDayInChinese();
 $('#nowLunar').text(lunarNowDate);
 

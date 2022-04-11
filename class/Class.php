@@ -38,6 +38,16 @@ if ($count){
     $db->insert('loginlimit',['name'=> $name ,'value'=> $value]);
 }
 }
+//获取URL
+function geturl($link){
+    global $u;
+if (getconfig('urlz')  == 'on'){
+    return $link['url'];
+}else{
+    return "./index.php?c=click&id={$link['id']}&u={$u}";
+   //return  "./index.php?c=click&id=<?php echo $link['id'].'&u='.$u; 
+}}
+
 //登陆限制...暂时没用
 function getloginlimit($name){
 $db = new Medoo\Medoo([
@@ -196,6 +206,11 @@ function Getkey2($user,$pass,$Expire,$Skey,$time){
 //获取到期时间戳,默认30天
 function GetExpire2($day =30){
     return time()+($day * 24 * 60 * 60);
+}
+
+//为了兼容原版主题..
+function is_login(){
+    return is_login2();
 }
 
 //判断用户是否已经登录2

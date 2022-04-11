@@ -1,6 +1,20 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年04月11日</h4>
+      <ul>
+        <li>修复刘桐序主题,图标获取失败时重复请求的问题[表现为图标闪烁](#羽峰)</li>
+        <li>后台主页设置移除部分主题风格选项:菜鸟教程删除,默认主题/风格1/2合并为默认主题(加强),4个老的百素主题合并为百素</li>
+        <li>默认主页分为原版和加强(加强版支持自定义)</li>
+        <li>默认主题(加强)支持主题配置(配色,卡片数量,描述行数,夜间模式,背景图等)</li>
+        <li>百素支持主题配置:个性Logo字体开关,描述显示开关,侧边栏宽度修改!代替原来的极速和隐藏描述选项</li>
+        <li>其他内部调整</li>
+      </ul>
+    </div>
+  </li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年04月05日</h4>
       <ul>
         <li>新增主题模板:小呆导航(#六度)</li>
