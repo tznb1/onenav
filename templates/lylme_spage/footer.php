@@ -7,11 +7,10 @@
 </div> 
 <div class="mt-5 mb-3 footer text-muted text-center"> 
     <!--备案信息-->
-    Copyright © <?php echo date('Y');?> All Rights Reserved <a target="_blank" href="" title="<?php echo getconfig('title');?>"><?php echo getconfig('title');?></a> &nbsp;&nbsp;<?php if($ICP != ''){echo '<img src="'.$Theme.'/img/icp.png" width="16px" height="16px" /><a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
+    Copyright © <?php echo date('Y');?> All Rights Reserved <a target="_blank" href="" title="<?php echo $site['title'];?>"><?php echo $site['title'];?></a> &nbsp;&nbsp;<?php if($ICP != ''){echo '<img src="'.$Theme.'/img/icp.png" width="16px" height="16px" /><a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
     <!--版权信息-->
     <p>Powered by&nbsp;&nbsp;<a target="_blank" href="https://github.com/helloxz/onenav" title="简约导航/书签管理器" target="_blank" rel="nofollow">OneNav</a>&nbsp;&nbsp;<a href="https://gitee.com/tznb/OneNav" target="_blank" rel="nofollow">落幕魔改版</a>&nbsp;&nbsp;The theme by&nbsp;&nbsp;<a href="https://gitee.com/LyLme/lylme_spage" target="_blank" rel="nofollow">lylme_spage</a></p>
-    <!--网站统计-->
-    <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
-    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
+    <?php echo $site['custom_footer']; ?>
+    <?php echo $Ofooter; ?>
 </div>  
 </html>

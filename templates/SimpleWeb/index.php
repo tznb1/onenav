@@ -4,16 +4,23 @@
 <meta charset="utf-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<?php echo '<title>'.getconfig('title').'</title>';?>
-<?php $keywords=getconfig("keywords"); if($keywords !=''){echo '<meta name="keywords" content="'.$keywords.'"/>'."\n";}?>
-<?php $description=getconfig("description"); if($description !=''){echo '<meta name="description" content="'.$description.'"/>'."\n";}?>
+<title><?php echo $site['Title'];?></title>
+<?php if($site['keywords'] !=''){echo '<meta name="keywords" content="'.$site['keywords'].'"/>'."\n";}?>
+<?php if($site['description'] !=''){echo '<meta name="description" content="'.$site['description'].'"/>'."\n";}?>
 <link rel="stylesheet" href="<?php echo $Theme?>/css/zui.min.css">
 <link rel="stylesheet" href="<?php echo $Theme?>/css/style.css">
 <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
 <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui-icon.css">
-<?php // $nw=getconfig("navwidth");if($nw!=''){echo'<style type="text/css">.left-bar{width:'.$nw.'px;}</style>';}//导航宽度?>
-<?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
+<style>
+<?php  $backgroundURL = getconfig($config.'backgroundURL','https://www.dmoe.cc/random.php'); if( !empty($backgroundURL)  ) {?>
+body {
+    background-image: url('<?php echo $backgroundURL;?>');
+}
+<?php } ?>
+</style>
+<?php echo $site['custom_header']; ?>
 </head>
+
 <body id="nav_body">
 <!-- Header Nav -->
 <header>
@@ -21,17 +28,16 @@
     <h1 class="logo">
     <a href="./?u=<?php echo $u?>">
     <!--<img src="<?php echo $Theme?>/img/favicon.ico">-->
-    <span><?php echo getconfig('title');?></span>
+    <span><?php echo $site['logo'];?></span>
     </a>
     </h1>
     <!-- Top Nav -->
     <nav class="nav">
     <ul>
 <?php if($is_login) {
-echo '     <li><a href="./index.php?c=admin&u='.$u.'" >后台管理</a></li>'."\n";
-echo '     <li><a href="./index.php?c=admin&page=logout&u='.$u.'">退出登陆</a></li>';}
-elseif(getconfig('GoAdmin')  == 'on'  ){
-     
+    echo '     <li><a href="./index.php?c=admin&u='.$u.'" >后台管理</a></li>'."\n";
+    echo '     <li><a href="./index.php?c=admin&page=logout&u='.$u.'">退出登陆</a></li>';
+    }elseif($site['GoAdmin']  ){
         ?><li><a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" >登录</a></li>
     <?php }
     ?>
@@ -97,9 +103,9 @@ elseif(getconfig('GoAdmin')  == 'on'  ){
             <!-- 遍历链接 -->
             <?php
                 foreach ($links as $link) {
-                $linkURL=getconfig('urlz')  == 'on' ? $link['url'] :'./index.php?c=click&id='.$link['id'].'&u='.$u;
+                $linkURL= $site['urlz'] == 'on' ? $link['url'] :'./index.php?c=click&id='.$link['id'].'&u='.$u;
                 $description = empty($link['description']) ? '作者很懒，没有填写描述。' : $link['description'];
-                $img= getconfig('LoadIcon')  == 'on' ? geticourl($IconAPI,$link['url']):$libs.'/Other/default.ico';
+                $img= $site['LoadIcon'] ? geticourl($IconAPI,$link['url']):$libs.'/Other/default.ico';
                 ?><div class="col-md-3 col-sm-4 col-xs-6 ">
                 <a href="<?php echo $linkURL?>" class="card-link" target="_blank">
                 <img src="<?php echo $img ?>" align="center" width="16px" height="16px">
@@ -118,8 +124,8 @@ elseif(getconfig('GoAdmin')  == 'on'  ){
                         <p>
                         Copyright © 2019 KRUNK DESIGN
                         <?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
-                        <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
-                        <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
+                        <?php echo $site['custom_footer']; ?>
+                        <?php echo $Ofooter; ?>
                         </p>
                     </div>
                 </div>

@@ -28,13 +28,13 @@ foreach ($links as $link) {
 ?>
                 <li class="col-3 col-sm-3 col-md-3 col-lg-1">
                     <?php 
-						if (getconfig('urlz')  == 'on'  ){
+						if ($site['urlz']  == 'on'  ){
 						    ?><a rel="nofollow" href="<?php echo $link['url']; ?>" title="<?php echo $link['description']; ?>" target="_blank"><?php
 						}else{
 						    ?><a rel="nofollow" href="./index.php?c=click&id=<?php echo $link['id']; ?>&u=<?php echo $u?>" title="<?php echo $link['description']; ?>" target="_blank"><?php
 						};
 						?>
-        <img src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" data-src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" onerror="javascript:this.src='<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="<?php echo $link['title']; ?>" />
+        <img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="<?php echo $link['title']; ?>" />
         <span><?php echo $link['title']; ?></span>
     </a>
 </li>

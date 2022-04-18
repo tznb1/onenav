@@ -33,6 +33,10 @@ $category = $db->get('on_categorys',['id','property'],[
 $ICP    = $udb->get("config","Value",["Name"=>'ICP']);
 $Ofooter = $udb->get("config","Value",["Name"=>'footer']);
 $Ofooter = htmlspecialchars_decode(base64_decode($Ofooter));
+$urlz = getconfig('urlz');
+$visitorST = getconfig('visitorST');
+$adminST = getconfig('adminST');
+
 //link.id为公有，且category.id为公有
 if( ( $link['property'] == 0 ) && ($category['property'] == 0) ){
     //增加link.id的点击次数
@@ -45,11 +49,18 @@ if( ( $link['property'] == 0 ) && ($category['property'] == 0) ){
     ]);
     //如果更新成功
     if($update) {
-        //进行header跳转
-        // header('location:'.$link['url']);
-        // exit;
-        require('./templates/admin/click.php');
-        exit;
+        // 如果存在备用链接则优先使用过渡页
+        if( !empty($link['url_standby']) ) {
+            require('./templates/admin/click.php');
+            exit;
+        }
+        if ($urlz == '302'){
+            header('location:'.$link['url']);
+            exit;
+        }else{
+            require('./templates/admin/click.php');
+            exit;
+        }
     }
 }
 //如果已经成功登录，直接跳转

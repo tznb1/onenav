@@ -53,7 +53,7 @@ if( file_exists('./data/onenav.db3') && file_exists('./data/config.php') ){
     </div>
   </div>
 <?php if( $xiaoz ){ 
-    echo '<div class="layui-form-mid layui-word-aux">检测到原版数据库, 支持(含): 0.9.16 以下的版本<br /></div>';
+    echo '<div class="layui-form-mid layui-word-aux">检测到原版数据库, 支持(含): 0.9.18 以下的版本<br /></div>';
     echo '<div class="layui-form-mid layui-word-aux">安装方式：升级安装 (保留主题外的全部数据)<br /></div>';
 }else{
     echo '<div class="layui-form-mid layui-word-aux">安装方式：全新安装 &ensp;&ensp;&ensp;&ensp;&ensp;</div>';

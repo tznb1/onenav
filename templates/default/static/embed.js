@@ -200,12 +200,12 @@ $.contextMenu({
 $("#config").click(function(){
         layer.open({
         type: 2,
-        title: '主题自定义',
+        title: '主题配置',
         shadeClose: true, //点击遮罩关闭层
-        area : ['600px' , '99%'],
+        area : ['550px' , '99%'],
         anim: 5,
         offset: 'rt',
-        content: './index.php?fn=config&u='+u
+        content: './index.php?c=admin&page=config&u='+u+'&Theme='+t
         });
 });
 

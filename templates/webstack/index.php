@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="author" content="viggo" />
-    <title><?php echo getconfig('title');?></title>
-    <?php $keywords=getconfig("keywords"); if($keywords !=''){echo '<meta name="keywords" content="'.$keywords.'"/>'."\n";}?>
-    <?php $description=getconfig("description"); if($description !=''){echo '<meta name="description" content="'.$description.'"/>'."\n";}?>
+	<title><?php echo $site['Title'];?></title>
+	<?php if($site['keywords'] !=''){echo '<meta name="keywords" content="'.$site['keywords'].'"/>'."\n";}?>
+	<?php if($site['description'] !=''){echo '<meta name="description" content="'.$site['description'].'"/>'."\n";}?>
     <!--<link rel="stylesheet" href="<?php echo $Theme?>/assets/css/Arimo.css"> //英文字库-->
     <link rel="stylesheet" href="<?php echo $Theme?>/assets/css/bootstrap.css">
     <link rel="stylesheet" href="<?php echo $Theme?>/assets/css/xenon-core.css">
@@ -15,10 +15,9 @@
     <link rel="stylesheet" href="<?php echo $Theme?>/assets/css/xenon-skins.css">
     <link rel="stylesheet" href="<?php echo $Theme?>/assets/css/nav.css">
     <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
-    <link rel="stylesheet" href="<?php echo $Theme?>/assets/css/layui-icon.css">
-    <?php // $nw=getconfig("navwidth");if($nw!=''){echo'<style type="text/css">.sidebar-menu{width:'.$nw.'px;}</style>';}//导航宽度?>
-    <?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
+    <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui-icon.css">
     <script src="<?php echo $libs?>/jquery/jquery-3.6.0.min.js"></script>
+    <?php echo $site['custom_header']; ?>
 </head>
 <body class="page-body">
     <!-- skin-white -->
@@ -29,7 +28,7 @@
                     <!-- logo -->
                     <div class="logo">
                         <a href="" class="logo-expanded">
-                            <h1 style = "color:#0099FF;"><?php echo getconfig('logo');?></h1>
+                            <h1 style = "color:#0099FF;"><?php echo $site['logo'];?></h1>
                         </a>
                         <a href="" class="logo-collapsed">
                             <img src="<?php echo $Theme?>/assets/images/logo-collapsed@2x.png" width="40" alt="" />
@@ -47,7 +46,7 @@
 	?>
 	
 	<li><a href="./index.php?c=admin&u=<?php echo $u?>" class="smooth" onclick="window.open('./index.php?c=admin&u=<?php echo $u?>','_self')"><i class="fa fa-user-circle"></i><span class="title">后台管理</span></a></li>
-	<?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
+	<?php }elseif ($site['GoAdmin']  ) {  ?>
 	<li><a href="" class="smooth" onclick="window.open('./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>','_self')"><i class="fa fa-user-circle"></i><span class="title">登录</span></a></li>
 	<?php } ?>    
 	<!-- 左侧登陆和后台End -->   
@@ -80,7 +79,7 @@
             <div class="row">
                 <?php
                     foreach ($links as $link) {
-                        $linkURL=getconfig('urlz')  == 'on' ? $link['url'] :'./index.php?c=click&id='.$link['id'].'&u='.$u;
+                        $linkURL=$site['urlz']  == 'on' ? $link['url'] :'./index.php?c=click&id='.$link['id'].'&u='.$u;
                         //判断是否是私有项目
                         if( $link['property'] == 1 ) {
                             $privacy_class = 'property';
@@ -95,7 +94,7 @@
                             <span class="label label-info" data-toggle="tooltip" data-placement="left" title="" data-original-title="Hello I am a Tooltip"></span>
                             <div class="xe-comment">
                                 <a href="#" class="xe-user-name overflowClip_1">
-                                <img src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16" height="16" />
+                                <img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16" height="16" />
                                     <strong><?php echo $link['title']; ?></strong>
                                 </a>
                                 <p class="overflowClip_2"><?php echo $link['description']; ?></p>
@@ -111,12 +110,11 @@
             <footer class="main-footer sticky footer-type-1">
                 <div class="footer-inner">
                     <?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
-                    <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
-                    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
-                    <a href="./index.php?c=login&u=<?php echo $u?>">login</a>
-                    </div>
-                    <?php if(getconfig("gotop")=='on'){echo '<div class="go-up"><a href="#" rel="go-top"><i class="fa-angle-up"></i></a></div>';}?>
+                    <?php echo $site['custom_footer']; ?>
+                    <?php echo $Ofooter; ?>
                 </div>
+                <?php if($site['gotop'] ){echo '<div class="go-up"><a href="#" rel="go-top"><i class="fa-angle-up"></i></a></div>';}?>
+              </div>
             </footer>
         </div>
     </div>

@@ -1,6 +1,27 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年04月18日</h4>
+      <ul>
+        <li>后台调整:原主页设置分裂为站点设置和主题模板,新增过度页面设置,原直连模式开关改为跳转方式下拉选择</li>
+        <li>主题模板:新增 info.json 对主题进行描述,支持主题预览和主题配置(部分)</li>
+        <li>从原版升级安装脚本支持到0.9.18</li>
+      </ul>
+    </div>
+  </li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年04月14日</h4>
+      <ul>
+        <li>默认主题(加强):修复修改描述行数后部分卡片无法点击的bug,新增左侧栏背景色定义,更新使用提示,新增天气插件定义,搜索框占比调小,背景图设置集成多个随机背景API地址,rgba</li>
+        <li>去除六零导航的自带每日bing,改用在线API获取!(因为慢,浏览器无法缓存!)</li>
+      </ul>
+    </div>
+  </li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年04月11日</h4>
       <ul>
         <li>修复刘桐序主题,图标获取失败时重复请求的问题[表现为图标闪烁](#羽峰)</li>
@@ -324,7 +345,7 @@
         <li>后台:取消自定义JavaScript功能,可以直接使用底部代码代替!</li>
         <li>支持用户注册,入口可以配置是否允许注册!</li>
         <li>支持记录用户注册IP,注册时间</li>
-        <li>支持记录登录日志(登陆成功或失败时,记录库:login.log.db)</li>
+        <li>支持记录登录日志(登陆成功或失败时,记录库:login.log.db3)</li>
         <li>安全:新增登陆失败保护机制!降低被爆力的风险</li>
         <li>安全:调整保持登陆的Key生成策略!保护Key防止篡改!</li>
         <li>修改ApiToken逻辑,可直接修改值,而不是通过USER+TOKEN计算!</li>

@@ -1,11 +1,4 @@
-if (_GET("page") == 'edit_homepage'){ 
-$('#TEMPLATE').val(document.getElementById('theme').value);
-$('#TEMPLATE2').val(document.getElementById('theme2').value);
-layui.use(['form'],function() {
-var form=layui.form;
-form.render();
-}); 
-}
+
  
 layui.use(['element','table','layer','form','upload','util'], function(){
     var element = layui.element,
@@ -14,7 +7,36 @@ layui.use(['element','table','layer','form','upload','util'], function(){
     form = layui.form,
     upload = layui.upload,
     layer = layui.layer,
-    $ = layui.$;
+    $ = layui.$,
+    page = _GET("page");
+
+if (page == 'edit_homepage'){
+    $('#urlz').val(document.getElementById('urlz-input').value);
+    $('#gotop').val(document.getElementById('gotop-input').value);
+    $('#quickAdd').val(document.getElementById('quickAdd-input').value);
+    $('#GoAdmin').val(document.getElementById('GoAdmin-input').value);
+    $('#LoadIcon').val(document.getElementById('LoadIcon-input').value);
+    form.render();//重新渲染
+    //Hash地址的定位
+    var layid = location.hash.replace(/^#tab=/, '');
+    element.tabChange('tab', layid);
+    console.log(layid);
+    //切换事件
+    element.on('tab(tab)', function(elem){
+        layid = $(this).attr('lay-id');
+        location.hash = 'tab='+ $(this).attr('lay-id');
+    });
+}
+
+// 主页预览图点击放大
+$("body").on("click",".img-list img",function(e){
+          layer.photos({
+                 photos: { "data": [{"src": e.target.src,}]}
+          });
+    });
+
+
+
 
 //分类列表
 table.render({
@@ -462,18 +484,20 @@ form.on('submit(add_category)', function(data){
 
 //首页设置
 form.on('submit(edit_homepage)', function(data){
+    data.field.layid = layid;
     $.post('./index.php?c=api&method=edit_homepage&u='+u,data.field,function(data,status){
-      //如果添加成功
       if(data.code == 0) {
         layer.msg('已修改！', {icon: 1});
-      }
-      else{
+      }else{
         layer.msg(data.msg, {icon: 5});
       }
     });
     console.log(data.field) 
     return false; 
 });
+
+
+
 //账号设置
 form.on('submit(edit_user)', function(data){
     if(data.field.password ==''){layer.msg('为了您账号安全,请输入密码在提交!', {icon: 5});return;}
@@ -639,8 +663,57 @@ form.on('select(session)', function (data) {
 //结束
 });
 
+function theme_detail(name,description,version,update,author,homepage,screenshot,key){
+    layer.open({type: 1,maxmin: false,shadeClose: true,resize: false,title: name + ' - 主题详情',area: ['60%', '59%'],content: '<body class="layui-fluid"><div class="layui-row" style = "margin-top:1em;"><div class="layui-col-sm9" style = "border-right:1px solid #e2e2e2;"><div style = "margin-left:1em;margin-right:1em;"><img src="'+screenshot+'" alt="" style = "max-width:100%;"></div></div><div class="layui-col-sm3"><div style = "margin-left:1em;margin-right:1em;"><h1>'+name+'</h1><p>描述：'+description+'</p><p>版本：'+version+'</p><p>更新时间：'+update+'</p><p>作者：'+author+'</p><p>主页：<a style = "color:#01AAED;" href="'+homepage+'" target="_blank" rel = "nofollow">访问主页</a></p></div></div></div></body>'});
+                    
+}
 
+function theme_preview(key,name){
+ window.open('./index.php?Theme='+key+'&u=' + u);
+}
 
+function theme_config(key,name){
+    layer.open({
+        type: 2,
+        title: name + ' - 主题配置',
+        shadeClose: true, //点击遮罩关闭层
+        area : ['550px' , '99%'],
+        anim: 5,
+        offset: 'rt',
+        content: './index.php?c=admin&page=config&u='+u+'&Theme='+key+'&source=admin'
+        });
+}
+
+function set_theme(key,name) {
+    layer.open({
+        title:name
+        ,content: '请选择要应用的设备类型 ?'
+        ,btn: ['全部', 'PC', 'Pad']
+        ,yes: function(index, layero){
+            set_theme2(key,'PC/Pad');
+        },btn2: function(index, layero){
+            set_theme2(key,'PC');
+        },btn3: function(index, layero){
+            set_theme2(key,'Pad');
+        },cancel: function(){ 
+            return true;
+        }
+    });
+}
+function set_theme2(name,type) {
+    console.log(type,name);
+    $.post("/index.php?c=api&method=set_theme&u="+u,{type:type,name:name},function(data,status){
+        if( data.code == 0 ) {
+            layer.msg(data.msg, {icon: 1});
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        }
+        else{
+            layer.msg(data.msg, {icon: 5});
+        }
+    });
+}
 //异步识别链接信息
 function get_link_info() {
     var url = $("#url").val();
@@ -707,10 +780,24 @@ function _GET(variable){
 }
 
 function check_weak_password(){
-  
         layer.open({
           title:'风险提示！',
           content: '系统检测到您使用的默认密码，请参考<a href = "https://dwz.ovh/ze1ts" target = "_blank" style = "color:#01AAED;">帮助文档</a>尽快修改！' //这里content是一个普通的String
         });
      
 }
+
+    //显示大图片
+    function show_img(url) {
+      //页面层
+      layer.open({
+        type: 1,
+        skin: 'layui-layer-rim', //加上边框
+         area: ['95%', '95%'], //宽高
+        shadeClose: true, //开启遮罩关闭
+        end: function (index, layero) {
+          return false;
+        },
+        content: '<div style="text-align:center" ><img src="' + url + '" /></div>'
+      });
+    }

@@ -41,7 +41,7 @@
 layui.use(['form'], function(){
     var form = layui.form;
     form.on('submit(login)', function(data){
-        $.post('./index.php?c=admin&u=<?php echo $u; ?>',data.field,function(data,status){
+        $.post('./index.php?c=admin&page=Pass2&u=<?php echo $u; ?>',data.field,function(data,status){
             if(data.code == 0) {
                 window.location.href = './index.php?c=admin&u=<?php echo $u; ?>';
             }else{

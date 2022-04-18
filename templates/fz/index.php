@@ -2,9 +2,9 @@
 <html lang="zh-ch" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta charset="utf-8" />
-	<title><?php echo getconfig("title");?></title>
-	<?php $keywords=getconfig("keywords"); if($keywords !=''){echo '<meta name="keywords" content="'.$keywords.'"/>'."\n";}?>
-	<?php $description=getconfig("description"); if($description !=''){echo '<meta name="description" content="'.$description.'"/>'."\n";}?>
+	<title><?php echo $site['Title'];?></title>
+	<?php if($site['keywords'] !=''){echo '<meta name="keywords" content="'.$site['keywords'].'"/>'."\n";}?>
+	<?php if($site['description'] !=''){echo '<meta name="description" content="'.$site['description'].'"/>'."\n";}?>
 	<meta name="generator" content="EverEdit" />
 	<meta name="author" content="xiaoz<www.xiaoz.me>" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui-icon.css">
 	<link rel="stylesheet" href="<?php echo $Theme?>/static/style.css?v=<?php echo $version; ?>">
 	<script src = '<?php echo $libs?>/MDUI/v1.0.1/js/mdui.min.js'></script>
+	<?php echo $site['custom_header']; ?>
 </head>
 <body class = "mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-primary-light-green mdui-theme-accent-pink mdui-loaded mdui-text-color-black">
 	<!--背景图片修改-->
@@ -22,7 +23,7 @@
 	<header class = "mdui-appbar mdui-appbar-fixed">
 		<div class="mdui-toolbar mdui-color-theme">
 		<span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-drawer="{target: '#drawer', swipe: true}"><i class="mdui-icon material-icons">menu</i></span>
-		  <a href="" class = "mdui-typo-headline"><span class="mdui-typo-title"><?php echo getconfig("logo");?></span></a>
+		  <a href="" class = "mdui-typo-headline"><span class="mdui-typo-title"><?php echo $site['logo'];?></span></a>
 		  <div class="mdui-toolbar-spacer"></div>
 		  <!-- 新版搜索框 -->
 		  	<div class="mdui-col-md-4 mdui-col-xs-6">
@@ -77,7 +78,7 @@ WIDGET = {
 		if( $is_login ) {
 	  ?>	
 	  <a class = "mdui-hidden-xs" href="./index.php?c=admin&u=<?php echo $u?>" title = "后台管理" target="_blank" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">account_circle</i></a>
-	  <?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
+	  <?php }elseif ($site['GoAdmin']) {  ?>
 		<a class = "mdui-hidden-xs" href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" title = "登录后台" target="_blank" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">account_circle</i></a>
 	  <?php } ?>
     </a>
@@ -86,7 +87,7 @@ WIDGET = {
 	<!--导航工具END-->
 	<!-- 添加按钮 -->
 	<?php
-		if( $is_login && getconfig("quickAdd") =='on' ) {
+		if( $is_login && $site['quickAdd'] ) {
 	?>	
 	<div class="right-button mdui-hidden-xs" style="position: fixed;right:10px;bottom:80px;z-index:99;">
 		<div>
@@ -95,7 +96,7 @@ WIDGET = {
 	</div>
 	<?php } ?>
 	<!-- 添加按钮END -->
-	<?php if(getconfig("gotop") =='on') {?>
+	<?php if($site['gotop'] ) {?>
 	<!-- 返回顶部按钮 -->
 	<div id="top"></div>
 	<div class="top mdui-shadow-10">
@@ -133,7 +134,7 @@ WIDGET = {
 		<div class="mdui-list-item-content category-name"><i class="fa fa-dashboard"></i> 后台管理</div>
 		</li>
 		</a>
-	  <?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
+	  <?php }elseif ($site['GoAdmin']) {  ?>
 		<a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" title="手机登录" class="mdui-hidden-sm-up">
 			<li class="mdui-list-item mdui-ripple">
 			<div class="mdui-list-item-content category-name"><i class="fa fa-dashboard"></i> 登录</div>
@@ -181,7 +182,7 @@ WIDGET = {
 						<?php } ?>
 						<!-- 角标END---padding-top:6px文字距离框的高度-->
 						<?php 
-						if (getconfig('urlz')  == 'on'  ){
+						if ($site['urlz']  == 'on'  ){
 						    ?><a href="<?php echo $link['url']; ?>" target="_blank" title = "<?php echo $link['description']; ?>"><?php
 						}else{
 						    ?><a href="./index.php?c=click&id=<?php echo $link['id'].'&u='.$u; ?>" target="_blank" title = "<?php echo $link['description']; ?>"><?php
@@ -189,7 +190,7 @@ WIDGET = {
 						?>
 							<div class="mdui-card-primary" style = "padding-top:6px;">
 									<div class="mdui-card-primary-title link-title">
-										<img src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16" height="16">
+										<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16" height="16">
 										<span class="link_title"><?php echo $link['title']; ?></span> 
 									</div>
 
@@ -217,8 +218,8 @@ WIDGET = {
 	<footer>
 		© 2022 Powered by <a target = "_blank" href="https://gitee.com/tznb/OneNav" title = "简约导航/书签管理器" rel = "nofollow">OneNav</a>.The author is <a href="https://www.xiaoz.me/" target="_blank" title = "小z博客">xiaoz.me</a>
 	<?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
-    <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
-    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
+    <?php echo $site['custom_footer']; ?>
+    <?php echo $Ofooter; ?>
 	</footer>
 	<!-- footerend -->
 </body>

@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title><?php echo getconfig('title');?></title>
+    <title><?php echo $site['Title'];?></title>
     <meta name="theme-color" content="#f9f9f9">
-    <?php $keywords=getconfig("keywords"); if($keywords !=''){echo '<meta name="keywords" content="'.$keywords.'"/>'."\n";}?>
-    <?php $description=getconfig("description"); if($description !=''){echo '<meta name="description" content="'.$description.'"/>'."\n";}?>
+	<?php if($site['keywords'] !=''){echo '<meta name="keywords" content="'.$site['keywords'].'"/>'."\n";}?>
+	<?php if($site['description'] !=''){echo '<meta name="description" content="'.$site['description'].'"/>'."\n";}?>
     <link rel='stylesheet' id='wp-block-library-css' href='<?php echo $Theme?>/wp-includes/css/dist/block-library/style.min-5.6.2.css' type='text/css' media='all'>
     <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
     <link rel='stylesheet' id='iconfont-css' href='<?php echo $Theme?>/wp-content/themes/onenav/css/iconfont-3.03029.1.css' type='text/css' media='all'>
@@ -16,7 +16,6 @@
     <link rel='stylesheet' id='lightbox-css' href='<?php echo $Theme?>/wp-content/themes/onenav/css/jquery.fancybox.min-3.03029.1.css' type='text/css' media='all'>
     <link rel='stylesheet' id='style-css' href='<?php echo $Theme?>/wp-content/themes/onenav/css/style-3.03029.1.css' type='text/css' media='all'>
     <script type='text/javascript' src='<?php echo $Theme?>/wp-content/themes/onenav/js/jquery.min-3.03029.1.js' id='jquery-js'></script>
-    <?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
     <style>
         #footer-tools [data-v-db6ccf64][data-v-41ba7e2c] {
             top: unset !important;
@@ -72,6 +71,7 @@
             color: #fff;
         }
     </style>
+    <?php echo $site['custom_header']; ?>
 </head>
 
 <body class="io-grey-mode">
@@ -131,7 +131,7 @@
                 }
             }
         </style>
-        <div class="loader"><?php echo getconfig('logo');?></div>
+        <div class="loader"><?php echo $site['logo'];?></div>
     </div>
     <div class="page-container">
         <div id="sidebar" class="sticky sidebar-nav fade mini-sidebar" style="width: 60px;">
@@ -162,7 +162,7 @@
                             <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-237 sidebar-item">
                                 <a href="./index.php?c=admin&u=<?php echo $u?>" target="_blank"><i class="fa fa-user icon-fw icon-lg mr-2"></i><span>后台管理</span></a>
                             </li>
-                            <?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
+                            <?php }elseif ($site['GoAdmin']  ) {  ?>
                             <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-237 sidebar-item">
                                 <a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" target="_blank"><i class="fa fa-user icon-fw icon-lg mr-2"></i><span>登陆</span></a>
                             </li>
@@ -195,7 +195,7 @@
                                     <?php if($is_login) { ?>
                                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-281"><a href="./index.php?c=admin&u=<?php echo $u?>"><i class="fa fa-user-circle-o icon-fw icon-lg mr-2"></i><span>管理</span></a></li>
                                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-281"><a href="./index.php?c=admin&page=logout&u=<?php echo $u?>"><i class="fa fa-sign-out fa-lg mr-2"></i><span>退出</span></a></li>
-                                    <?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
+                                    <?php }elseif ($site['GoAdmin']  ) {  ?>
                                         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-281"><a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>"><i class="fa fa-user-circle-o icon-fw icon-lg mr-2"></i><span>登陆</span></a></li>
                                     <?php } ?>
                                 </ul>
@@ -431,7 +431,7 @@
                                 <div class="card-body">
                                     <div class="url-content d-flex align-items-center">
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
-                                            <img class="lazy" src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="<?php echo $link['title']; ?>">
+                                            <img class="lazy" src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="<?php echo $link['title']; ?>">
                                         </div>
                                         <div class="url-info flex-fill">
                                             <div class="text-sm overflowClip_1">
@@ -452,7 +452,7 @@
                 <?php } ?>
             <footer class="main-footer footer-type-1 text-xs">
                 <div id="footer-tools" class="d-flex flex-column">
-                    <?php if(getconfig("gotop") =='on') {?>
+                    <?php if($site['gotop']) {?>
                     <!-- 返回顶部按钮 -->
                     <a href="javascript:" id="go-to-up" class="btn rounded-circle go-up m-1" rel="go-top"><i class="iconfont icon-to-up"></i></a>
 	                <!-- 返回顶部END -->
@@ -469,8 +469,8 @@
                         Copyright © 2021 网址导航 &nbsp;&nbsp;Powered by <a target="_blank" href="https://github.com/helloxz/onenav" title="简约导航/书签管理器" target="_blank" rel="nofollow">OneNav</a>&nbsp;&nbsp;The theme by<a href="https://github.com/liutongxu/liutongxu.github.io" target="_blank" rel="nofollow">LiuTongxu</a>&nbsp;<a href="https://gitee.com/tznb/OneNav" target="_blank" rel="nofollow">落幕魔改版</a>
                     </div>
                     <?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
-                    <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
-                    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
+                    <?php echo $site['custom_footer']; ?>
+                    <?php echo $Ofooter; ?>
                 </div>
             </footer>
             </div>

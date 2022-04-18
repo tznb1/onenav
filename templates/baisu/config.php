@@ -1,11 +1,9 @@
 <?php
-$Theme='Theme-'.getconfig('Theme').'-';
-if(!$is_login){exit ("<h3>您未登录!</h3>");}
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    Writeconfig($Theme.'fonts',intval($_POST['fonts']));
-    Writeconfig($Theme.'Descr',intval($_POST['Descr']));
-    Writeconfig($Theme.'LeftColumnWidth',intval($_POST['LeftColumnWidth']));
+    Writeconfig($config.'fonts',intval($_POST['fonts']));
+    Writeconfig($config.'Descr',intval($_POST['Descr']));
+    Writeconfig($config.'LeftColumnWidth',intval($_POST['LeftColumnWidth']));
     msg(0,"修改成功");
 }
 
@@ -34,7 +32,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     <form class="layui-form">
 
   <div class="layui-form-item">
-    <input id="fonts-input" type="hidden" value="<?php echo getconfig($Theme.'fonts','0');?>">
+    <input id="fonts-input" type="hidden" value="<?php echo getconfig($config.'fonts','0');?>">
     <label class="layui-form-label">Logo字体</label>
     <div class="layui-input-inline">
       <select lay-verify="required"  id="fonts" name="fonts" lay-search>
@@ -45,7 +43,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     <div class="layui-form-mid layui-word-aux">普通加载快,个性更好看</div>
   </div>
   <div class="layui-form-item">
-    <input id="Descr-input" type="hidden" value="<?php echo getconfig($Theme.'Descr','0');?>">
+    <input id="Descr-input" type="hidden" value="<?php echo getconfig($config.'Descr','0');?>">
     <label class="layui-form-label">链接描述</label>
     <div class="layui-input-inline">
       <select lay-verify="required"  id="Descr" name="Descr" lay-search>
@@ -58,7 +56,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
   <div class="layui-form-item">
     <label class="layui-form-label">导航宽度</label>
     <div class="layui-input-inline">
-      <input type="number" id = "LeftColumnWidth" name="LeftColumnWidth" value = "<?php echo getconfig($Theme.'LeftColumnWidth','260');?>" placeholder="默认260" autocomplete="off" class="layui-input">
+      <input type="number" id = "LeftColumnWidth" name="LeftColumnWidth" value = "<?php echo getconfig($config.'LeftColumnWidth','260');?>" placeholder="默认260" autocomplete="off" class="layui-input">
     </div>
     <div class="layui-form-mid layui-word-aux">左侧栏的宽度,默认260</div>
   </div>
@@ -77,6 +75,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
 <script>
 var u = '<?php echo $u?>';
+var t = '<?php echo $theme;?>';
+var s = '<?php echo $_GET['source'];?>';
 $('#Descr').val(document.getElementById('Descr-input').value); 
 $('#fonts').val(document.getElementById('fonts-input').value); 
 
@@ -87,10 +87,15 @@ layui.use(['form'], function(){
 
 //保存设置
 form.on('submit(edit_homepage)', function(data){
-    $.post('./index.php?fn=config&u='+u,data.field,function(data,status){
+    $.post('./index.php?c=admin&page=config&u='+u+'&Theme='+t,data.field,function(data,status){
       //如果添加成功
       if(data.code == 0) {
-        parent.location.reload(); //刷新页面
+        if (s == 'admin'){
+            layer.msg(data.msg, {icon: 1});
+            return false;
+        }else{
+            parent.location.reload(); //刷新页面
+        }
       }
       else{
         layer.msg(data.msg, {icon: 5});

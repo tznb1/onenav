@@ -15,18 +15,17 @@
 			text-overflow:ellipsis;/*超出部分文字以...显示dsds*/
 		}
 	</style>
-	<?php
+	<?php  
 		//不存在多个链接的情况，如果用户已经登录，则1s后跳转，不然等5s
 		if( empty($link['url_standby']) ) {
 			
 			if ($is_login) {
-				header("Refresh:1;url=".$link['url']);
+				header("Refresh:".$adminST.";url=".$link['url']);
 			}
 			else{
-				header("Refresh:5;url=".$link['url']);
+				header("Refresh:".$visitorST.";url=".$link['url']);
 			}
 		}
-		
 	?>
 </head>
 <body>
@@ -37,17 +36,14 @@
 				<h2>链接信息：</h2>
 				<table class="table">
 					<tbody>
-					
 					<tr class="table-info">
 						<td>标题</td>
 						<td><?php echo $link['title']; ?></td>
 					</tr>
-
 					<tr class="table-info">
 						<td>描述</td>
 						<td><?php echo $link['description']; ?></td>
 					</tr>
-
 					<tr class="table-info">
 						<td>链接</td>
 						<td>
@@ -56,7 +52,8 @@
 							</div>
 						</td>
 					</tr>
-					<tr class="table-info">
+					<?php  if( !empty($link['url_standby']) ) {  
+					?><tr class="table-info">
 						<td>备用链接</td>
 						<td>
 							<div class = "prevent-overflow">
@@ -64,12 +61,9 @@
 							</div>
 						</td>
 					</tr>
-					
-					
+					<?php }?>
 					</tbody>
 				</table>
-				
-
 				<!-- 如果备用链接是空的，则显示加载中... -->
 				<?php if( empty($link['url_standby']) ) { ?>
 					<!-- 加载中 -->
@@ -77,7 +71,6 @@
 					 即将打开，请稍等...
 					<!-- 加载中END -->
 				<?php }else{ ?>
-				
 				<!-- 备用链接不为空 -->
 				<!-- 备用链接提示框 -->
 				<div class="alert alert-primary">
@@ -85,15 +78,12 @@
 				</div>
 				<!-- 提示框END -->
 				<?php } ?>
-				
 				<!-- 表格END -->
-				
 				<div class="xcdn-content">
 					<?php echo $msg; ?>
 				</div>
 				<hr>
 				<div class="xcdn-footer"><?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>&copy;2022 Powered by <a href="https://www.xiaoz.me/" title = "小z博客" rel = "nofollow" target = "_blank">xiaoz</a> and <a href="https://gitee.com/tznb/OneNav"  rel = "nofollow" target = "_blank">落幕</a></div>
-				
 			</div>
 		</div>
 	</div>

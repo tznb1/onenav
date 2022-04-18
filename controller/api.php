@@ -582,49 +582,57 @@ function imp_link() {
 
 //主页设置
 function edit_homepage(){
-    $TEMPLATE = htmlspecialchars($_POST['TEMPLATE']);//主题风格
-    $TEMPLATE2 = htmlspecialchars($_POST['TEMPLATE2']);//主题风格2
-    $navwidth = intval($_POST['navwidth']); //导航宽度
-    if($TEMPLATE == 'admin' || empty($TEMPLATE) || $TEMPLATE2 == 'admin' || empty($TEMPLATE2)){
-        msg(-1102,'主题风格设置错误！');
-    }elseif(!empty($TEMPLATE)  &&  !file_exists('./templates/'.getSubstrRight($TEMPLATE,'|').'/index.php')){
-        msg(-1103,'主题模板不存在1！');
-    }elseif(!empty($TEMPLATE2)  &&  !file_exists('./templates/'.getSubstrRight($TEMPLATE2,'|').'/index.php')){
-        msg(-1103,'主题模板不存在2！');
-    }elseif(htmlspecialchars($_POST['title'],ENT_QUOTES) !=$_POST['title']){
-        msg(-1103,'站点标题存在非法字符！');
-    }elseif(htmlspecialchars($_POST['description'],ENT_QUOTES) !=$_POST['description']){
-        msg(-1103,'站点描述存在非法字符！');
-    }elseif(htmlspecialchars($_POST['logo'],ENT_QUOTES) !=$_POST['logo']){
-        msg(-1103,'文字logo存在非法字符！');
-    }elseif(htmlspecialchars($_POST['keywords'],ENT_QUOTES) !=$_POST['keywords']){
-        msg(-1103,'站点关键词存在非法字符！');
-    }elseif(htmlspecialchars($_POST['ICP'],ENT_QUOTES) !=$_POST['ICP']){
-        msg(-1103,'ICP备案号存在非法字符！');
-    }elseif($_POST['navwidth'] != '' && ($navwidth <  1 or $navwidth > 500) ){
-        msg(-1103,'导航宽度设置错误,范围值1-500！');
+    $layid = $_POST['layid'];
+    if( $layid == '1'){
+        if(htmlspecialchars($_POST['title'],ENT_QUOTES) !=$_POST['title']){
+            msg(-1103,'主标题存在非法字符！');
+        }elseif(htmlspecialchars($_POST['subtitle'],ENT_QUOTES) !=$_POST['subtitle']){
+            msg(-1103,'副标题存在非法字符！');
+        }elseif(htmlspecialchars($_POST['description'],ENT_QUOTES) !=$_POST['description']){
+            msg(-1103,'站点描述存在非法字符！');
+        }elseif(htmlspecialchars($_POST['logo'],ENT_QUOTES) !=$_POST['logo']){
+            msg(-1103,'文字logo存在非法字符！');
+        }elseif(htmlspecialchars($_POST['keywords'],ENT_QUOTES) !=$_POST['keywords']){
+            msg(-1103,'站点关键词存在非法字符！');
+        }
+        Writeconfig('title',        htmlspecialchars($_POST['title'],       ENT_QUOTES));//站点标题
+        Writeconfig('subtitle',     htmlspecialchars($_POST['subtitle'],    ENT_QUOTES));//站点副标题
+        Writeconfig('description',  htmlspecialchars($_POST['description'], ENT_QUOTES));//站点描述
+        Writeconfig('logo',         htmlspecialchars($_POST['logo'],        ENT_QUOTES));//文字logo
+        Writeconfig('keywords',     htmlspecialchars($_POST['keywords'],    ENT_QUOTES));//站点关键词
+        Writeconfig('footer',       base64_encode($_POST['footer']  ));//底部代码
+        Writeconfig('head',         base64_encode($_POST['head']    ));//头部代码
+        msg(0,$_POST['subtitle']);
+    }elseif($layid == '2'){
+        Writeconfig('urlz',         strip_tags($_POST['urlz']       ));//跳转方式
+        Writeconfig('gotop',        strip_tags($_POST['gotop']      ));//返回顶部
+        Writeconfig('quickAdd',     strip_tags($_POST['quickAdd']   ));//快速添加
+        Writeconfig('GoAdmin',      strip_tags($_POST['GoAdmin']    ));//后台入口
+        Writeconfig('LoadIcon',     strip_tags($_POST['LoadIcon']   ));//加载图标
+        Writeconfig('visitorST',    strip_tags($_POST['visitorST']  ));//访客停留
+        Writeconfig('adminST',      strip_tags($_POST['adminST']    ));//管理员停留
+        
     }
-    Writeconfig('title',        htmlspecialchars($_POST['title'],       ENT_QUOTES));//站点标题
-    Writeconfig('description',  htmlspecialchars($_POST['description'], ENT_QUOTES));//站点描述
-    Writeconfig('logo',         htmlspecialchars($_POST['logo'],        ENT_QUOTES));//文字logo
-    Writeconfig('keywords',     htmlspecialchars($_POST['keywords'],    ENT_QUOTES));//站点关键词
-    Writeconfig('ICP',          htmlspecialchars($_POST['ICP'],         ENT_QUOTES));//ICP备案号
-    Writeconfig('urlz',         strip_tags($_POST['urlz']       ));//URL直连
-    Writeconfig('gotop',        strip_tags($_POST['gotop']      ));//返回顶部
-    Writeconfig('quickAdd',     strip_tags($_POST['quickAdd']   ));//快速添加
-    Writeconfig('GoAdmin',      strip_tags($_POST['GoAdmin']    ));//后台入口
-    Writeconfig('LoadIcon',     strip_tags($_POST['LoadIcon']   ));//加载图标
-    Writeconfig('navwidth',     empty($_POST['navwidth']) ? '' : intval($_POST['navwidth']));//导航宽度
-    Writeconfig('footer',       base64_encode($_POST['footer']  ));//底部代码
-    Writeconfig('head',         base64_encode($_POST['head']    ));//头部代码
-    Writeconfig('Style',        getSubstrLeft ($TEMPLATE,'|'    ));//主题样式
-    Writeconfig('Theme',        getSubstrRight($TEMPLATE,'|'    ));//主题模板
-    Writeconfig('Style2',        getSubstrLeft ($TEMPLATE2,'|'    ));//主题样式2
-    Writeconfig('Theme2',        getSubstrRight($TEMPLATE2,'|'    ));//主题模板  2  
-    global $u;//如果选择了默认首页
-    if($_POST['DefaultDB'] ==='on' &&  $_COOKIE['DefaultDB'] !== $u){setcookie('DefaultDB',$u, 32472115200,"/");}
+    
     msg(0,'successful');
 }
+
+//主页设置
+function set_theme(){
+    $type = $_POST['type'];
+    $name = $_POST['name'];
+    if( $type == 'PC/Pad'){
+        Writeconfig('Theme' , $name);
+        Writeconfig('Theme2', $name);
+    }elseif($type == 'PC'){
+        Writeconfig('Theme' , $name);
+    }elseif($type == 'Pad'){
+        Writeconfig('Theme2' , $name);
+    }
+    
+    msg(0,'设置成功');
+}
+
 
 //账号设置
 function edit_user(){

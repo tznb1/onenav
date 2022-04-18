@@ -68,7 +68,7 @@ $Plug     = $udb->get("config","Value",["Name"=>'Plug']);
     <div class="layui-inline">
       <label class="layui-form-label">静态路径</label>
       <div class="layui-input-inline">
-    <input type="text" name="libs"  lay-verify="required" value = '<?php echo $libs; ?>' placeholder='./static'  autocomplete="off" class="layui-input">
+    <input type="text" name="libs" id="libs" lay-verify="required" value = '<?php echo $libs; ?>' placeholder='./static'  autocomplete="off" class="layui-input">
       </div>
       <div class="layui-form-mid layui-word-aux">默认为./static 即本地服务器!建议使用CDN来提高加载速度!</div>
     </div>
@@ -211,11 +211,12 @@ $Plug     = $udb->get("config","Value",["Name"=>'Plug']);
 <script src = '<?php echo $libs?>/Layui/v2.6.8/layui.js'></script>
 <script src = '<?php echo $libs?>/jquery/jquery.md5.js'></script>
 <script>
-layui.use(['element','table','layer','form','util'], function(){
+layui.use(['element','table','layer','form','util','dropdown'], function(){
     var element = layui.element;
     var table = layui.table;
     var util = layui.util;
     var form = layui.form;
+    var dropdown = layui.dropdown;
     layer = layui.layer;
 //表头 https://www.layui.site/demo/table/cellEvent.html
 var cols=[[ //表头
@@ -253,7 +254,7 @@ table.render({
     ,cols: cols
 });
 
-
+dropdown.render({elem: '#libs',data:[{title: '本地服务',url: './static'},{title: '小zCDN',url: '//libs.xiaoz.top/lm21/onenav'}] ,click: function(obj){this.elem.val(obj.url);},style: 'width: 190px;'});
 //用户行工具栏事件
 table.on('tool(user_list)', function(obj){
     var data = obj.data;

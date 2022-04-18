@@ -8,7 +8,7 @@ a:hover,a:active,a:focus {
     text-decoration: none;
 }
 body {
-    background-image: url('https://www.dmoe.cc/random.php');
+    /*background-image: url('https://www.dmoe.cc/random.php');*/
     background-repeat:no-repeat;
     background-attachment:fixed;
     overflow-x: hidden;

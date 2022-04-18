@@ -4,9 +4,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
 		<meta charset="utf-8">
-		<title><?php echo getconfig('title');?></title>
-		<?php $keywords=getconfig("keywords"); if($keywords !=''){echo '<meta name="keywords" content="'.$keywords.'"/>'."\n";}?>
-		<?php $description=getconfig("description"); if($description !=''){echo '<meta name="description" content="'.$description.'"/>'."\n";}?>
+		<title><?php echo $site['Title'];?></title>
+    	<?php if($site['keywords'] !=''){echo '<meta name="keywords" content="'.$site['keywords'].'"/>'."\n";}?>
+    	<?php if($site['description'] !=''){echo '<meta name="description" content="'.$site['description'].'"/>'."\n";}?>
 		<meta name="author" content="LyLme">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -21,11 +21,11 @@
 		<link rel="stylesheet" href="<?php echo $Theme?>/css/bootstrap.min.css" type="text/css">
 		<link rel="stylesheet" href="<?php echo $Theme?>/css/style.css" type="text/css">
 		<link rel="stylesheet" href="<?php echo $Theme?>/css/font.css" type="text/css">
-		<?php $head=getconfig("head");if($head!='' && ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
+		<?php echo $site['custom_header']; ?> 
 	</head>
     <body onload="FocusOnInput()">
         <div class="banner-video">
-            <img src="<?php echo $Theme?>/img/bing.php">
+            <img src="<?php echo getconfig($config.'backgroundURL','https://api.isoyu.com/bing_images.php'); ?>">
 			<div class="bottom-cover" style="background-image: linear-gradient(rgba(255, 255, 255, 0) 0%, rgb(244 248 251 / 0.6) 50%, rgb(244 248 251) 100%);">
 			</div>
 		</div>
@@ -41,7 +41,7 @@
 				    <?php if($is_login) { ?>
                             <li class="nav-item"><a class="nav-link" href="./index.php?c=admin&u=<?php echo $u?>" target="_blank"><span>后台管理</span></a>
                             </li>
-                            <?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
+                            <?php }elseif ($site['GoAdmin']  ) {  ?>
                             <li class="nav-item"><a class="nav-link" href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" target="_blank"><span>登陆</span></a>
                             </li>
                      <?php } ?>

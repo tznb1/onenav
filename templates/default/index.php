@@ -1,10 +1,10 @@
 <?php 
-if($Style =='xiaoz'){require('./templates/default/xiaoze.php');exit;} 
-$T = 'Theme-'.getconfig('Theme').'-';
-$night = intval( getconfig($T.'night','0') );
+$night = intval( getconfig($config.'night','0') );
 $night = $night == 1 || ( $night == 2 && (date('G') <= 12 || date('G') >= 19 )) ? 'mdui-theme-layout-dark':'';
-$background = getconfig($T.'backgroundURL','');
-$DescrRowNumber = intval(getconfig($T.'DescrRowNumber','2'));
+$background = getconfig($config.'backgroundURL','');
+$DescrRowNumber = intval(getconfig($config.'DescrRowNumber','2'));
+$WeatherKey = getconfig($config.'WeatherKey','dd2e9ab2728d4b3c91245fe4057cb9ce');
+$WeatherPosition =  intval(empty($WeatherKey)?"0":getconfig($config.'WeatherPosition','1'));
 if ($DescrRowNumber <= 0 ){
     $DescrRowNumber = 0; $DescrHeight= 0; $Card = 38;
 }elseif($DescrRowNumber >= 1 && $DescrRowNumber <= 4 ){
@@ -19,25 +19,26 @@ if ($DescrRowNumber <= 0 ){
 <html lang="zh-ch">
 <head>
 <meta charset="utf-8">
-<title><?php echo getconfig("title");?></title>
-<?php $keywords=getconfig("keywords"); if($keywords !=''){echo '<meta name="keywords" content="'.$keywords.'"/>'."\n";}?>
-<?php $description=getconfig("description"); if($description !=''){echo '<meta name="description" content="'.$description.'"/>'."\n";}?>
+<title><?php echo $site['Title'];?></title>
+<?php if($site['keywords'] !=''){echo '<meta name="keywords" content="'.$site['keywords'].'"/>'."\n";}?>
+<?php if($site['description'] !=''){echo '<meta name="description" content="'.$site['description'].'"/>'."\n";}?>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel='stylesheet' href='<?php echo $libs?>/MDUI/v1.0.1/css/mdui.min.css'>
 <link rel='stylesheet' href='<?php echo $libs?>/ContextMenu/2.9.2/jquery.contextMenu.min.css'>
 <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
 <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui-icon.css">
-<link rel="stylesheet" href="<?php echo $Theme?>/static/style<?php echo getconfig($T.'CardNum','0');?>.css?v=<?php echo $version; ?>">
+<link rel="stylesheet" href="<?php echo $Theme?>/static/style<?php echo getconfig($config.'CardNum','0');?>.css?v=<?php echo $version; ?>">
 <style>
-<?php if( empty($night)  ) {?>
+<?php  $SBC = getconfig($config.'SidebarBackgroundColor',''); if( empty($night)  ) {?>
 /*配色*/
-.mdui-theme-primary-indigo .mdui-color-theme {background-color: <?php echo getconfig($T.'HeadBackgroundColor','#3f51b5');?>!important;}
-.HFC{color: <?php echo getconfig($T.'HeadFontColor','#ffffff');?>!important;}
-.CBC{background-color: <?php echo getconfig($T.'CardBackgroundColor','#ffffff');?>!important;} 
-.OBC{background-color: <?php echo getconfig($T.'OtherBackgroundColor','#ffffff');?>!important;}
-.CFC{color: <?php echo getconfig($T.'CategoryFontColor','#212121');?>!important;}
-.TFC{color: <?php echo getconfig($T.'TitleFontColor','#212121');?>!important;}
-.DFC{color: <?php echo getconfig($T.'DescrFontColor','#9e9e9e');?>!important;}
+.mdui-theme-primary-indigo .mdui-color-theme {background-color: <?php echo getconfig($config.'HeadBackgroundColor','#3f51b5');?>!important;}
+.mdui-loaded .mdui-drawer { <?php echo(empty($SBC)?'':'background-color:'.$SBC.'!important;');?>}
+.HFC{color: <?php echo getconfig($config.'HeadFontColor','#ffffff');?>!important;}
+.CBC{background-color: <?php echo getconfig($config.'CardBackgroundColor','#ffffff');?>!important;} 
+.OBC{background-color: <?php echo getconfig($config.'OtherBackgroundColor','#ffffff');?>!important;}
+.CFC{color: <?php echo getconfig($config.'CategoryFontColor','#212121');?>!important;}
+.TFC{color: <?php echo getconfig($config.'TitleFontColor','#212121');?>!important;}
+.DFC{color: <?php echo getconfig($config.'DescrFontColor','#9e9e9e');?>!important;}
 <?php } ?>
 <?php if( !empty($background) && empty($night) ) {?>
 /*背景图*/
@@ -56,33 +57,36 @@ body{
 }
 .mdui-card-primary {padding-top: <?php if($DescrHeight == 0){echo '8px';}else{echo '16px';} ;?>;}
 </style>
-<?php $head=getconfig("head");if($head!='' && ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head))."\n");} //自定义头部代码?>
+<?php echo $site['custom_header']; ?>
 </head>
-<body class = "mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-primary-indigo mdui-theme-accent-pink mdui-loaded OBC <?php echo $night;?>">
+<body class = "mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-primary-indigo mdui-theme-accent-pink mdui-loaded OBC <?php echo $night;?>" >
 	<!--导航工具-->
-	<header class = "mdui-appbar mdui-appbar-fixed">
-		<div class="mdui-toolbar mdui-color-theme" background-color>
+	<header class = "mdui-appbar mdui-appbar-fixed" >
+		<div class="mdui-toolbar mdui-color-theme" >
 		<span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white HFC" mdui-drawer="{target: '#drawer', swipe: true}"><i class="mdui-icon material-icons">menu</i></span>
-		  <a href="" class = "mdui-typo-headline HFC" ><span class="mdui-typo-title"><?php echo getconfig("logo");?></span></a>
-		  <div class="mdui-toolbar-spacer"></div>
+		  <a href="" class = "mdui-typo-headline HFC" ><span class="mdui-typo-title"><?php echo $site['logo'];?></span></a>
+		  <div class="mdui-toolbar-spacer" ></div>
+		 
 		  <!-- 新版搜索框 -->
-		  	<div class="mdui-col-md-4 mdui-col-xs-6 ">
+		  	<div class="mdui-col-md-2 mdui-col-xs-5">
 				<div class="mdui-textfield mdui-textfield-floating-label">
-					<input class="mdui-textfield-input search HFC"  placeholder="输入书签关键词进行搜索" type="text" />
+					<input class="mdui-textfield-input search HFC"  placeholder="输入书签关键词搜索" type="text" />
 				</div>
 			</div>
-			<a class = "mdui-hidden-xs mdui-btn mdui-btn-icon" id="config"  title = "主题设置" <?php if(!$is_login) {echo 'style="display:none;"';}?>><i class="mdui-icon material-icons">&#xe40a;</i></a>
+	
+			<?php if($WeatherPosition==1){ echo '<div id="he-plugin-simple"></div>';} ?>
+			<a class = "mdui-hidden-xs mdui-btn mdui-btn-icon" id="config"  title = "主题设置" <?php if(!$is_login) {echo 'style="display:none;"';}?>><i   class="mdui-icon material-icons HFC">&#xe40a;</i></a>
 			<!-- 新版搜索框END -->
 		</div>
 	</header>
 	<!--导航工具END-->
-	<?php if( $is_login && getconfig("quickAdd") =='on') {
+	<?php if( $is_login && $site['quickAdd'] ) {
 	?><!-- 添加按钮 -->
 	<div class="right-button mdui-hidden-xs" style="position: fixed;right:10px;bottom:80px;z-index:99;">
 		<div><button title = "快速添加链接" id = "add" class="mdui-fab mdui-color-theme-accent mdui-ripple mdui-fab-mini"><i class="mdui-icon material-icons">add</i></button></div>
 	</div>
 <?php } ?>
-<?php if(getconfig("gotop") =='on') {?>
+<?php if($site['gotop']) {?>
     <!-- 返回顶部按钮 -->
 	<div class="top mdui-shadow-10"><a href="javascript:;" title="返回顶部" onclick="gotop()"><i class="mdui-icon material-icons">arrow_drop_up</i></a></div>
 <?php } ?>
@@ -94,7 +98,7 @@ body{
 	if($is_login) {
 ?>
     <a href="./index.php?c=admin&u=<?php echo $u?>"><li class="mdui-list-item mdui-ripple"><div class="mdui-list-item-content category-name CFC"><i class="fa fa-user-circle"></i>后台管理</div></li></a>
-<?php }elseif (getconfig('GoAdmin')  == 'on'  ) {  ?>
+<?php }elseif ($site['GoAdmin']  ) {  ?>
 	<a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>">
 	    <li class="mdui-list-item mdui-ripple">
 	     <div class="mdui-list-item-content category-name CFC"><i class="fa fa-user-circle"></i>登录</div>
@@ -117,6 +121,7 @@ foreach ($categorys as $category) {
 	<!--左侧抽屉导航END-->
 	<!--正文内容部分-->
 	<div class="mdui-container">
+	    <?php if($WeatherPosition==2){ echo '<div style="position:fixed;z-index:99;right:0px;width:160px;padding-right:0px;"><div id="he-plugin-simple"></div></div>'."\n";} ?>
 		<div class="mdui-row">
 			<!-- 遍历分类目录 -->
             <?php foreach ( $categorys as $category ) {
@@ -152,7 +157,7 @@ foreach ($categorys as $category) {
 						<?php } ?>
 						<!-- 角标END -->
 						<?php 
-						if (getconfig('urlz')  == 'on'  ){
+						if ( $site['urlz']   == 'on'  ){
 						    ?><a class="TFC" href="<?php echo $link['url']; ?>" target="_blank" title = "<?php echo $link['description']; ?>"><?php
 						}else{
 						    ?><a class="TFC" href="./index.php?c=click&id=<?php echo $link['id'].'&u='.$u; ?>" target="_blank" title = "<?php echo $link['description']; ?>"><?php
@@ -160,7 +165,7 @@ foreach ($categorys as $category) {
 						?>
 							<div class="mdui-card-primary" >
 									<div class="mdui-card-primary-title link-title">
-										<img src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16px" height="16px">
+										<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16px" height="16px">
 										<span class="link_title"><?php echo $link['title']; ?></span> 
 									</div>
 							</div>
@@ -174,6 +179,7 @@ foreach ($categorys as $category) {
 			<!-- 遍历链接END -->
 			<?php } ?>
 		</div>
+		
 		<!-- row end -->
 	</div>
 	<div class="mdui-divider" style = "margin-top:2em;"></div>
@@ -181,21 +187,57 @@ foreach ($categorys as $category) {
 	<!-- footer部分 --> 
 	<footer >
     <?php if($ICP != ''){echo '<a class="DFC" href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
-    <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
-    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
+    <?php echo $site['custom_footer']; ?>
+    <?php echo $Ofooter; ?>
 	</footer>
+	 
 	<!-- footerend -->
 <script src = "<?php echo $libs?>/jquery/jquery-3.6.0.min.js"></script>
 <script src = "<?php echo $libs?>/Layer/v3.3.0/layer.js"></script> 
 <script src = "<?php echo $libs?>/ContextMenu/2.9.2/jquery.contextMenu.min.js"></script>
 <script src = "<?php echo $libs?>/Other/ClipBoard.min.js"></script>
-<script src = '<?php echo $libs?>/MDUI/v1.0.1/js/mdui.min.js'></script>
+<script src = "<?php echo $libs?>/MDUI/v1.0.1/js/mdui.min.js"></script>
 <script src = "<?php echo $libs?>/Other/holmes.js"></script>
 <script src = "<?php echo $Theme?>/static/embed.js?v=<?php echo $version; ?>"></script>
+<?php 
+// 如果Key不为空,则加载天气插件!
+if ($WeatherPosition != 0){
+    $WeatherFontColor = getconfig($config.'WeatherFontColor','1');  
+    if ($WeatherFontColor == 1){
+        $WeatherFontColor = getconfig($config.'HeadFontColor','#ffffff');
+    }elseif($WeatherFontColor == 2){
+        $WeatherFontColor = getconfig($config.'TitleFontColor','#212121');
+    }
+    ?>
+<!--天气插件-->
+<script>
+WIDGET = {
+  "CONFIG": {
+    "modules": "01234", //实况温度、城市、天气状况、预警
+    "background": "<?php echo getconfig($config.'WeatherBackground','1');?>", //背景颜色
+    "tmpColor": "<?php echo $WeatherFontColor ?>", //温度文字颜色
+    "tmpSize": "16",
+    "cityColor": "<?php echo $WeatherFontColor ?>", //城市名文字颜色
+    "citySize": "16",
+    "aqiColor": "<?php echo $WeatherFontColor ?>", //空气质量文字颜色
+    "aqiSize": "16", 
+    "weatherIconSize": "24", //天气图标尺寸
+    "alertIconSize": "18", //预警图标尺寸
+    "padding": "5px 1px 5px 1px", //边距
+    "borderRadius": "5", //圆角
+    "key": "<?php echo $WeatherKey;?>"
+  }
+}
+</script>
+<script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script>
+<!--天气插件End-->
+<?php
+}
+?>
 <script>
 var u = '<?php echo $u?>';
-<?php echo $onenav['right_menu']; ?>
+var t = '<?php echo str_replace("./templates/", "", $Theme);?>';
+<?php echo $onenav['right_menu']."\n"; ?>
 </script>
-<?php echo $onenav['extend']; ?>
 </body>
 </html>

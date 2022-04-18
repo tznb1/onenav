@@ -42,7 +42,7 @@ if( file_exists('./data/onenav.db3') && file_exists('./data/config.php') && !fil
             if(preg_match('/<i class="fa (.+)"><\/i>/i',htmlspecialchars_decode($categorys['name']),$matches) != 0){
                 $ico=$matches[1];
             }else{
-                 $ico='';
+                $ico='';
             }
         }else{
             $ico = str_replace("fa ","",$categorys['font_icon']); //去掉头才符合我的要求
@@ -80,6 +80,7 @@ if( file_exists('./data/onenav.db3') && file_exists('./data/config.php') && !fil
                 ];
         $Newdb->insert("on_links",$data);
     }
+
     //导入配置
     $USER = $site_setting['user'];
     $PASS = $site_setting['password']; 
@@ -106,8 +107,7 @@ if( file_exists('./data/onenav.db3') && file_exists('./data/config.php') && !fil
     Writeconfigd($Newdb,'on_config','RegIP',$RegIP);
     Writeconfigd($Newdb,'on_config','RegTime',$RegTime);
     Writeconfigd($Newdb,'on_config','LoginFailed',0);
-    Writeconfigd($Newdb,'on_config','Style','0');
-    Writeconfigd($Newdb,'on_config',"urlz", '');
+    Writeconfigd($Newdb,'on_config',"urlz", 'Transition');
     Writeconfigd($Newdb,'on_config','gotop','on');
     Writeconfigd($Newdb,'on_config','quickAdd','on');
     Writeconfigd($Newdb,'on_config','GoAdmin','on');
@@ -117,6 +117,28 @@ if( file_exists('./data/onenav.db3') && file_exists('./data/config.php') && !fil
     Writeconfigd($Newdb,'on_config','session','360');
     Writeconfigd($Newdb,'on_config','Skey','1');
     Writeconfigd($Newdb,'on_config','HttpOnly','1');
+    
+    //查询过渡页设置
+    $transition_page = $db->get('on_options','value',[ 'key'  =>  "s_transition_page" ]);
+    $transition_page = unserialize($transition_page);
+    if ($transition_page['visitor_stay_time'] !=''){ Writeconfigd($Newdb,'on_config','visitorST',$transition_page['visitor_stay_time']); }
+    if ($transition_page['admin_stay_time'] !=''){ Writeconfigd($Newdb,'on_config','adminST',$transition_page['admin_stay_time']); }
+    if ($transition_page['control'] == 'on'){
+        Writeconfigd($Newdb,'on_config',"urlz", 'Transition');
+    }else{
+        Writeconfigd($Newdb,'on_config',"urlz", '302');
+    }
+
+    //获取当前站点信息
+    $site = $db->get('on_options','value',[ 'key'  =>  "s_site" ]);
+    $site = unserialize($site);
+    if ($site['title'] !=''){ Writeconfigd($Newdb,'on_config','title',$site['title']); }
+    if ($site['logo'] !=''){ Writeconfigd($Newdb,'on_config','logo',$site['logo']); }
+    if ($site['subtitle'] !=''){ Writeconfigd($Newdb,'on_config','subtitle',$site['subtitle']); }
+    if ($site['keywords'] !=''){ Writeconfigd($Newdb,'on_config','keywords',$site['keywords']); }
+    if ($site['description'] !=''){ Writeconfigd($Newdb,'on_config','description',$site['description']); }
+    if ($site['custom_header'] !=''){ Writeconfigd($Newdb,'on_config','head',base64_encode($site['custom_header']) ); }
+    
     unlink('./data/onenav.db3');
     unlink('./data/config.php');
     //原版升级End
@@ -174,8 +196,7 @@ if( file_exists('./data/onenav.db3') && file_exists('./data/config.php') && !fil
     Writeconfigd($Newdb,'on_config','RegIP',$RegIP);
     Writeconfigd($Newdb,'on_config','RegTime',$RegTime);
     Writeconfigd($Newdb,'on_config','LoginFailed',0);
-    Writeconfigd($Newdb,'on_config','Style','0');
-    Writeconfigd($Newdb,'on_config',"urlz", '');
+    Writeconfigd($Newdb,'on_config',"urlz", 'Transition');
     Writeconfigd($Newdb,'on_config','gotop','on');
     Writeconfigd($Newdb,'on_config','quickAdd','on');
     Writeconfigd($Newdb,'on_config','GoAdmin','on');

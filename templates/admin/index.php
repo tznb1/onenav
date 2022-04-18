@@ -122,7 +122,7 @@ $VerTime = $matches[1];
 
 <blockquote class="layui-elem-quote layui-text">此版项目地址：<a href="https://gitee.com/tznb/OneNav" target="_blank">Gitee 码云 (唯一地址)  </a>&ensp; QQ: 271152681&ensp; PS:各位大哥,如果可以的话麻烦大家帮忙宣传一下..目前用户数太少了,根本没动力更新!</blockquote>
 <blockquote class="layui-elem-quote layui-text">原著项目地址 ：<a href="https://github.com/helloxz/onenav" target="_blank">github</a>&ensp; QQ群1：147687134 &ensp;QQ群2：932795364&ensp;QQ:337003006</blockquote>
-<blockquote class="layui-elem-quote layui-text">帮助文档 ：<a href="https://doc.xiaoz.me/books/onenav-extend" target="_blank">藏经阁</a></blockquote>
+<blockquote class="layui-elem-quote layui-text">帮助文档 ：<a href="https://doc.xiaoz.me/books/onenav-extend" target="_blank">藏经阁&ensp;</a><a href="https://gitee.com/tznb/OneNav/wikis/" target="_blank">码云Wiki</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">原著博客 ：<a href="https://www.xiaoz.me" target="_blank">www.xiaoz.me</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">社区支持 ：<a href="https://dwz.ovh/vd0bw" target="_blank" >dwz.ovh/vd0bw</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">分类图标 ：<a href="http://www.fontawesome.com.cn/faicons" target="_blank">fontawesome</a></blockquote>
@@ -140,10 +140,6 @@ $VerTime = $matches[1];
 </blockquote>
 <blockquote class="layui-elem-quote layui-text">XIcon项目：<a href="https://gitee.com/imlzw/xicon/tree/master" title="分类图标选择器" target="_blank">gitee</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">MDUI 文档：<a href="https://www.mdui.org/docs" title="前台用的框架" target="_blank">官方文档</a></blockquote>
-<blockquote class="layui-elem-quote layui-text">百素主题：<a href="https://gitee.com/baisucode/onenav-theme/tree/master/templates/baisu" target="_blank">gitee</a></blockquote>
-<blockquote class="layui-elem-quote layui-text">Webstack：<a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">github</a>&ensp;
-<a href="https://webstack.cc/cn/index.html" target="_blank">官方</a></blockquote>
-<blockquote class="layui-elem-quote layui-text">SimpleWeb主题：<a href="https://github.com/KrunkZhou/SimpleWebNavigation" target="_blank">github</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">hotkeys快捷键：<a href="https://github.com/jaywcjlove/hotkeys/" target="_blank">github </a>&ensp;
 <a href="https://wangchujiang.com/hotkeys/" target="_blank">官方</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">getFavicon：<a href="https://github.com/owen0o0/getFavicon" target="_blank">官方文档</a></blockquote>

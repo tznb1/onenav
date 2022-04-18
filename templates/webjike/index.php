@@ -3,17 +3,15 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1"><title><?php echo getconfig("title");?></title>
-<?php $keywords=getconfig("keywords"); if($keywords !=''){echo '<meta name="keywords" content="'.$keywords.'"/>'."\n";}?>
-<?php $description=getconfig("description"); if($description !=''){echo '<meta name="description" content="'.$description.'"/>'."\n";}?>
-		<title><?php echo getconfig('title');?></title>
-	    <?php $keywords=getconfig("keywords"); if($keywords !=''){echo '<meta name="keywords" content="'.$keywords.'"/>'."\n";}?>
-	    <?php $description=getconfig("description"); if($description !=''){echo '<meta name="description" content="'.$description.'"/>'."\n";}?>
+		<meta name="viewport" content="width=device-width, initial-scale=1"><title><?php echo $site['Title'];?></title>
+		<title><?php echo $site['Title'];?></title>
+		<?php if($site['keywords'] !=''){echo '<meta name="keywords" content="'.$site['keywords'].'"/>'."\n";}?>
+		<?php if($site['description'] !=''){echo '<meta name="description" content="'.$site['description'].'"/>'."\n";}?>
 		<link rel="stylesheet" href="<?php echo $Theme?>/css/zui.min.css">
 		<link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui.css">
 		<link rel="stylesheet" href="<?php echo $Theme?>/css/main-style.css?<?php echo $version; ?>">
 		<link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
-		<?php $head=getconfig("head");if($head!='' && ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
+		<?php echo $site['custom_header']; ?> 
 	</head>
 	<body data-page-name="office">
 		<!--[if lt IE 8]>
@@ -23,7 +21,7 @@
     	<header id="fenzhi-nav">
     		<div class="main">
     			<div class="logo">
-    				<a href=""><img src="<?php echo $Theme?>/images/logo.png"><span><?php echo getconfig('logo');?></span></a>
+    				<a href=""><img src="<?php echo $Theme?>/images/logo.png"><span><?php echo $site['logo'];?></span></a>
     			</div>
     		</div>
     	</header>
@@ -46,7 +44,7 @@
     				</div>
     	<?php if( $is_login ) { ?>
     			<div class="menu-about"><i class="fa fa-user-circle icon-fw icon-lg mr-2"></i><span><a href="./index.php?c=admin&u=<?php echo $u?>">后台管理</a></span></div>
-		<?php }elseif(getconfig('GoAdmin')  == 'on'  ){ ?>
+		<?php }elseif($site['GoAdmin']  ){ ?>
 		        <div class="menu-about"><i class="fa fa-user-circle icon-fw icon-lg mr-2"></i><span><a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>">登录后台</a></span></div>
 		<?php } ?>
 
@@ -73,28 +71,27 @@
 	    						</div>
     						</div>
     					</section>
+			        <?php if( getconfig($config.'location','1') == '1' ) { ?>
     					<div class="row duty-custom layui-hide-sm layui-hide-md layui-hide-lg" >
-    						<!--自添加链接-->
+    						<!--手机端后台入口-->
     						<div class="col-md-12">
-    						<strong class="duty-item-name"><i class="layui-icon layui-icon-set"></i>&nbsp;系统管理</strong>
-    						</div>
-    						<div class="col-md-12">
-         						 <ul class="duty-custom-item">
-        <?php if( $is_login ) { ?>
-        <li><a class="duty-custom-link fa fa-user-circle" href="./index.php?c=admin&u=<?php echo $u?>">&nbsp;后台管理</a></li>
-        <li><a class="duty-custom-link layui-icon layui-icon-return" href="./index.php?c=admin&page=logout&u=<?php echo $u?>">&nbsp;退出登录</a></li>
-		<?php }elseif(getconfig('GoAdmin')  == 'on'  ){ ?>
-		<li><a class="duty-custom-link" href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>">&nbsp;登录后台</a></li>
-		<?php } ?>
-        						 </ul>
+    						<strong class="duty-item-name">
+    				    <?php if( $is_login ) { ?>
+                            <a class="duty-custom-link fa fa-user-circle" href="./index.php?c=admin&u=<?php echo $u?>">&emsp;后台管理&emsp;</a>
+                            <a class="duty-custom-link layui-icon layui-icon-return" href="./index.php?c=admin&page=logout&u=<?php echo $u?>">&emsp;退出登录&emsp;</a>
+		                <?php }elseif($site['GoAdmin']  ){ ?>
+		                    <a class="duty-custom-link" href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>">&emsp;登录后台&emsp;</a>
+		                <?php } ?> 
+		                    </strong>
     						</div>
     					</div>
+    	            <?php } ?>
     					<div class="row">
     						<div class="col-md-12">
     							<div class="duty-tool">
-    								<div class="duty-tool-notice">
+    								<div class="duty-tool-notice" <?php if(getconfig($config.'Notice','1') =='0') {echo 'style="display:none;"';}?>>
     									<i class="fa fa-volume-up" aria-hidden="true"></i>
-    									<span><?php echo $description ?></span>
+    									<span><?php if(getconfig($config.'Notice','1') =='1') {echo $site['description'];}else{echo getconfig($config.'NoticeC'); } ?></span>
     								</div>
     								<ul class="duty-tool-switch hidden-xs hidden-sm">
 						                <li><span>图标</span><i class="fa fa-toggle-on"></i></li>
@@ -135,13 +132,13 @@
 											<?php } ?>
 											<!-- 角标END -->
 											<?php
-												if (getconfig('urlz')  == 'on'  ){
+												if ($site['urlz']  == 'on'  ){
 												    ?><a rel="nofollow" href="<?php echo $link['url']; ?>" title="<?php echo $link['description']; ?>" class="duty-card" target="_blank"><?php
 												}else{
 												    ?><a rel="nofollow" href="./index.php?c=click&id=<?php echo $link['id']; ?>&u=<?php echo $u?>" title="<?php echo $link['description']; ?>" class="duty-card" target="_blank"><?php
 												};
 											?>
-											<div class="duty-card-tit"><img src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" data-original="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" onerror="javascript:this.src='<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="<?php echo $link['title']; ?>" ><?php echo $link['title']; ?></div>
+											<div class="duty-card-tit"><img src="<?php if ($site['LoadIcon']  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>"  alt="<?php echo $link['title']; ?>" ><?php echo $link['title']; ?></div>
                         					<div class="duty-card-des"><?php echo $link['description']; ?></div>
                         				</a>
 									</div>
@@ -150,6 +147,21 @@
 			            	</div>
 			            </div>
 			        <?php } ?>
+			        <?php if( getconfig($config.'location','1') == '2' ) { ?>
+    					<div class="row duty-custom layui-hide-sm layui-hide-md layui-hide-lg" >
+    						<!--手机端后台入口-->
+    						<div class="col-md-12">
+    						<strong class="duty-item-name">
+    				    <?php if( $is_login ) { ?>
+                            <a class="duty-custom-link fa fa-user-circle" href="./index.php?c=admin&u=<?php echo $u?>">&emsp;后台管理&emsp;</a>
+                            <a class="duty-custom-link layui-icon layui-icon-return" href="./index.php?c=admin&page=logout&u=<?php echo $u?>">&emsp;退出登录&emsp;</a>
+		                <?php }elseif($site['GoAdmin']  ){ ?>
+		                    <a class="duty-custom-link" href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>">&emsp;登录后台&emsp;</a>
+		                <?php } ?> 
+		                    </strong>
+    						</div>
+    					</div>
+    	            <?php } ?>
     				</div>
     			</div>
     			<!--正文 End-->
@@ -161,9 +173,8 @@
     								<!--备案信息-->
     								<p>Copyright © <?php echo date('Y');?> All Rights Reserved &nbsp;<?php if($ICP != ''){echo '<img src="'.$Theme.'/images/icp.png" width="16px" height="16px" /><a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>&nbsp;&nbsp;
     								Powered by&nbsp;&nbsp;<a target="_blank" href="https://github.com/helloxz/onenav" title="简约导航/书签管理器" target="_blank" rel="nofollow">OneNav</a>&nbsp;&nbsp;<a href="https://gitee.com/tznb/OneNav" target="_blank" rel="nofollow">落幕魔改版</a>&nbsp;&nbsp;The theme by&nbsp;&nbsp;<a href="https://github.com/xiaodai945/WEBJIKE" target="_blank" rel="nofollow">小呆导航</a>
-								    <!--公用底部-->
-								    <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?><br/>
-								    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
+								    <?php echo $site['custom_footer']; ?>
+								    <?php echo $Ofooter; ?>
     								</p>
     							</div>
     						</div>

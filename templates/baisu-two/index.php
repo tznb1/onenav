@@ -1,3 +1,10 @@
+<?php
+$Descr = intval( getconfig($config.'Descr','1') );
+$Logo = getconfig($config.'Logo');
+$Logo = empty($Logo)?$Theme.'/images/logo.png':$Logo;
+$SBimg = getconfig($config.'SBimg');
+// exit ($Logo);
+?>
 <!DOCTYPE html>
 <html>
 
@@ -11,29 +18,28 @@
 		<meta name="MobileOptimized" content="width">
 		<meta name="HandheldFriendly" content="true">
 		<meta name="author" content="BaiSu" />
-		<title>
-			<?php echo getconfig('title');?>
-		</title>
-		<meta name="keywords" content="<?php echo getconfig("keywords"); ?>" />
-		<meta name="description" content="<?php echo getconfig("description"); ?>" />
+		<title><?php echo $site['Title'];?></title>
+		<?php if($site['keywords'] !=''){echo '<meta name="keywords" content="'.$site['keywords'].'"/>'."\n";}?>
+		<?php if($site['description'] !=''){echo '<meta name="description" content="'.$site['description'].'"/>'."\n";}?>
 		<link rel="stylesheet" type="text/css" href="<?php echo $Theme?>/css/style.css?v=<?php echo $version; ?>" />
 		<link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
 		<link rel="stylesheet" type="text/css" href="<?php echo $libs?>/Layui/v2.6.8/css/layui.css" />
-		<?php $head=getconfig("head");if($head!=''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($head)));} //自定义头部代码?> 
 		<style type="text/css">
 			/*链接描述是否显示*/
 			.site-main .site-list .list .desc {
 				/*none：不显示，block:显示*/
-				display: none;
+				display: <?php echo $Descr == '1' ? "block" : "none" ; ?>;
 			}
+			<?php echo !empty($SBimg) ? ".search-main {background-image: url(".$SBimg.");}" : "" ; ?>
 		</style>
+		<?php echo $site['custom_header']; ?>
 	</head>
 
 	<body>
 		<!--手机顶部 S-->
 		<div class="m-header">
 			<div class="logo">
-				<a href=""><img src="<?php echo $Theme?>/images/logo.png" /></a>
+				<a href=""><img src="<?php echo $Logo?>" /></a>
 			</div>
 			<div class="navbar">
 				<i class="iconfont icon-caidan"></i>
@@ -56,7 +62,7 @@
 		<!--左侧分类栏 S-->
 		<div class="index-nav">
 			<div class="logo">
-				<a href="./?u=<?php echo $u?>"><img src="<?php echo $Theme?>/images/logo.png" /></a>
+				<a href="./?u=<?php echo $u?>"><img src="<?php echo $Logo?>" /></a>
 			</div>
 			<div class="type-list">
 
@@ -83,7 +89,7 @@
 							</p>
 							<p class="t2" title="点击左边的头像可以设置主题" >管理后台</p>
 						</a>
-						<?php }elseif(getconfig('GoAdmin')  == 'on'  ){ ?>
+						<?php }elseif($site['GoAdmin']  ){ ?>
 						<a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" target="_blank">
 							<p class="t1">尚未登录</p>
 							<p class="t2">请先登录账户！</p>
@@ -178,12 +184,12 @@
 				foreach ($links as $link) {
 					//默认描述
 					$link['description'] = empty($link['description']) ? '作者很懒，没有填写描述。' : $link['description'];
-					$linkURL=getconfig('urlz')  == 'on' ? $link['url'] :'./index.php?c=click&id='.$link['id'].'&u='.$u;
+					$linkURL= $site['urlz']  == 'on' ? $link['url'] :'./index.php?c=click&id='.$link['id'].'&u='.$u;
 			?>
 						<div class="list urllist" id="id_<?php echo $link['id']; ?>" data-id="<?php echo $link['id']; ?>" data-url="<?php echo $link['url']; ?>">
 							<a href="<?php echo $linkURL; ?>" target="_blank">
 								<p class="name">
-									<img src="<?php if (getconfig('LoadIcon')  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>">
+									<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>">
 									<?php echo $link['title']; ?>
 								</p>
 								<p class="desc">
@@ -214,25 +220,23 @@
 			<br> The theme author is
 			<a href="https://gitee.com/baisucode/baisu-two" target="_blank">baisuTwo</a>
             <?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>
-            <?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']==='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
-            <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
+            <?php echo $site['custom_footer']; ?>
+            <?php echo $Ofooter; ?>
             </footer>
 		<!--底部版权 E-->
 		<!--返回顶部 S-->
 		<div class="tool-list">
 			<?php
-			$gotop=getconfig("gotop");
-			$quickAdd=getconfig("quickAdd");
-			$on=$quickAdd=='on'||$gotop =='on';
+			$on= $site['quickAdd']||$site['gotop'];
 		if( $is_login ) {
-		    if($on&&$is_login&&$quickAdd=='on'){echo '<div class="addsite list" id="addsite"><i class="iconfont icon-tianjia"></i></div>';}
+		    if($on && $is_login && $site['quickAdd']){echo '<div class="addsite list" id="addsite"><i class="iconfont icon-tianjia"></i></div>';}
 	  ?>
-				<?php }elseif(getconfig('GoAdmin')  == 'on'  ){?>
+				<?php }elseif($site['GoAdmin']  ){?>
 				<a href="./index.php?c=<?php if($login =='login'){echo $login;}else{echo $Elogin;}?>&u=<?php echo $u?>" class="addsite list">
 					<i class="iconfont icon-zhanghao"></i>
 				</a>
 				<?php }
-				if($on&&$gotop=='on'){echo '<div class="scroll_top list"><i class="iconfont icon-top"></i></div>';}
+				if($on && $site['gotop']){echo '<div class="scroll_top list"><i class="iconfont icon-top"></i></div>';}
 				?>
 
 		</div>

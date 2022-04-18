@@ -8,7 +8,7 @@ function checkEmail($email){
 function WriteloginLog($name,$pass,$ip,$date,$dbname,$value){
 $db = new Medoo\Medoo([
     'database_type' => 'sqlite',
-    'database_file' => './data/login.log.db'
+    'database_file' => './data/login.log.db3'
 ]);
 $data = $db->query("select * from sqlite_master where name = 'loginlog'")->fetchAll();
     if (count($data)==0){ 
@@ -26,7 +26,7 @@ function getindexurl(){
 function Writeloginlimit($name,$value){
 $db = new Medoo\Medoo([
     'database_type' => 'sqlite',
-    'database_file' => './data/login.log.db'
+    'database_file' => './data/login.log.db3'
 ]);
 $data = $db->query("select * from sqlite_master where name = 'loginlimit'")->fetchAll();
 if (count($data)==0){ $db->query('CREATE TABLE "main"."loginlog" ("name" TEXT,"value" TEXT);');}
@@ -48,14 +48,6 @@ if (getconfig('urlz')  == 'on'){
    //return  "./index.php?c=click&id=<?php echo $link['id'].'&u='.$u; 
 }}
 
-//登陆限制...暂时没用
-function getloginlimit($name){
-$db = new Medoo\Medoo([
-    'database_type' => 'sqlite',
-    'database_file' => './data/login.log.db'
-]);
-return ($db->get("loginlimit","value",["name"=>$name]));
-}
 //写入配置(如果不存在则创建)
 function Writeconfig($name,$value){
 global $db;
@@ -274,7 +266,10 @@ function msgA($data){
     header('Content-Type:application/json; charset=utf-8');
     exit(json_encode($data));
 }
-
+function de($t1,$version){
+    $t2 = microtime(true);
+    echo '<!--Powered by 落幕,QQ:271152681 执行耗时：'.round(($t2-$t1)*1000,3).'ms.-->';
+}
 //取文本左边 getSubstrRight('请用php取出这段字符串中左边文本','中');
 function getSubstrRight($str, $rightStr)
 {
@@ -295,12 +290,12 @@ function base64($url){
     $new_url = $scheme.$host.$port;
     return base64_encode($new_url);
 }
-//取文本右边  getSubstrLeft('请用php取出小超越工作室右边文本吧','小超越工作室');
-function getSubstrLeft($str, $leftStr)
-{
- $left = strpos($str, $leftStr);
- return substr($str, $left + strlen($leftStr));
+//取文本右边
+function getSubstrLeft($str, $leftStr){
+    $left = strpos($str, $leftStr);
+    return substr($str, $left + strlen($leftStr));
 }
+
 
 //处理时间 秒转天时分秒
 function secondChanage($second = 0)
