@@ -2,7 +2,7 @@
 <?php include_once('left.php'); ?>
 <div class="layui-body">
 <!-- 内容主体区域 -->
-<link href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css?v=4.7.0" rel="stylesheet"> 
+<link href="<?php echo $libs?>/font-awesome/4.7.0/css/font-awesome.css?v=4.7.0" rel="stylesheet"> 
 <div class="layui-row content-body">
     <div class="layui-col-lg12">
     <form class="layui-form">
@@ -67,7 +67,7 @@
             // 选择器，推荐使用input
             elem: '#demo1',
             // xIcon组件目录路径，用于加载其它相关文件
-            base: '/static/xIcon/',
+            base: '<?php echo $libs?>/xIcon/',
             // 数据类型：layui/awesome，推荐使用layui
             type: 'layui,awesome',
             // 是否开启搜索：true/false，默认true
@@ -89,7 +89,7 @@
             // 选择器，推荐使用input
             elem: '#demo2',
             // xIcon组件目录路径，用于加载其它相关文件
-            base: '/static/xIcon/',
+            base: '<?php echo $libs?>/xIcon/',
             // 数据类型：layui/awesome，推荐使用layui
             type: 'layui,awesome',
             // 是否开启搜索：true/false，默认true
