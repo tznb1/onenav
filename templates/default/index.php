@@ -4,7 +4,13 @@ $night = $night == 1 || ( $night == 2 && (date('G') <= 12 || date('G') >= 19 )) 
 $background = getconfig($config.'backgroundURL','');
 $DescrRowNumber = intval(getconfig($config.'DescrRowNumber','2'));
 $WeatherKey = getconfig($config.'WeatherKey','dd2e9ab2728d4b3c91245fe4057cb9ce');
-$WeatherPosition =  intval(empty($WeatherKey)?"0":getconfig($config.'WeatherPosition','1'));
+$WeatherPosition =  intval(empty($WeatherKey)?"0":getconfig($config.'WeatherPosition','2'));
+if(getconfig($config.'ClickLocation','1') =='0'){
+    $CLALL = "</a>";
+}else{
+    $CLBT = "</a>";
+}
+
 if ($DescrRowNumber <= 0 ){
     $DescrRowNumber = 0; $DescrHeight= 0; $Card = 38;
 }elseif($DescrRowNumber >= 1 && $DescrRowNumber <= 4 ){
@@ -169,9 +175,9 @@ foreach ($categorys as $category) {
 										<span class="link_title"><?php echo $link['title']; ?></span> 
 									</div>
 							</div>
-						</a>
+						<?php echo $CLBT; ?>
 						<!-- 卡片的内容end -->
-					<div class="mdui-card-content mdui-text-color-black-disabled DFC" style="padding-top:0px;"><span class="link-content"><?php echo $link['description']; ?></span></div>
+					<div class="mdui-card-content mdui-text-color-black-disabled DFC" style="padding-top:0px;"><span class="link-content"><?php echo $link['description']; ?></span></div><?php echo $CLALL; ?>
 				</div>
 				<!--卡片END-->
 			</div>

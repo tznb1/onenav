@@ -4,10 +4,10 @@ Visit();//访问控制
 //后台入口文件
 
 $ip = getIP(); //获取请求IP
+$Pass2 = getconfig('Pass2');
 check_auth($username,$password);//检查认证
 $page = empty($_GET['page']) ? 'index' : $_GET['page'];
-if ( $page == 'Pass2' ) {
-    $Pass2 = getconfig('Pass2');
+if ( $page == 'Pass2' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if($Pass2 === $_POST['Pass2']){
         $time = time();
         $Expire = $time + 43200 ;

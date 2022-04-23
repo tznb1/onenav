@@ -369,7 +369,13 @@ function get_a_category() {
 function get_link_info() {
     $url = @$_POST['url']; //获取URL
     //检查链接是否合法
-    if(!filter_var($url, FILTER_VALIDATE_URL)){msg(-1010,'URL无效!');}
+    if( empty($url) ) {
+        msg(-1010,'URL不能为空!');
+    }elseif(!preg_match("/^(http:\/\/|https:\/\/).*/",$url)){
+        msg(-1010,'只支持识别http/https协议的链接!');
+    }elseif( !filter_var($url, FILTER_VALIDATE_URL) ) {
+         msg(-1010,'URL无效!');
+    }
     //获取网站标题
     $c = curl_init(); 
     curl_setopt($c, CURLOPT_URL, $url); 
@@ -1210,14 +1216,17 @@ function is_login_o($username){
 //检查链接
 function check_link($fid,$title,$url,$url_standby){
     global $db;
+    $pattern = "/^(http:\/\/|https:\/\/|ftp:\/\/|ftps:\/\/|sftp:\/\/|magnet:?|ed2k:\/\/|thunder:\/\/|tcp:\/\/|udp:\/\/|rtsp:\/\/).+/";
+    
     if(empty($fid)) {msg(-1007,'分类id(fid)不能为空！');}
     $count = $db->count("on_categorys", ["id" => $fid]);
     if (empty($count)){msg(-1007,'分类不存在！');}
     if (empty($title)){msg(-1008,'标题不能为空！');}
     if (empty($url)){msg(-1009,'URL不能为空！');}
-    if (preg_match('/<(iframe|script|body|img|layer|div|meta|style|base|object|input)|">/i',$url)){msg(-1010,'URL存在非法字符！');}
-    if (!filter_var($url, FILTER_VALIDATE_URL)){msg(-1010,'URL无效！');}
-    if ( ( !empty($url_standby) ) && ( !filter_var($url_standby, FILTER_VALIDATE_URL) ) ) {msg(-1010,'备选URL无效！');}
+    if (check_xss($url)){msg(-1010,'URL存在非法字符！');}
+    if (check_xss($url_standby)){msg(-1010,'备用URL存在非法字符！');}
+    if (!preg_match($pattern,$url)){msg(-1010,'URL无效！');}
+    if ( ( !empty($url_standby) ) && ( !preg_match($pattern,$url_standby) ) ) {msg(-1010,'备选URL无效！');}
     return true;
 }
 

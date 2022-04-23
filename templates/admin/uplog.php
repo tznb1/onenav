@@ -1,14 +1,25 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
-      <h4 class="layui-timeline-title">2022年04月18日</h4>
+      <h4 class="layui-timeline-title">2022年04月23日</h4>
+      <ul>
+        <li>修复上个版本造成二级密码无法载入验证页面的bug</li>
+        <li>默认主题加强版:设置新增卡片点击范围选项,可选仅标题和整张卡片!</li>
+        <li>添加修改链接支持更多协议,已支持以下协议:http/https/ftp/sftp/ftps/magnet/ed2k/thunder/tcp/udp</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年04月17日</h4>
       <ul>
         <li>后台调整:原主页设置分裂为站点设置和主题模板,新增过度页面设置,原直连模式开关改为跳转方式下拉选择</li>
         <li>主题模板:新增 info.json 对主题进行描述,支持主题预览和主题配置(部分)</li>
         <li>从原版升级安装脚本支持到0.9.18</li>
       </ul>
     </div>
-  </li>
+</li>
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -18,7 +29,7 @@
         <li>去除六零导航的自带每日bing,改用在线API获取!(因为慢,浏览器无法缓存!)</li>
       </ul>
     </div>
-  </li>
+</li>
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -32,7 +43,7 @@
         <li>其他内部调整</li>
       </ul>
     </div>
-  </li>
+</li>
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -42,7 +53,7 @@
         <li>新增主题模板:疯子(#疯子)</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -53,7 +64,7 @@
         <li>修复刘桐序主题未完全适配多用户的问题(#羽峰)</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -65,7 +76,7 @@
         <li>修复百素two无法搜索描述内容和分类图标的问题(是我适配不到位..)</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -75,7 +86,7 @@
         <li>百素two:同步原作更新,添加/修改分类时:取消字体图标必填,修正修改分类提示语错误</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -86,7 +97,7 @@
         <li>新增API：根据ID查询单个分类信息,id支持get和post提交</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -96,7 +107,7 @@
         <li>修复后台首页地址和一键添加生成的URL在二级目录时不正确的问题!</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -117,7 +128,7 @@
         <li>注:关于API的问题,本项目和原版不同处:原版允许访客使用API读取公开数据,本项目不允许访客使用API</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -128,7 +139,7 @@
         <li>百素主题:Layui,holmes.js路径改到配置中静态路径,删除主题目录下的layui,holmes.js重复资源!</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -141,7 +152,7 @@
         <li>新增二级密码功能,设置后进入后台需要验证二级密码!包括首页的添加链接,删除链接均需验证!说白了不验证时只能阅览首页!(浏览器关闭时退出验证)</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -170,7 +181,7 @@
         <li>增加一个脚本,位于: /initial/SetAdmin.php 作用:全局配置错误无法访问时,管理员账号无法使用时强行修改相关配置,内有具体说明!</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -180,7 +191,7 @@
         <li>新增刘桐序主题风格</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -192,7 +203,7 @@
         <li>新增网站管理功能,管理员账号可以在后台修改全局配置(30日)</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -201,7 +212,7 @@
         <li>优化:书签导入时显示加载层,导入结束返回具体的失败条目!</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -211,7 +222,7 @@
         <li>调整:书签导入上传路径改为根目录下upload文件夹,API限制该文件夹外的路径!</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -220,7 +231,7 @@
         <li>新增:网站图标获取接口配置,支持本地服务器获取(支持缓存,如果服务器不能访问外网请勿使用,会增加服务器负担,小宽度低配置请酌情使用!)</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -231,7 +242,7 @@
         <li>优化:首页添加连接适用移动端,适配:默认主题,百素主题 (终端识别方式:js识别浏览器UA,如有不准请反馈)</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -240,7 +251,7 @@
         <li>新增:链接列表支持置顶操作!</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -251,7 +262,7 @@
         <li>新增:连接列表新增批量修改分类</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -264,7 +275,7 @@
         <li>待修复:修改导航宽度后手机端异常,原因是宽度被限定了,CSS无法动态适配!</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -275,7 +286,7 @@
         <li>后台:批量删除API和JS优化,一次请求提交所有需要删除的id,避免短时间的频繁请求被认为是CC攻击!</li>
       </ul>
     </div>
-  </li>
+</li>
    <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -284,7 +295,7 @@
         <li>新增:菜鸟教程的主题,为了方便调试新增Get参数Theme=runoob&Style=0 用于载入指定主题!</li>
       </ul>
     </div>
-  </li>    
+</li>    
    <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -295,7 +306,7 @@
         <li>优化:数据库升级脚本</li>
       </ul>
     </div>
-  </li>
+</li>
    <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -308,7 +319,7 @@
         <li>安全:账号设置独立一个菜单,修改邮箱.账号.密码.令牌(Token)时需要输入原密码!</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -321,7 +332,7 @@
         <li>其他:修正一些代码(图标对齐问题,对样式1和2修正)</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -334,7 +345,7 @@
         <li>其他:修正一些代码,使用IE浏览是弹出不兼容提示!</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -355,7 +366,7 @@
         <li>优化一些接口的和鉴权逻辑</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
@@ -374,10 +385,10 @@
         <li>后台:优化分类和连接列表,默认显示20条/页,支持自适应高度!</li>
       </ul>
     </div>
-  </li>
+</li>
   <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2021年07月26日 原作者发布的版本!</h4>
     </div>
-  </li>
+</li>

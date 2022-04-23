@@ -22,6 +22,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     Writeconfig($config.'WeatherKey',$_POST['WeatherKey']);
     Writeconfig($config.'WeatherFontColor',$_POST['WeatherFontColor']);
     Writeconfig($config.'WeatherPosition',$_POST['WeatherPosition']);
+    Writeconfig($config.'ClickLocation',$_POST['ClickLocation']);
+    
+
+
     msg(0,"修改成功");
 }
 
@@ -184,6 +188,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             </div>
             <div class="layui-form-mid layui-word-aux">自动: 19:00-07:00 开启夜间模式</div>
         </div>
+        
+        <div class="layui-form-item">
+            <input id="ClickLocation-input" type="hidden" value="<?php echo getconfig($config.'ClickLocation','1');?>">
+            <label class="layui-form-label">点击位置</label>
+            <div class="layui-input-inline">
+            <select lay-verify="required"  id="ClickLocation" name="ClickLocation" lay-search>
+            <option value="0">整个卡片</option>
+            <option value="1">仅链接标题</option>
+            </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">链接卡片可以点击的范围</div>
+        </div>
   
         <div class="layui-form-item">
             <label class="layui-form-label">背景图URL</label>
@@ -255,7 +271,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
   <!-- Tab End -->
   <div class="layui-form-item">
     <div class="layui-input-block">
-        <!--<button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-getval">说明</button>-->
       <button class="layui-btn" lay-submit lay-filter="edit_homepage">保存</button>
     </div>
   </div>
@@ -274,7 +289,7 @@ $('#DescrRowNumber').val(document.getElementById('DescrRowNumber-input').value);
 $('#WeatherBackground').val(document.getElementById('WeatherBackground-input').value); 
 $('#WeatherFontColor').val(document.getElementById('WeatherFontColor-input').value); 
 $('#WeatherPosition').val(document.getElementById('WeatherPosition-input').value); 
-
+$('#ClickLocation').val(document.getElementById('ClickLocation-input').value); 
 layui.use(['form','colorpicker','element','dropdown'], function(){
     var form = layui.form;
     var colorpicker = layui.colorpicker;

@@ -67,7 +67,7 @@
             // 选择器，推荐使用input
             elem: '#demo1',
             // xIcon组件目录路径，用于加载其它相关文件
-            base: '<?php echo $libs?>/xIcon/',
+            base: '/static/xIcon/',
             // 数据类型：layui/awesome，推荐使用layui
             type: 'layui,awesome',
             // 是否开启搜索：true/false，默认true
@@ -89,7 +89,7 @@
             // 选择器，推荐使用input
             elem: '#demo2',
             // xIcon组件目录路径，用于加载其它相关文件
-            base: '<?php echo $libs?>/xIcon/',
+            base: '/static/xIcon/',
             // 数据类型：layui/awesome，推荐使用layui
             type: 'layui,awesome',
             // 是否开启搜索：true/false，默认true
