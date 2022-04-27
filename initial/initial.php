@@ -1,5 +1,6 @@
 <?php
 if($_SERVER['REQUEST_METHOD'] === 'GET'){
+    check_env();
     $libs = './static';
     require('./templates/admin/initial.php');
     exit;
@@ -12,7 +13,29 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     msg(-1004,'不支持的请求方式');
 }
 
+check_env();
 
+// 安装前先检查环境
+function check_env() {
+    //获取组件信息
+    $ext = get_loaded_extensions();
+    //检查PHP版本，需要大于5.6小于8.0
+    $php_version = floatval(PHP_VERSION);
+    
+    if( ( $php_version < 5.6 ) || ( $php_version > 8 ) ) {
+        exit("当前PHP版本{$php_version}不满足要求，需要5.6 <= PHP <= 7.4");
+    }
+    
+    //检查是否支持pdo_sqlite
+    if ( !array_search('pdo_sqlite',$ext) ) {
+        exit("不支持PDO_SQLITE组件，请先开启!");
+    }
+    //如果配置文件存在
+    if( file_exists("data/lm.user.db3") ) {
+        exit("配置文件已存在，无需再次初始化!");
+    }
+    return TRUE;
+}
 
 require ('./class/Class.php');//载入函数库
 if( file_exists('./data/onenav.db3') && file_exists('./data/config.php') && !file_exists('./data/lm.user.db3')){

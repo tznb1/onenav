@@ -56,7 +56,9 @@ function category_list(){
     
     $offset = ($page - 1) * $limit; //起始行号
     $property = $OnlyOpen == true ? ' And property = 0 ':''; //访客模式,添加查询语句只查询公开分类
-    $sql = "SELECT *,(SELECT count(*) FROM on_links  WHERE fid = on_categorys.id ) AS count  FROM on_categorys  WHERE (name LIKE '%{$q}%' or description LIKE '%{$q}%' ) {$property} ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
+    //$sql = "SELECT *,(SELECT count(*) FROM on_links  WHERE fid = on_categorys.id ) AS count  FROM on_categorys  WHERE (name LIKE '%{$q}%' or description LIKE '%{$q}%' ) {$property} ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
+    
+    $sql = "SELECT *,(SELECT Icon FROM on_categorys WHERE id = a.fid LIMIT 1 ) AS fIcon,(SELECT name FROM on_categorys WHERE id = a.fid LIMIT 1 ) AS fname ,(SELECT count(*) FROM on_links  WHERE fid = a.id ) AS count FROM on_categorys as a WHERE (name LIKE '%{$q}%' or description LIKE '%{$q}%' )  ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
     if ($OnlyOpen){
         //游客/访客模式,取公开数量
         $count = $db->count('on_categorys','*',[ "AND"=>["OR"=>['name[~]'=>$q,'description[~]'=>$q],"property"=>'0']] );
@@ -65,7 +67,7 @@ function category_list(){
     }
     
     $datas = $db->query($sql)->fetchAll(); //原生查询
-    msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas]);
+    msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas ,'sql' =>$sql]);
 }
 
 //添加分类
@@ -76,6 +78,7 @@ function add_category(){
     $property = empty($_POST['property']) ? 0 : 1;//获取私有属性
     $weight = empty($_POST['weight']) ? 0 : intval($_POST['weight']);//获取权重
     $description = $_POST['description']; //获取描述
+    $fid = intval($_POST['fid']);
     if(empty($name)){
         msg(-1004,'分类名称不能为空！');
     }elseif(!empty($Icon) && !preg_match('/^(layui-icon-|fa-)([A-Za-z0-9]|-)+$/',$Icon)){
@@ -88,7 +91,8 @@ function add_category(){
         'weight'        =>  $weight,
         'property'      =>  $property,
         'description'   =>  htmlspecialchars($description,ENT_QUOTES),
-        'Icon'          =>  htmlspecialchars($Icon,ENT_QUOTES)
+        'Icon'          =>  htmlspecialchars($Icon,ENT_QUOTES),
+        'fid'           =>  $fid
         ];
     $db->insert("on_categorys",$data); //插入分类目录
     $id = $db->id();//返回ID
@@ -108,12 +112,20 @@ function edit_category(){
     $property = empty($_POST['property']) ? 0 : 1;//获取私有属性
     $weight = empty($_POST['weight']) ? 0 : intval($_POST['weight']);//获取权重
     $description = $_POST['description']; //获取描述
+    $fid = intval($_POST['fid']);
     if(empty($id)){
         msg(-1003,'分类ID不能为空！');
     }elseif(empty($name)){
         msg(-1004,'分类名称不能为空！');
     }elseif(!empty($Icon) && !preg_match('/^(layui-icon-|fa-)([A-Za-z0-9]|-)+$/',$Icon)){
         msg(-1004,'无效的分类图标！');
+    }else{
+        //根据分类ID查询改分类下面是否已经存在子分类，如果存在子分类了则不允许设置为子分类，实用情况：一级分类下存在二级分类，无法再将改一级分类修改为二级分类
+        $count = $db->count("on_categorys", ["fid" => $id]);
+        //改分类下的子分类数量大于0，并且将父级ID修改为其它分类
+        if( ( $count > 0 ) && ( $fid !== 0 ) ) {
+            msg(-2000,'修改失败，该分类下已存在子分类！');
+        }
     }
 
     $data = [
@@ -122,7 +134,8 @@ function edit_category(){
         'weight'        =>  $weight,
         'property'      =>  $property,
         'description'   =>  htmlspecialchars($description,ENT_QUOTES),
-        'Icon'          =>  htmlspecialchars($Icon,ENT_QUOTES)
+        'Icon'          =>  htmlspecialchars($Icon,ENT_QUOTES),
+        'fid'           =>  $fid
         ];
     $re  = $db->update('on_categorys',$data,[ 'id' => $id]);
     $row = $re->rowCount();//获取影响行数
@@ -1161,6 +1174,45 @@ function rootu(){
 }
     
     
+}
+
+//获取onenav最新版本号
+function get_latest_version() {
+    global $udb;
+    try {
+        $NewVer = $udb->get("config","Value",["Name"=>'NewVer']); //缓存的版本号
+        $NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当前版本!
+        $NewVerGetTime = $udb->get("config","Value",["Name"=>'NewVerGetTime']); //上次从Git获取版本号的时间
+        //如果距上次获取时间超过30分钟则重新获取!
+        if( time() - intval( $NewVerGetTime ) >= 1800 ) {
+            $curl = curl_init("https://gitee.com/tznb/OneNav/raw/master/initial/version.txt");
+            curl_setopt($curl, CURLOPT_FAILONERROR, true);
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl , CURLOPT_TIMEOUT, 3); //超时3s
+            $NewVer = curl_exec($curl);
+            curl_close($curl);
+            //如果获取成功则写入数据库!
+            if(preg_match('/^v.+-(\d{8})$/i',$NewVer,$matches)){
+                $NewVerGetTime = time();
+                Writeconfigd($udb,'config','NewVer',$NewVer);
+                Writeconfigd($udb,'config','NewVerGetTime',$NewVerGetTime);
+                $gitee = true;
+            }
+        }
+        
+        $data = ["code" => 200,"msg" => ( $gitee ? 'on-line' : 'cache' ),"data" => $NewVer];
+        
+    } catch (\Throwable $th) {
+        $data = [
+            "code"      =>  200,
+            "msg"       =>  "",
+            "data"      =>  ""
+        ];
+    }
+    msgA($data);
 }
 
 //是否为管理员

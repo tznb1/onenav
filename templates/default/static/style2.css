@@ -11,7 +11,7 @@ body{
 }
 .link-line {
     font-size: 16px;
-    border-bottom: 1px solid #dddddd;
+    /*border-bottom: 1px solid #dddddd;*/
     height:120px;
     position:relative;
     overflow: hidden;
@@ -47,6 +47,7 @@ body{
 }
 .link-space{
     margin-top:16px;
+    z-index:999;
 }
 .link-title{
     /*color:rgb(0,0,0);*/
@@ -88,7 +89,7 @@ footer a{
 	position:fixed;
 	right:10px;
 	bottom:30px;
-    z-index:99;
+    z-index:1000;
     border-radius: 40px;
     /* border:1px solid red; */
 }
@@ -137,8 +138,8 @@ footer a{
     background-color: #FF2377;
 }
 .cat-title{
-    margin-top: 10px;
-    padding-top: 10px;
+    margin-top: -50px;
+    padding-top:68px;;
 }
 .mdui-container{width:96%;max-width:2560px}
 
@@ -187,4 +188,17 @@ footer a{
 .mdui-container-fluid {
   padding-right: 0px;
   padding-left: 0px;
+}
+.category_sub{
+    font-size:14px;
+    margin-left:0px;
+    /*padding-left:8px;*/
+}
+.category_sub i{
+    padding-right:5px;
+}
+#drawer{
+    /* background-color: #FEFEFE; */
+    /* box-shadow:1px 0 5px 0 #eeeeee; */
+    border-right: 0.5px solid rgba(0, 0, 0, 0.12);
 }

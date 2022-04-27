@@ -319,7 +319,7 @@ form.on('select(PresetColor)', function(data){
     }
 
 if (post !== ''){
-    $.post('./index.php?fn=config&local=PresetColor&u='+u,post,function(data,status){
+    $.post('./index.php?c=admin&page=config&local=PresetColor&u='+u+'&Theme='+t,post,function(data,status){
       if(data.code == 0) {
           window.location.reload()
       }else{

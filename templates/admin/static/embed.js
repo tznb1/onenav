@@ -53,12 +53,25 @@ table.render({
     {type: 'checkbox'},
       {field: 'id', title: 'ID', width:80, sort: true}
       ,{field: 'name', title: '分类名称', width:160, edit: 'text',templet: function(d){ 
-          if ( d.Icon == null){ return d.name; }{
+          if ( d.Icon == null){ return d.name; }
           if (d.Icon.substr(0,3) =='lay'){
-            return '<i class="layui-icon '+d.Icon+'"></i> '+d.name;
-          } else {
-            return  '<i class="fa '+d.Icon+'"></i> '+d.name;
-          } return d.name;}
+              return '<i class="layui-icon '+d.Icon+'"></i> '+d.name;
+          } else if(d.Icon.substr(0,2) =='fa') {
+              return  '<i class="fa '+d.Icon+'"></i> '+d.name;
+          } else{
+              return d.name;
+          }
+      }}
+      ,{field: 'fname', title: '父级分类', width:160,templet: function(d){ 
+          if ( d.fname == null ){ return ''; }
+          
+          if (d.fIcon.substr(0,3) =='lay'){
+              return '<i class="layui-icon '+d.fIcon+'"></i> '+d.fname;
+          }else if(d.fIcon.substr(0,2) =='fa') {
+              return  '<i class="fa '+d.fIcon+'"></i> '+d.fname;
+          }else{
+              return d.fname;
+          }
       }}
       ,{field: 'add_time', title: '添加时间', width:160, sort: true,templet:function(d){
         var add_time = timestampToTime(d.add_time);

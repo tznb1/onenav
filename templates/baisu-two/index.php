@@ -67,11 +67,23 @@ $SBimg = getconfig($config.'SBimg');
 			<div class="type-list">
 
 				<?php
-			foreach ($categorys as $category) {
+			foreach ($category_parent as $category) {
 			
 		?>
-					<div class="list"><a href="#category-<?php echo $category['id']; ?>" class="catlist"><?php echo geticon($category['Icon']).$category['name'];?></a> 
+					<div class="list"><a href="#category-<?php echo $category['id']; ?>" class="catlist" style="overflow:hidden;white-space: nowrap;text-overflow: ellipsis;-o-text-overflow:ellipsis;" ><?php echo geticon($category['Icon']).$category['name'];?></a> 
 					<span class="editFid" data-fid = "<?php echo $category['id']; ?>"><i class="iconfont icon-bianji"></i></span></div>
+					<!--                遍历二级分类-->
+                    <?php foreach (get_category_sub($category['id']) AS $category_sub){
+
+                    ?>
+                    <div class="list" style="padding-left:1em;">
+                        <a class="catlist" style="font-size:12px;font-weight: normal;overflow:hidden;white-space: nowrap;text-overflow: ellipsis;-o-text-overflow:ellipsis;" href="#category-<?php echo $category_sub['id']; ?>">
+                            <?php echo geticon($category['Icon']).$category['name'];?>
+                        </a>
+                        <span class="editFid" data-fid = "<?php echo $category_sub['id']; ?>"><i class="iconfont icon-bianji"></i></span>
+                    </div>
+                    <?php } ?>
+<!--                遍历二级分类END-->
 					<?php } ?>
 			<div class="list add" id="addCat"><a><i class="iconfont icon-tianjia"></i>添加分类</a></div>
 			</div>

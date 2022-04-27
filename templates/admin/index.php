@@ -32,7 +32,7 @@ $VerTime = $matches[1];
 </style>
 <div class="layui-tab layui-tab-brief layui-body " lay-filter="index">
 <ul class="layui-tab-title">
- <li lay-id="1" class="layui-this">相关信息</li>
+ <li lay-id="1"  >相关信息</li>
  <li lay-id="2" >开发文档</li>
  <li lay-id="3" >日志输出</li>
 </ul>
@@ -53,13 +53,13 @@ $VerTime = $matches[1];
     <div class="layui-inline">
       <label class="layui-form-label">当前版本</label>
         <div class="layui-input-inline">
-        <input value='<?php echo $version; ?>'disabled class="layui-input">
+        <input value='<?php echo $version; ?>'disabled class="layui-input" id="version">
       </div> 
     </div>
     <div class="layui-inline">
       <label class="layui-form-label">最新版本</label>
         <div class="layui-input-inline">
-        <input value='<?php echo $NewVer; ?>'disabled class="layui-input" <?php if ($NewVerTime > $VerTime ) {echo 'style="color:#FF0000"';}?>>
+        <input value='获取中...'disabled class="layui-input" id="NewVer">
       </div> 
     </div>
     <div class="layui-inline">
@@ -169,8 +169,8 @@ layui.use(["element", "layer"], function(){
             statusCode: {
                 200: function() {
                     $("#console_log").append("安全检测:数据库可被下载(非常危险)，请尽快参考弹窗信息加固安全设置！\n\n");
-                    var a = '#安全设置<br />location ~* ^/(class|controller|initial|data|templates)/.*.(db3|php|php5|sql)$ {<br />    return 403;<br />}<br />location ~* ^/(data)/(upload)/.*.(html)$ {<br />        deny all;<br />}<br />location /initial {<br />        deny all;<br />}<br /><br />#伪静态<br />rewrite ^/click/(.*) /index.php?c=click&id=$1 break;<br />rewrite ^/api/(.*)?(.*) /index.php?c=api&method=$1&$2 break;<br />rewrite /login /index.php?c=login break;<br />#伪静态-插件支持<br />location ~* ^/(?![favicon]) {<br />rewrite ^/(.*)/index.php /index.php?u=$1 break;<br />}';
-                    var html = '<div style="padding: 15px; color:#01AAED;" ><h3 style="color:#DC143C;">检测到您的服务器未做安全配置,数据库可能被下载(非常危险),请尽快配置!</h3><h4>如果您使用得Nginx，请务必将以下规则添加到站点配置中:</h4><pre class="layui-code">' + a + '</pre><h4>如果使用得Apache则无需设置，已内置.htaccess进行屏蔽。</h4></div>';
+                    var a = '#安全设置<br />location ~* ^/(class|controller|initial|data|templates)/.*.(db3|php|php5|sql)$ {<br />    return 403;<br />}<br />location ~* ^/(data)/(upload)/.*.(html)$ {<br />        deny all;<br />}<br />location /initial {<br />        deny all;<br />}<br />location /favicon {<br />        break;<br />}<br />#伪静态<br />rewrite ^/click/(.*) /index.php?c=click&id=$1 break;<br />rewrite ^/api/(.*)?(.*) /index.php?c=api&method=$1&$2 break;<br />rewrite /login /index.php?c=login break;<br />rewrite ^/(.*)/index.php /index.php?u=$1 break;';
+                    var html = '<div style="padding: 15px; color:#01AAED;" ><h3 style="color:#DC143C;">检测到您的服务器未做安全配置,数据库可能被下载(非常危险),请尽快配置!</h3><h4>如果您使用得Nginx，请务必将以下规则添加到站点配置中(伪静态):</h4><pre class="layui-code">' + a + '</pre><h4>Apache已内置.htaccess进行屏蔽。但如果您看到此提示说明.htaccess未生效!请自行检查!</h4></div>';
                     layer.open({type: 1,maxmin: false,shadeClose: false,resize: false,title: '高危风险提示！',area: ['auto', 'auto'],content: html});
                     element.tabChange('index', '3'); 
                 },
@@ -179,7 +179,41 @@ layui.use(["element", "layer"], function(){
                 }
             }
         });
-    } 
+    }
+    get_latest_version();
+    
+    //获取最新版本
+function get_latest_version(){
+    $.post("./index.php?c=api&method=get_latest_version",function(data,status){
+        console.log(data.data);
+        $("#getting").hide();
+        
+        //获取最新版本
+        let latest_version = data.data;
+        $("#NewVer").val(latest_version);
+
+        //获取当前版本
+        let current_version = document.getElementById("version").value;
+        console.log(current_version);
+        
+        let pattern = /\d{8}/;
+        current_version = pattern.exec(current_version)[0];
+        latest_version = pattern.exec(latest_version)[0];
+
+        //如果当前版本小于最新版本，则提示更新
+        if( current_version < latest_version ) {
+            $("#NewVer").attr("style","color:#FF0000");
+            layer.msg(' 检测到新版本,请尽快更新 ', {offset: 'b',anim: 6,time: 60*1000});
+            // layer.confirm('是否去下载更新?',{icon: 3, title:'更新提示:'}, function(index){
+            //     window.open('https://gitee.com/tznb/OneNav');
+            //     layer.close(index);
+            // });
+            //$("#console_log").append('当前版本:'+ current_version + "\n最新版本:" +latest_version+"\n");
+        }
+    });
+}
+
+
     <?php } ?> 
     
 get_sql_update_list();

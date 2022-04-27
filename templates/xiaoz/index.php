@@ -13,7 +13,17 @@
     <link rel="stylesheet" href="<?php echo $Theme?>/static/style.css?v=<?php echo $version; ?>">
     <?php echo $site['custom_header']; ?>
 </head>
-<body class = "mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-primary-indigo mdui-theme-accent-pink mdui-loaded">
+<?php
+	// 根据cookie来设置mdui主题
+	$md_theme = $_COOKIE['docs-theme-layout'];
+	if( empty($md_theme) || ( $md_theme == "light" ) ) {
+		$md_theme = "";
+	}
+	else{
+		$md_theme = "mdui-theme-layout-dark";
+	}
+?>
+<body class = "mdui-drawer-body-left mdui-appbar-with-toolbar <?php echo $md_theme ?> mdui-theme-primary-indigo mdui-theme-accent-pink mdui-loaded">
 	<!--导航工具-->
 	<header class = "mdui-appbar mdui-appbar-fixed">
 		<div class="mdui-toolbar mdui-color-theme">
@@ -23,6 +33,7 @@
 		  	<div class="mdui-col-md-4 mdui-col-xs-6">
 				<div class="mdui-textfield mdui-textfield-floating-label">
 					<input class="mdui-textfield-input search" style = "color:#FFFFFF;" placeholder="输入书签关键词进行搜索" type="text" />
+					<i class="mdui-icon material-icons" style = "position:absolute;right:2px;">search</i>
 				</div>
 			</div>
 			<!-- 新版搜索框END -->
@@ -48,7 +59,7 @@
 	<!--导航工具END-->
 	<?php if($is_login&&$site['quickAdd']) {
 	?><!-- 添加按钮 -->
-	<div class="right-button mdui-hidden-xs" style="position: fixed;right:10px;bottom:80px;z-index:99;">
+	<div class="right-button mdui-hidden-xs" style="position: fixed;right:10px;bottom:80px;z-index:1000;">
 		<div>
 		<button title = "快速添加链接" id = "add" class="mdui-fab mdui-color-theme-accent mdui-ripple mdui-fab-mini"><i class="mdui-icon material-icons">add</i></button>
 		</div>
@@ -68,18 +79,47 @@
 	  <ul class="mdui-list">
 	  	<?php
 			//遍历分类目录并显示
-			foreach ($categorys as $category) {
+			foreach ($category_parent as $category) {
 			//var_dump($category);
 			
 		?>
+		<div class="mdui-collapse" mdui-collapse>
+              <div class="mdui-collapse-item">
+        <div class="mdui-collapse-item-header">
 		<a href="#category-<?php echo $category['id']; ?>">
 			<li class="mdui-list-item mdui-ripple">
 				<div class="mdui-list-item-content category-name">
 				    <?php echo geticon($category['Icon']).$category['name']; ?></div>
+				    <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
 			</li>
 		</a>
+		</div>
+		<!-- 遍历二级分类-->
+          <div class="mdui-collapse-item-body">
+         <ul>
+         <?php foreach (get_category_sub( $category['id'] ) AS $category_sub){
+
+         ?>
+            <a href="#category-<?php echo $category_sub['id']; ?>">
+                <li class="mdui-list-item mdui-ripple" style="margin-left:-4.3em;">
+                    <div class="mdui-list-item-content category_sub">
+                        <i>
+                        <?php echo geticon($category_sub['Icon']).' '.$category_sub['name']; ?>
+                        </i>
+                    </div>
+                </li>
+            </a>
+         <?php } ?>
+        </ul>
+        </div>
+		<!--遍历二级分类END-->
+		</div>
+        </div>
 	    
 		<?php } ?>
+		<!-- 华丽的分割线 -->
+		<div class="mdui-divider"></div>
+		<!-- 华丽的分割线END -->
 		<a href="https://www.xiaoz.me/" target="_blank" title="小z博客">
 			<li class="mdui-list-item mdui-ripple">
 			<div class="mdui-list-item-content category-name"><i class="fa fa-user-circle"></i> About</div>
@@ -101,6 +141,13 @@
 		</li>
 		</a>
 		<?php } ?>
+		<!-- 切换主题 -->
+		<a href="javascript:;" onclick = "change_theme()" title="点击可切换主题风格">
+			<li class="mdui-list-item mdui-ripple">
+				<div class="mdui-list-item-content category-name"><i class="fa fa-adjust"></i> 切换风格</div>
+			</li>
+		</a>
+		<!-- 切换主题END -->
 	  </ul>
 	</div>
 	<!--左侧抽屉导航END-->
@@ -128,7 +175,9 @@
 				foreach ($links as $link) {
 					//默认描述
 					$link['description'] = empty($link['description']) ? '作者很懒，没有填写描述。' : $link['description'];
+					$id = $link['id'];
 			?>
+			<a href="<?php echo geturl($link); ?>" target="_blank" title = "<?php echo $link['description']; ?>">
 			<div class="mdui-col-lg-3 mdui-col-md-4 mdui-col-xs-12 link-space" id = "id_<?php echo $link['id']; ?>" link-title = "<?php echo $link['title']; ?>" link-url = "<?php echo $link['url']; ?>">
 				<!--定义一个卡片-->
 				<div class="mdui-card link-line mdui-hoverable">
@@ -139,28 +188,18 @@
 						</div>
 						<?php } ?>
 						<!-- 角标END -->
-						<?php 
-						if ($site['urlz']  == 'on'  ){
-						    ?><a href="<?php echo $link['url']; ?>" target="_blank" title = "<?php echo $link['description']; ?>"><?php
-						}else{
-						    ?><a href="./index.php?c=click&id=<?php echo $link['id'].'&u='.$u; ?>" target="_blank" title = "<?php echo $link['description']; ?>"><?php
-						};
-						?>
 							<div class="mdui-card-primary" style = "padding-top:16px;">
 									<div class="mdui-card-primary-title link-title">
-										<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16px" height="16px">
+										<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16" height="16">
 										<span class="link_title"><?php echo $link['title']; ?></span> 
 									</div>
-
 							</div>
-						</a>
-						
-					
 					<!-- 卡片的内容end -->
 					<div class="mdui-card-content mdui-text-color-black-disabled" style="padding-top:0px;"><span class="link-content"><?php echo $link['description']; ?></span></div>
 				</div>
 				<!--卡片END-->
 			</div>
+			</a>
 			<?php } ?>
 			<!-- 遍历链接END -->
 			<?php } ?>

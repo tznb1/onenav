@@ -112,16 +112,46 @@ body{
 	</a>
 <?php } ?>
 	<!-- 左侧登陆或后台End -->
-<?php
-//遍历分类目录并显示
-foreach ($categorys as $category) { 
-?>
-    <a href="#category-<?php echo $category['id']; ?>">
-        <li class="mdui-list-item mdui-ripple">
-            <div class="mdui-list-item-content category-name CFC"><?php echo geticon($category['Icon']).$category['name']; ?></div>
-        </li>
-    </a>
-<?php } ?>
+	  	<?php
+			//遍历分类目录并显示
+			foreach ($category_parent as $category) {
+			//var_dump($category);
+			
+		?>
+		<div class="mdui-collapse" mdui-collapse>
+              <div class="mdui-collapse-item">
+        <div class="mdui-collapse-item-header CFC">
+		<a href="#category-<?php echo $category['id']; ?>">
+			<li class="mdui-list-item mdui-ripple">
+				<div class="mdui-list-item-content category-name CFC">
+				    <?php echo geticon($category['Icon']).$category['name']; ?></div>
+				    <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+			</li>
+		</a>
+		</div>
+		<!-- 遍历二级分类-->
+          <div class="mdui-collapse-item-body">
+         <ul>
+         <?php foreach (get_category_sub( $category['id'] ) AS $category_sub){
+
+         ?>
+            <a href="#category-<?php echo $category_sub['id']; ?>">
+                <li class="mdui-list-item mdui-ripple" style="margin-left:-4.3em;">
+                    <div class="mdui-list-item-content category_sub CFC">
+                        <i>
+                        <?php echo geticon($category_sub['Icon']).' '.$category_sub['name']; ?>
+                        </i>
+                    </div>
+                </li>
+            </a>
+         <?php } ?>
+        </ul>
+        </div>
+		<!--遍历二级分类END-->
+		</div>
+        </div>
+	    
+		<?php } ?>
 	</ul>
 	</div>
 	<!--左侧抽屉导航END-->

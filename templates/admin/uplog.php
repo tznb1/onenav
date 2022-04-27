@@ -1,6 +1,22 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年04月27日</h4>
+      <ul>
+        <li>调整更新检测逻辑,仅管理员访问后台首页时触发更新检测,有更新则提示!</li>
+        <li>后台支持二级分类目录</li>
+        <li>新增Chrome浏览器插件支持<a href="https://doc.xiaoz.me/link/62#bkmrk-%E5%AE%89%E5%85%A8%E8%AE%BE%E7%BD%AE" target="_blank">(请配置伪静态)</a>  <a href="https://gitee.com/tznb/OneNav/raw/test/OneNav_v0.9.18.crx" target="_blank">(下载插件)</a></li>
+        <li>新增环境检测(安装时)</li>
+        <li>默认主题(加强版)适配二级分类</li>
+        <li>默认主题(原版)适配二级分类</li>
+        <li>默认主题(原版)新增夜间模式切换</li>
+        <li>百素two适配二级分类</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年04月23日</h4>
       <ul>
         <li>修复上个版本造成二级密码无法载入验证页面的bug</li>
