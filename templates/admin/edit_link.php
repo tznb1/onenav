@@ -49,6 +49,12 @@
     </div>
   </div>
   
+  <div class="layui-form-item">
+    <label class="layui-form-label">图标URL</label>
+    <div class="layui-input-block">
+      <input type="text" id = "iconurl" name="iconurl" value = "<?php echo $link['iconurl']; ?>" placeholder="自定义图标的URL地址，如果没有，请留空" autocomplete="off" class="layui-input">
+    </div>
+  </div>
   
   <div class="layui-form-item">
     <label class="layui-form-label">是否私有</label>

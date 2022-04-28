@@ -42,7 +42,13 @@
       <input type="number" name="weight" min = "0" max = "999" value = "0" required  lay-verify="required|number" placeholder="权重越高，排名越靠前，范围为0-999" autocomplete="off" class="layui-input">
     </div>
   </div>
-  
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">图标URL</label>
+    <div class="layui-input-block">
+      <input type="text" id = "iconurl" name="iconurl"  placeholder="自定义图标的URL地址，如果没有，请留空" autocomplete="off" class="layui-input">
+    </div>
+  </div>
   
   <div class="layui-form-item">
     <label class="layui-form-label">是否私有</label>

@@ -113,7 +113,7 @@ $property = '<span><i class="fa fa-low-vision"></i></span>';} else  {$property =
 		<div class="list url-list" id = "id_<?php echo $link['id']; ?>" link-title = "<?php echo $link['title']; ?>" link-url = "<?php echo $link['url']; ?>">
 		<a href="<?php echo $linkURL; ?>" target="_blank" title="<?php echo $link['description'];//悬停描述?>">
 		<p class="name">
-		<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>">
+		<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link);}else{echo $libs.'/Other/default.ico';} ?>">
 		<?php echo $link['title'];?>
 		</p>
 		<?php if( $Descr == 1 ){echo '<p class="desc">'.$link['description']."</p>";}//描述输出 ?>

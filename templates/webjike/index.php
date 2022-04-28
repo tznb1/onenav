@@ -138,7 +138,7 @@
 												    ?><a rel="nofollow" href="./index.php?c=click&id=<?php echo $link['id']; ?>&u=<?php echo $u?>" title="<?php echo $link['description']; ?>" class="duty-card" target="_blank"><?php
 												};
 											?>
-											<div class="duty-card-tit"><img src="<?php if ($site['LoadIcon']  == 'on'  ){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>"  alt="<?php echo $link['title']; ?>" ><?php echo $link['title']; ?></div>
+											<div class="duty-card-tit"><img src="<?php if ($site['LoadIcon']  == 'on'  ){echo geticourl($IconAPI,$link);}else{echo $libs.'/Other/default.ico';} ?>"  alt="<?php echo $link['title']; ?>" ><?php echo $link['title']; ?></div>
                         					<div class="duty-card-des"><?php echo $link['description']; ?></div>
                         				</a>
 									</div>

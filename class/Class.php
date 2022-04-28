@@ -67,14 +67,24 @@ if ($count){
     $db->insert($table,['Name'=> $name ,'Value'=> $value]);
 }}
 //获取图标URL
-function geticourl($icon,$url){
-if ($icon ==1){return('./favicon/?url='.$url);}
-elseif($icon ==2){return('//favicon.rss.ink/v1/'.base64($url));}
-elseif($icon ==3){return('//ico.hnysnet.com/get.php?url='.$url);}
-elseif($icon ==4){return('//api.15777.cn/get.php?url='.$url);}
-elseif($icon ==5){return('//favicon.cccyun.cc/'.$url);}
-elseif($icon ==6){return('//api.iowen.cn/favicon/'.parse_url($url)['host'].'.png');}
-else{return('./favicon/?url='.$url);}//如果参数错误则使用本地服务器
+function geticourl($icon,$link){
+    if(!empty( $link['iconurl'])){
+        return($link['iconurl']);
+    }elseif ($icon ==1){
+        return('./favicon/index2.php?url='.$link['url']);
+    }elseif($icon ==2){
+        return('//favicon.rss.ink/v1/'.base64($link['url']));
+    }elseif($icon ==3){
+        return('//ico.hnysnet.com/get.php?url='.$link['url']);
+    }elseif($icon ==4){
+        return('//api.15777.cn/get.php?url='.$link['url']);
+    }elseif($icon ==5){
+        return('//favicon.cccyun.cc/'.$link['url']);
+    }elseif($icon ==6){
+        return('//api.iowen.cn/favicon/'.parse_url($link['url'])['host'].'.png');
+    }else{
+        return('./favicon/index2.php?url='.$link['url']);
+    }//如果参数错误则使用本地服务器
 }
 //读取配置 (22/3/2新增一个默认值参数,没找到记录时使用默认值写入并返回默认值)
 function getconfig($name,$default =''){

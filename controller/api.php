@@ -252,6 +252,7 @@ function add_link(){
     $title = $_POST['title'];
     $url = $_POST['url'];
     $url_standby = $_POST['url_standby'];
+    $iconurl = $_POST['iconurl'];
     $description = empty($_POST['description']) ? '' : $_POST['description'];
     $weight = empty($_POST['weight']) ? 0 : intval($_POST['weight']);
     $property = empty($_POST['property']) ? 0 : 1;
@@ -264,7 +265,8 @@ function add_link(){
             'description'   =>  htmlspecialchars($description,ENT_QUOTES),
             'add_time'      =>  time(),
             'weight'        =>  $weight,
-            'property'      =>  $property
+            'property'      =>  $property,
+            'iconurl'       =>  $iconurl
             ];
     $re = $db->insert('on_links',$data);//插入数据库
     $row = $re->rowCount();//返回影响行数
@@ -284,6 +286,7 @@ function edit_link(){
     $title = $_POST['title'];
     $url = $_POST['url'];
     $url_standby = $_POST['url_standby'];
+    $iconurl = $_POST['iconurl'];
     $description = empty($_POST['description']) ? '' : $_POST['description'];
     $weight = empty($_POST['weight']) ? 0 : intval($_POST['weight']);
     $property = empty($_POST['property']) ? 0 : 1;
@@ -296,7 +299,8 @@ function edit_link(){
             'description'   =>  htmlspecialchars($description,ENT_QUOTES),
             'up_time'       =>  time(),
             'weight'        =>  $weight,
-            'property'      =>  $property
+            'property'      =>  $property,
+            'iconurl'       =>  $iconurl
             ];
     $re = $db->update('on_links',$data,[ 'id' => $id]); //更新数据
     $row = $re->rowCount();//返回影响行数

@@ -157,7 +157,7 @@ body{
 	<!--左侧抽屉导航END-->
 	<!--正文内容部分-->
 	<div class="mdui-container">
-	    <?php if($WeatherPosition==2){ echo '<div style="position:fixed;z-index:99;right:0px;width:160px;padding-right:0px;"><div id="he-plugin-simple"></div></div>'."\n";} ?>
+	    <?php if($WeatherPosition==2){ echo '<div style="position:fixed;z-index:1000;right:0px;width:160px;padding-right:0px;"><div id="he-plugin-simple"></div></div>'."\n";} ?>
 		<div class="mdui-row">
 			<!-- 遍历分类目录 -->
             <?php foreach ( $categorys as $category ) {
@@ -201,7 +201,7 @@ body{
 						?>
 							<div class="mdui-card-primary" >
 									<div class="mdui-card-primary-title link-title">
-										<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16px" height="16px">
+										<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16px" height="16px">
 										<span class="link_title"><?php echo $link['title']; ?></span> 
 									</div>
 							</div>

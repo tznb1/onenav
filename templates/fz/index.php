@@ -190,7 +190,7 @@ WIDGET = {
 						?>
 							<div class="mdui-card-primary" style = "padding-top:6px;">
 									<div class="mdui-card-primary-title link-title">
-										<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16" height="16">
+										<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16" height="16">
 										<span class="link_title"><?php echo $link['title']; ?></span> 
 									</div>
 

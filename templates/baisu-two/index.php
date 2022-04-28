@@ -78,7 +78,7 @@ $SBimg = getconfig($config.'SBimg');
                     ?>
                     <div class="list" style="padding-left:1em;">
                         <a class="catlist" style="font-size:12px;font-weight: normal;overflow:hidden;white-space: nowrap;text-overflow: ellipsis;-o-text-overflow:ellipsis;" href="#category-<?php echo $category_sub['id']; ?>">
-                            <?php echo geticon($category['Icon']).$category['name'];?>
+                            <?php echo geticon($category_sub['Icon']).$category_sub['name'];?>
                         </a>
                         <span class="editFid" data-fid = "<?php echo $category_sub['id']; ?>"><i class="iconfont icon-bianji"></i></span>
                     </div>
@@ -201,7 +201,7 @@ $SBimg = getconfig($config.'SBimg');
 						<div class="list urllist" id="id_<?php echo $link['id']; ?>" data-id="<?php echo $link['id']; ?>" data-url="<?php echo $link['url']; ?>">
 							<a href="<?php echo $linkURL; ?>" target="_blank">
 								<p class="name">
-									<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link['url']);}else{echo $libs.'/Other/default.ico';} ?>">
+									<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link);}else{echo $libs.'/Other/default.ico';} ?>">
 									<?php echo $link['title']; ?>
 								</p>
 								<p class="desc">

@@ -169,7 +169,7 @@ layui.use(["element", "layer"], function(){
             statusCode: {
                 200: function() {
                     $("#console_log").append("安全检测:数据库可被下载(非常危险)，请尽快参考弹窗信息加固安全设置！\n\n");
-                    var a = '#安全设置<br />location ~* ^/(class|controller|initial|data|templates)/.*.(db3|php|php5|sql)$ {<br />    return 403;<br />}<br />location ~* ^/(data)/(upload)/.*.(html)$ {<br />        deny all;<br />}<br />location /initial {<br />        deny all;<br />}<br />location /favicon {<br />        break;<br />}<br />#伪静态<br />rewrite ^/click/(.*) /index.php?c=click&id=$1 break;<br />rewrite ^/api/(.*)?(.*) /index.php?c=api&method=$1&$2 break;<br />rewrite /login /index.php?c=login break;<br />rewrite ^/(.*)/index.php /index.php?u=$1 break;';
+                    var a = '#安全设置<br />location ~* ^/(class|controller|initial|data|templates)/.*.(db3|php|php5|sql)$ {<br />    return 403;<br />}<br />location ~* ^/data/upload/.*.html$ {<br />        deny all;<br />}<br /><br />#伪静态<br />rewrite ^/click/(.*) /index.php?c=click&id=$1 break;<br />rewrite ^/api/(.*)?(.*) /index.php?c=api&method=$1&$2 break;<br />rewrite /login /index.php?c=login break;<br />rewrite ^/(.*)/index.php /index.php?u=$1 break;';
                     var html = '<div style="padding: 15px; color:#01AAED;" ><h3 style="color:#DC143C;">检测到您的服务器未做安全配置,数据库可能被下载(非常危险),请尽快配置!</h3><h4>如果您使用得Nginx，请务必将以下规则添加到站点配置中(伪静态):</h4><pre class="layui-code">' + a + '</pre><h4>Apache已内置.htaccess进行屏蔽。但如果您看到此提示说明.htaccess未生效!请自行检查!</h4></div>';
                     layer.open({type: 1,maxmin: false,shadeClose: false,resize: false,title: '高危风险提示！',area: ['auto', 'auto'],content: html});
                     element.tabChange('index', '3'); 

@@ -1,6 +1,18 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年04月28日</h4>
+      <ul>
+        <li>本次更新存在数据库更新,伪静态变更</li>
+        <li>修复默认主题(加强版)天气位于正文右上角时悬浮窗被遮挡的问题</li>
+        <li>修复百素two左侧栏显示的全是一级目录的问题</li>
+        <li>支持自定义链接图标(后台编辑和添加链接时可填入图标URL地址,如果在其他没有输入框的页面修改时已设置的图标URL将被清空,请悉知!!!</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年04月27日</h4>
       <ul>
         <li>调整更新检测逻辑,仅管理员访问后台首页时触发更新检测,有更新则提示!</li>
