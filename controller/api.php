@@ -137,6 +137,10 @@ function edit_category(){
         'Icon'          =>  htmlspecialchars($Icon,ENT_QUOTES),
         'fid'           =>  $fid
         ];
+    //防止未传递父id时被清空
+    if( !isset($fid) ) {
+        array_pop($data);
+    }
     $re  = $db->update('on_categorys',$data,[ 'id' => $id]);
     $row = $re->rowCount();//获取影响行数
     if($row) {
@@ -302,6 +306,9 @@ function edit_link(){
             'property'      =>  $property,
             'iconurl'       =>  $iconurl
             ];
+    if( !isset($iconurl) ) {
+        array_pop($data);
+    }
     $re = $db->update('on_links',$data,[ 'id' => $id]); //更新数据
     $row = $re->rowCount();//返回影响行数
     if($row){
@@ -1045,7 +1052,7 @@ function get_sql_update_list() {
 
     }
 function exe_sql() {
-    global $db,$SQLite3;
+    global $SQLite3;
         //数据库sql目录
         $sql_dir = 'initial/sql/';
         $name = $_GET['name'];
@@ -1057,6 +1064,8 @@ function exe_sql() {
         //读取需要更新的SQL内容
         try {
             $sql_content = file_get_contents($sql_name);
+            $time = time();
+            $sql_content = $sql_content . "\nINSERT INTO \"main\".\"on_db_logs\"(\"sql_name\", \"update_time\") VALUES ('${name}', ${time})";
             class MyDB extends SQLite3 {
                 function __construct() {
                     global $SQLite3;
@@ -1073,16 +1082,10 @@ function exe_sql() {
             $result = $db2->exec($sql_content);
             //如果SQL执行成功，则返回
             if( $result ) {
-                //写入更新记录
-                $insert_re = $db->insert("on_db_logs",["sql_name" => $name, "update_time" => time(), "status" => "TRUE" ]);
-                if( $insert_re ) {
-                    msg(0,$name." 更新完成！");
-                }else {
-                    msgA(["code" => -2000,"data" => " 更新失败,请人工检查！(写入on_db_logs失败.)",'error' => $db2->lastErrorMsg()]);
-                }
+                msg(0,$name." 更新完成！");
             }else{
                 //如果执行失败
-                msgA(["code" => -2000,"data" => " 更新失败,请人工检查！",'error' => $db2->lastErrorMsg()]);
+                msgA(["code" => -2000 , "data" => " 更新失败,error:\n".$db2->lastErrorMsg()]);
             }
             $db2->close();
         } catch(Exception $e){
@@ -1179,6 +1182,28 @@ function rootu(){
     
     
 }
+//日志列表
+function loginlog_list(){
+    $db = new Medoo\Medoo(['database_type'=>'sqlite','database_file'=>'./data/login.log.db3']);
+    $q = inject_check($_POST['query']);//获取关键字(防止SQL注入)
+    if ( !empty ($_GET['page'])){
+        $page  = empty(intval($_GET['page']))  ? 1 : intval($_GET['page']);  //页码
+    }else{
+        $page  = empty(intval($_POST['page']))  ? 1 : intval($_POST['page']);  //页码
+    }
+    if ( !empty ($_GET['limit'])){
+        $limit = empty(intval($_GET['limit'])) ? 20: intval($_GET['limit']); //每页条数
+    }else{
+        $limit = empty(intval($_POST['limit'])) ? 20: intval($_POST['limit']); //每页条数
+    }
+    
+    $offset = ($page - 1) * $limit; //起始行号
+    $count = $db->count('loginlog','*',["OR"=>['name[~]'=>$q,'pass[~]'=>$q,'ip[~]'=>$q,'value[~]'=>$q]]);
+    $sql = "SELECT * FROM loginlog WHERE (name LIKE '%{$q}%' or pass LIKE '%{$q}%' or ip LIKE '%{$q}%' or value LIKE '%{$q}%') LIMIT {$limit} OFFSET {$offset}";
+    $datas = $db->query($sql)->fetchAll();
+    msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas]);
+}
+
 
 //获取onenav最新版本号
 function get_latest_version() {

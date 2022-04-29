@@ -1,6 +1,6 @@
 <?php include_once('header.php'); ?>
 <?php include_once('left.php'); ?>
-<div class="layui-body">
+<div class="layui-body" style="padding-bottom: 0px;">
 <!-- 内容主体区域 -->
 <link href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css?v=4.7.0" rel="stylesheet"> 
 <div class="layui-row content-body">

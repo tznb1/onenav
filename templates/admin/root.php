@@ -14,14 +14,14 @@ $Plug     = $udb->get("config","Value",["Name"=>'Plug']);
 <style type="text/css">
 .layui-layout-admin .layui-body {top: 40px;}
 </style>
-<div class="layui-tab layui-tab-brief layui-body layui-row content-body" lay-filter="root">
+<div class="layui-tab layui-tab-brief layui-body layui-row content-body" lay-filter="root" style="padding-bottom: 0px;">
 <ul class="layui-tab-title">
  <li class="layui-this">全局配置</li>
  <li >用户管理</li>
 </ul>
-<div class="layui-tab-content" >
+<div class="layui-tab-content" style="padding-bottom: 0px;">
 <div class="layui-tab-item layui-show layui-form layui-form-pane"><!--全局配置--> 
-<div class="layui-row content-body layui-show layui-form layui-form-pane" style="margin-top: 0px;">
+<div class="layui-row content-body layui-show layui-form layui-form-pane" >
 <div class="layui-col-lg12">
  <div class="layui-form-item">
     <div class="layui-inline">
@@ -193,6 +193,7 @@ $Plug     = $udb->get("config","Value",["Name"=>'Plug']);
             <button class="layui-btn layui-btn-sm " lay-event="Reg" >注册账号</button>
             <button class="layui-btn layui-btn-sm " lay-event="help" >帮助</button>
             <button class="layui-btn layui-btn-sm " lay-event="repair" >修复/升级</button>
+            <button class="layui-btn layui-btn-sm " lay-event="loginlog" >登录日志</button>
         </div>
         </script>
         <!-- 开启表格头部工具栏END -->
@@ -364,6 +365,10 @@ table.on('toolbar(user_list)', function(obj){
           }
       });
       break;
+      case 'loginlog':
+      window.open('./index.php?c=admin&page=loginlog&u=<?php echo $u;?>');
+      break;   
+      
     }
 });
 //回车和按钮事件

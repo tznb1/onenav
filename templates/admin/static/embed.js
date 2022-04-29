@@ -42,7 +42,7 @@ $("body").on("click",".img-list img",function(e){
 table.render({
     elem: '#category_list'
     ,height: 'full-150' //自适应高度
-    ,url: 'index.php?c=api&method=category_list&u='+u //数据接口
+    ,url: './index.php?c=api&method=category_list&u='+u //数据接口
     ,page: true //开启分页
     ,limit:20  //默认每页显示行数
     ,even:true //隔行背景色
@@ -139,7 +139,7 @@ var fid = document.getElementById("fid").value;
 var keyword = document.getElementById("link_keyword").value;//获取输入内容
 console.log(fid,keyword);
 table.reload('link_list', {
-  url: 'index.php?c=api&method=link_list&u='+u
+  url: './index.php?c=api&method=link_list&u='+u
   ,method: 'post'
   ,request: {
    pageName: 'page' //页码的参数名称，默认：page
@@ -179,7 +179,7 @@ if(value == num){
 function category_q(){
 var inputVal = $('.layui-input').val();//获取输入内容
 table.reload('category_list', {
-  url: 'index.php?c=api&method=category_list&u='+u
+  url: './index.php?c=api&method=category_list&u='+u
   ,method: 'post'
   ,request: {
    pageName: 'page' //页码的参数名称，默认：page
@@ -278,7 +278,7 @@ function intCols()
 table.render({
     elem: '#link_list'
     ,height: 'full-150' //自适应高度
-    ,url: 'index.php?c=api&method=link_list&u='+u //数据接口
+    ,url: './index.php?c=api&method=link_list&u='+u //数据接口
     ,page: true //开启分页
     ,limit:20  //默认每页显示行数
     ,even:true //隔行背景色

@@ -88,7 +88,7 @@ body{
 	<!--导航工具END-->
 	<?php if( $is_login && $site['quickAdd'] ) {
 	?><!-- 添加按钮 -->
-	<div class="right-button mdui-hidden-xs" style="position: fixed;right:10px;bottom:80px;z-index:99;">
+	<div class="right-button mdui-hidden-xs" style="position: fixed;right:10px;bottom:80px;z-index:1000;">
 		<div><button title = "快速添加链接" id = "add" class="mdui-fab mdui-color-theme-accent mdui-ripple mdui-fab-mini"><i class="mdui-icon material-icons">add</i></button></div>
 	</div>
 <?php } ?>
