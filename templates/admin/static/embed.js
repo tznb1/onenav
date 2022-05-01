@@ -36,7 +36,10 @@ $("body").on("click",".img-list img",function(e){
     });
 
 
-
+var limit = String(getCookie('lm_limit'));
+if (limit < 10 || limit > 90){
+    limit = 20 ;
+}
 
 //分类列表
 table.render({
@@ -44,7 +47,7 @@ table.render({
     ,height: 'full-150' //自适应高度
     ,url: './index.php?c=api&method=category_list&u='+u //数据接口
     ,page: true //开启分页
-    ,limit:20  //默认每页显示行数
+    ,limit:limit  //默认每页显示行数
     ,even:true //隔行背景色
     ,id:'category_list'
     ,loading:true //加载条
@@ -280,7 +283,7 @@ table.render({
     ,height: 'full-150' //自适应高度
     ,url: './index.php?c=api&method=link_list&u='+u //数据接口
     ,page: true //开启分页
-    ,limit:20  //默认每页显示行数
+    ,limit:limit  //默认每页显示行数
     ,even:true //隔行背景色
     ,loading:true //加载条
     ,cellMinWidth: 150 //最小宽度
@@ -790,6 +793,16 @@ function _GET(variable){
                if(pair[0] == variable){return pair[1];}
        }
        return(false);
+}
+
+function getCookie(cname){
+	var name = cname + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0; i<ca.length; i++) {
+		var c = ca[i].trim();
+		if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
+	}
+	return "";
 }
 
 function check_weak_password(){

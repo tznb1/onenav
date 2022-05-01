@@ -1,6 +1,19 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年05月01日</h4>
+      <ul>
+        <li>新增离线站点图标 (使用标题第一个字符),站长在网站管理,图标API设置!</li>
+        <li>修复baisu主题修改二级分类导致分类变一级的问题(后端修复法)</li>
+        <li>新增一键诊断功能 (在后台首页>日志输出>一键诊断)</li>
+        <li>浏览器插件更新Extend专用版 <a href="https://doc.xiaoz.me/books/onenav-extend/page/chrome" target="_blank">(帮助说明)</a></li>
+        <li>支持记忆表格每页数量(Cookie)</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年04月29日</h4>
       <ul>
         <li>优化数据库升级的可靠性</li>
@@ -28,7 +41,7 @@
       <ul>
         <li>调整更新检测逻辑,仅管理员访问后台首页时触发更新检测,有更新则提示!</li>
         <li>后台支持二级分类目录</li>
-        <li>新增Chrome浏览器插件支持<a href="https://doc.xiaoz.me/link/62#bkmrk-%E5%AE%89%E5%85%A8%E8%AE%BE%E7%BD%AE" target="_blank">(请配置伪静态)</a>  <a href="https://gitee.com/tznb/OneNav/raw/test/OneNav_v0.9.18.crx" target="_blank">(下载插件)</a></li>
+        <li>新增Chrome浏览器插件支持<a href="https://doc.xiaoz.me/link/62#bkmrk-%E5%AE%89%E5%85%A8%E8%AE%BE%E7%BD%AE" target="_blank">(请配置伪静态)</a>  <a href="https://gitee.com/tznb/OneNav/raw/test/chrome_onenav.crx" target="_blank">(下载插件)</a></li>
         <li>新增环境检测(安装时)</li>
         <li>默认主题(加强版)适配二级分类</li>
         <li>默认主题(原版)适配二级分类</li>

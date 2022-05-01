@@ -66,6 +66,8 @@ elseif($c == $Register){
 	include_once("./controller/Register.php");}//注册
 elseif($c == 'api'){
 	include_once("./controller/api.php");}//API
+elseif($c == 'ico'){
+	include_once("./controller/ico.php");}//图标
 else{msg(-1001,'请求的接口不存在!');}
 
 

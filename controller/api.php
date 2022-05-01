@@ -29,6 +29,14 @@ if(!is_login2()){
     msg(-2222,'请先验证二级密码!');
 }
 
+//demo(); //演示模式下禁止一些操作!
+function demo(){
+    global $method;
+    // 禁止修改主页|账号设置|删除用户|上传书签|导入输入|查登录日志
+    $pattern = "/(edit_homepage|edit_user|user_list_del|upload|imp_link|loginlog_list)/i";
+    if ( preg_match($pattern,$method) ) {msg(-1010,'演示站禁止此操作!');}
+}
+
 //是否加载防火墙
 if($XSS == 1 || $SQL == 1){require ('./class/WAF.php');}
 //获取方法并过滤,判断是否存在函数,存在则调用!反之报错!
@@ -39,21 +47,22 @@ if ( function_exists($method) ) {
     msg(-1000,'method not found!');;
 }
 
+// 写Cookie,检测来路是否正常!
+function setcookie_lm_limit($limit){
+    $pattern = "/page=(link_list|category_list|root|loginlog)/i";
+    if ( preg_match($pattern,$_SERVER['HTTP_REFERER']) ) {
+        setcookie("lm_limit", $limit, time()+60*60*24*720);
+    }
+}
+
 //分类列表
 function category_list(){
     global $db,$OnlyOpen;
     $q = inject_check($_POST['query']);//获取关键字(防止SQL注入)
-    if ( !empty ($_GET['page'])){
-        $page  = empty(intval($_GET['page']))  ? 1 : intval($_GET['page']);  //页码
-    }else{
-        $page  = empty(intval($_POST['page']))  ? 1 : intval($_POST['page']);  //页码
-    }
-    if ( !empty ($_GET['page'])){
-        $limit = empty(intval($_GET['limit'])) ? 20: intval($_GET['limit']); //每页条数
-    }else{
-        $limit = empty(intval($_POST['limit'])) ? 20: intval($_POST['limit']); //每页条数
-    }
     
+    $page = empty(intval($_REQUEST['page'])) ? 1 : intval($_REQUEST['page']);
+    $limit = empty(intval($_REQUEST['limit'])) ? 20 : intval($_REQUEST['limit']);
+    setcookie_lm_limit($limit);
     $offset = ($page - 1) * $limit; //起始行号
     $property = $OnlyOpen == true ? ' And property = 0 ':''; //访客模式,添加查询语句只查询公开分类
     //$sql = "SELECT *,(SELECT count(*) FROM on_links  WHERE fid = on_categorys.id ) AS count  FROM on_categorys  WHERE (name LIKE '%{$q}%' or description LIKE '%{$q}%' ) {$property} ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
@@ -112,7 +121,7 @@ function edit_category(){
     $property = empty($_POST['property']) ? 0 : 1;//获取私有属性
     $weight = empty($_POST['weight']) ? 0 : intval($_POST['weight']);//获取权重
     $description = $_POST['description']; //获取描述
-    $fid = intval($_POST['fid']);
+    $fid = $_POST['fid'];
     if(empty($id)){
         msg(-1003,'分类ID不能为空！');
     }elseif(empty($name)){
@@ -135,7 +144,7 @@ function edit_category(){
         'property'      =>  $property,
         'description'   =>  htmlspecialchars($description,ENT_QUOTES),
         'Icon'          =>  htmlspecialchars($Icon,ENT_QUOTES),
-        'fid'           =>  $fid
+        'fid'           =>  intval($fid)
         ];
     //防止未传递父id时被清空
     if( !isset($fid) ) {
@@ -212,17 +221,9 @@ function del_category(){
 function link_list(){
     global $db,$OnlyOpen;
     $q = inject_check($_POST['query']);//获取关键字(防止SQL注入)
-    if ( !empty ($_GET['page'])){
-        $page  = empty(intval($_GET['page']))  ? 1 : intval($_GET['page']);  //页码
-    }else{
-        $page  = empty(intval($_POST['page']))  ? 1 : intval($_POST['page']);  //页码
-    }
-    if ( !empty ($_GET['limit'])){
-        $limit = empty(intval($_GET['limit'])) ? 20: intval($_GET['limit']); //每页条数
-    }else{
-        $limit = empty(intval($_POST['limit'])) ? 20: intval($_POST['limit']); //每页条数
-    }
-    
+    $page = empty(intval($_REQUEST['page'])) ? 1 : intval($_REQUEST['page']);
+    $limit = empty(intval($_REQUEST['limit'])) ? 20 : intval($_REQUEST['limit']);
+    setcookie_lm_limit($limit);
     $offset = ($page - 1) * $limit; //起始行号
     $fid = intval(@$_POST['fid']); //获取分类ID
     //判断分类筛选,统计条数
@@ -647,7 +648,7 @@ function edit_homepage(){
     msg(0,'successful');
 }
 
-//主页设置
+//主题切换
 function set_theme(){
     $type = $_POST['type'];
     $name = $_POST['name'];
@@ -787,17 +788,7 @@ function edit_root(){
     }elseif($SQL !== '0' && $SQL !== '1'){
         msg(-1103,'防SQL注入参数错误!');
     }
-    // $Re = $udb->query("select * from sqlite_master where name = 'user' and sql like '%".'"'."VisitorKey".'"'."%'")->fetchAll();
-    // $num = intval($Re[0]['num']);
-    // if($num ==0){
-    //     $udb->query('ALTER TABLE "user"  ADD COLUMN "VisitorKey" TEXT(32)');
-    // }
-    
-    // $Re = $udb->query("select * from sqlite_master where name = 'user' and sql like '%".'"'."AuthoKey".'"'."%'")->fetchAll();
-    // $num = intval($Re[0]['num']);
-    // if($num ==0){
-    //     $udb->query('ALTER TABLE "user"  ADD COLUMN "AuthoKey" TEXT(32)');
-    // }
+
     Writeconfigd($udb,'config','DUser',$DUser);
     Writeconfigd($udb,'config','Register',$Register);
     Writeconfigd($udb,'config','Login',$login);
@@ -913,7 +904,8 @@ function user_list(){
     is_admin();
     $q = inject_check($_POST['query']);//获取关键字(防止SQL注入)
     $page  = empty(intval($_POST['page']))  ? 1  : intval($_POST['page' ]);//页码
-    $limit = empty(intval($_POST['limit'])) ? 20 : intval($_POST['limit']);//每页条数
+    $limit = empty(intval($_REQUEST['limit'])) ? 20 : intval($_REQUEST['limit']);//每页条数
+    setcookie_lm_limit($limit);
     $offset = ($page - 1) * $limit;//起始行号
     $sql ="SELECT * FROM user WHERE User LIKE '%".$q."%' or Email LIKE '%".$q."%' or RegIP LIKE '%".$q."%' ORDER BY ID ASC LIMIT {$limit} OFFSET {$offset}";
     $count = $udb->count('user','*',["OR" =>['User[~]'=>$q,'Email[~]'=>$q,'RegIP[~]'=>$q]]);//统计条数
@@ -1186,17 +1178,9 @@ function rootu(){
 function loginlog_list(){
     $db = new Medoo\Medoo(['database_type'=>'sqlite','database_file'=>'./data/login.log.db3']);
     $q = inject_check($_POST['query']);//获取关键字(防止SQL注入)
-    if ( !empty ($_GET['page'])){
-        $page  = empty(intval($_GET['page']))  ? 1 : intval($_GET['page']);  //页码
-    }else{
-        $page  = empty(intval($_POST['page']))  ? 1 : intval($_POST['page']);  //页码
-    }
-    if ( !empty ($_GET['limit'])){
-        $limit = empty(intval($_GET['limit'])) ? 20: intval($_GET['limit']); //每页条数
-    }else{
-        $limit = empty(intval($_POST['limit'])) ? 20: intval($_POST['limit']); //每页条数
-    }
-    
+    $page = empty(intval($_REQUEST['page'])) ? 1 : intval($_REQUEST['page']);
+    $limit = empty(intval($_REQUEST['limit'])) ? 20 : intval($_REQUEST['limit']);
+    setcookie_lm_limit($limit);
     $offset = ($page - 1) * $limit; //起始行号
     $count = $db->count('loginlog','*',["OR"=>['name[~]'=>$q,'pass[~]'=>$q,'ip[~]'=>$q,'value[~]'=>$q]]);
     $sql = "SELECT * FROM loginlog WHERE (name LIKE '%{$q}%' or pass LIKE '%{$q}%' or ip LIKE '%{$q}%' or value LIKE '%{$q}%') LIMIT {$limit} OFFSET {$offset}";
@@ -1204,6 +1188,83 @@ function loginlog_list(){
     msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas]);
 }
 
+// 一键检测
+function Onecheck(){
+    global $SQLite3,$version; //,$db,$udb
+    //获取组件信息
+    $log = $log ."服务器时间：" . date("Y-m-d H:i:s") ."\n"; 
+    //$log = $log ."系统内核:" . php_uname() ."\n";
+    $log = $log ."系统信息：" . php_uname('s').','.php_uname('r') ."\n";
+    $log = $log . "当前版本：{$version}\n";
+    $ext = get_loaded_extensions();
+    //检查PHP版本，需要大于5.6小于8.0
+    $php_version = floatval(PHP_VERSION);
+    $log = $log . "PHP版本：{$php_version}\n";
+    
+    
+    if( ( $php_version < 5.6 ) || ( $php_version > 8 ) ) {
+        $log = $log . "PHP版本：不满足要求,需要5.6 <= PHP <= 7.4,建议使用7.4 )\n";
+    }
+    
+    //检查是否支持pdo_sqlite
+    if ( array_search('pdo_sqlite',$ext) ) {
+        $log = $log ."PDO_Sqlite：支持\n";
+    }else{
+        $log = $log ."PDO_Sqlite：不支持 (请安装PDO_Sqlite)\n";
+    }
+    
+    //检查是否支持curl
+    if ( function_exists('curl_init') ) {
+        $log = $log ."curl：支持\n";
+    }else{
+        $log = $log ."curl：不支持 (请安装libcurl)\n";
+    }
+
+    
+    // 检查主表
+    if(is_writable('./data/lm.user.db3')){
+        $log = $log ."数据库>主表：正常\n";
+    }else{
+        $log = $log ."数据库>主表：只读,请将./data/lm.user.db3的权限设为755 \n";
+    }
+    // 检查用户数据库
+    if(is_writable($SQLite3)){
+        $log = $log ."数据库>用户：正常\n";
+    }else{
+        $log = $log ."数据库>用户：只读,请将".$SQLite3."的权限设为755 \n";
+    }
+    // 检查登录日志数据库
+    if(is_writable('./data/login.log.db3')){
+        $log = $log ."数据库>日志：正常\n";
+    }else{
+        $log = $log ."数据库>日志：只读,请将./data/login.log.db3的权限设为755 \n";
+    }
+    
+    $a = './data/test_'.time().'.txt';
+    if(file_put_contents($a, '测试文本,可以删除!由一键诊断生成!')){
+        if(unlink($a)){
+            $log = $log ."data目录：正常\n";
+        }else{
+            $log = $log ."data目录：创建文件成功,删除文件失败\n";
+        }
+    }else{
+        $log = $log ."data目录：异常,请检查权限!\n";
+    }
+    
+    $a = './data/upload/test_'.time().'.txt';
+    if(file_put_contents($a, '测试文本,可以删除!由一键诊断生成!')){
+        if(unlink($a)){
+            $log = $log ."upload目录：正常\n";
+        }else{
+            $log = $log ."upload目录：创建文件成功,删除文件失败\n";
+        }
+    }else{
+        $log = $log ."upload目录：异常,请检查权限!\n";
+    }
+    
+     //$log = $log .phpinfo();
+     msg(-1000,$log);
+}
 
 //获取onenav最新版本号
 function get_latest_version() {
@@ -1310,6 +1371,8 @@ function check_link($fid,$title,$url,$url_standby){
     if ( ( !empty($url_standby) ) && ( !preg_match($pattern,$url_standby) ) ) {msg(-1010,'备选URL无效！');}
     return true;
 }
+
+
 
 function check_xss($value){
     if(preg_match('/<(iframe|script|body|img|layer|div|meta|style|base|object|input)|">/i',$value)){

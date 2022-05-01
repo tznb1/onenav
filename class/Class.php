@@ -82,6 +82,8 @@ function geticourl($icon,$link){
         return('//favicon.cccyun.cc/'.$link['url']);
     }elseif($icon ==6){
         return('//api.iowen.cn/favicon/'.parse_url($link['url'])['host'].'.png');
+    }elseif($icon ==0){
+        return('./index.php?c=ico&text='.$link['title']);
     }else{
         return('./favicon/index2.php?url='.$link['url']);
     }//如果参数错误则使用本地服务器
@@ -278,7 +280,7 @@ function msgA($data){
 }
 function de($t1,$version){
     $t2 = microtime(true);
-    echo '<!--Powered by 落幕,QQ:271152681 执行耗时：'.round(($t2-$t1)*1000,3).'ms.-->';
+    echo '<!--Powered by 落幕,QQ:271152681 执行耗时：'.round(($t2-$t1)*1000,3).'ms  '.$version.'-->';
 }
 //取文本左边 getSubstrRight('请用php取出这段字符串中左边文本','中');
 function getSubstrRight($str, $rightStr)

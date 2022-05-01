@@ -67,12 +67,13 @@
 		<!--admin-->
 		<!--js-->
 		<script>
+		var u = '<?php echo $u?>';
 			layui.use('form', function() {
 				var form = layui.form;
 				form.render();
 				//添加链接
 				form.on('submit(add_link)', function(data) {
-					$.post('./index.php?c=api&method=add_link&u='+getQueryVariable("u"), data.field, function(data, status) {
+					$.post('./index.php?c=api&method=add_link&u='+u, data.field, function(data, status) {
 						//如果添加成功 time是提示存在时间!
 						if(data.code == 0) {
 							layer.msg('保存成功', {

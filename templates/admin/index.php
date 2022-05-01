@@ -147,7 +147,8 @@ $VerTime = $matches[1];
 </div><!--开发文档End-->
 <div class="layui-tab-item" ><!--日志输出--> 
     <div class="layui-col-lg12">
-      <p><h3 style = "padding-bottom:1em;">日志输出：</h3></p>
+      <p><h3 style = "padding-bottom:1em;">日志输出：&ensp;&ensp;<a href="javascript:;" class="layui-btn layui-btn-sm" onclick="Onecheck()">一键诊断</a></h3></p>
+      
        <textarea id = "console_log" name="desc" rows="20" placeholder="日志输出控制台" class="layui-textarea" readonly="readonly"></textarea>
     </div>
 </div><!--日志输出-->
@@ -251,5 +252,35 @@ function exe_sql(sqlname) {
     }});
 }
 
+
+
 });
+
+// 一键检测
+function Onecheck(){
+    $.post("./index.php?c=api&method=Onecheck",function(data,status){
+        
+        $("#console_log").append("浏览器UA：" + navigator.userAgent +"\n");
+        $("#console_log").append("客户端时间：" +  timestampToTime(Math.round(new Date() / 1000) ) +"\n");
+        $("#console_log").append(data.msg +"\n");
+       
+    });
+}
+
+//时间戳格式化
+function  timestampToTime(timestamp) {
+    var  date =  new  Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    m = m < 10 ? ('0' + m) : m;
+    var d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    var h = date.getHours();
+    h = h < 10 ? ('0' + h) : h;
+    var minute = date.getMinutes();
+    var second = date.getSeconds();
+    minute = minute < 10 ? ('0' + minute) : minute;
+    second = second < 10 ? ('0' + second) : second;
+    return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
+}
 </script>

@@ -52,8 +52,14 @@ layui.use(['element','table','layer','form','util','dropdown'], function(){
     var form = layui.form;
     var dropdown = layui.dropdown;
     layer = layui.layer;
-//表头 https://www.layui.site/demo/table/cellEvent.html
-var cols=[[ //表头
+    
+    var limit = String(getCookie('lm_limit'));
+    if (limit < 10 || limit > 90){
+        limit = 20 ;
+    }
+    //console.log(limit);
+
+var loginlog_cols=[[ //表头
       {field:'name',title:'用户名',minWidth:120,sort:true}
       ,{field:'ip',title:'登录IP',minWidth:90,sort:true,templet:function(d){
           return '<a style="color:#3c78d8" title="查询归属地" target="_blank" href="//ip.ws.126.net/ipquery?ip='+d.ip+'">'+d.ip+'</a>'
@@ -69,12 +75,12 @@ table.render({
     ,height: 'full-200' //自适应高度
     ,url: './index.php?c=api&method=loginlog_list&u=<?php echo $u;?>' //数据接口
     ,page: true //开启分页
-    ,limit:20  //默认每页显示行数
+    ,limit:limit  //默认每页显示行数
     ,even:true //隔行背景色
     ,loading:true //加载条
     //,toolbar: '#user_tool'
     ,id:'loginlog_list'
-    ,cols: cols
+    ,cols: loginlog_cols
 });
 
 
@@ -142,6 +148,16 @@ function randomnum(length) {
   for (var i = length; i > 0; --i) 
     result += str[Math.floor(Math.random() * str.length)];
   return result;
+}
+// 取Cookie
+function getCookie(cname){
+	var name = cname + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0; i<ca.length; i++) {
+		var c = ca[i].trim();
+		if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
+	}
+	return "";
 }
 });
 </script>

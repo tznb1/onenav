@@ -149,6 +149,7 @@ $Plug     = $udb->get("config","Value",["Name"=>'Plug']);
       <label class="layui-form-label">图标API</label>
       <div class="layui-input-inline">
       <select id="IconAPI" name="IconAPI"  >
+        <option value="0" <?php if($IconAPI==0){echo'selected=""';}?>>离线图标</option>
         <option value="1" <?php if($IconAPI==1){echo'selected=""';}?>>本地服务(支持缓存)</option>
         <option value="2" <?php if($IconAPI==2){echo'selected=""';}?>>favicon.rss.ink (小图标)</option>
         <option value="3" <?php if($IconAPI==3){echo'selected=""';}?>>ico.hnysnet.com </option>
@@ -219,8 +220,14 @@ layui.use(['element','table','layer','form','util','dropdown'], function(){
     var form = layui.form;
     var dropdown = layui.dropdown;
     layer = layui.layer;
-//表头 https://www.layui.site/demo/table/cellEvent.html
-var cols=[[ //表头
+
+var limit = String(getCookie('lm_limit'));
+if (limit < 10 || limit > 90){
+    limit = 20 ;
+}
+//console.log(limit);
+
+var user_cols=[[ //表头
       {type:'checkbox'} //开启复选框
       ,{field:'ID',title:'ID',width:60,sort:true}
       ,{field:'User',title:'账号',minWidth:120,sort:true,templet:function(d){
@@ -247,12 +254,12 @@ table.render({
     ,height: 'full-200' //自适应高度
     ,url: './index.php?c=api&method=user_list&u=<?php echo $u;?>' //数据接口
     ,page: true //开启分页
-    ,limit:20  //默认每页显示行数
+    ,limit:limit  //默认每页显示行数
     ,even:true //隔行背景色
     ,loading:true //加载条
     ,toolbar: '#user_tool'
     ,id:'user_list'
-    ,cols: cols
+    ,cols: user_cols
 });
 
 dropdown.render({elem: '#libs',data:[{title: '本地服务',url: './static'},{title: '小zCDN',url: '//libs.xiaoz.top/lm21/onenav'}] ,click: function(obj){this.elem.val(obj.url);},style: 'width: 190px;'});
@@ -366,7 +373,7 @@ table.on('toolbar(user_list)', function(obj){
       });
       break;
       case 'loginlog':
-      window.open('./index.php?c=admin&page=loginlog&u=<?php echo $u;?>');
+      window.location.href="./index.php?c=admin&page=loginlog&u=<?php echo $u;?>";
       break;   
       
     }
@@ -379,24 +386,7 @@ $('.layui-btn').on('click', function(){
 });
 
 var active = {
-user_search:function(){user_search();},
-    tabAdd: function(){
-      //新增一个Tab项
-      element.tabAdd('root', {
-        title: '新选项'+ (Math.random()*1000|0) //用于演示
-        ,content: '内容'+ (Math.random()*1000|0)
-        ,id: new Date().getTime() //实际使用一般是规定好的id，这里以时间戳模拟下
-      })
-    }
-    ,tabDelete: function(othis){
-      //删除指定Tab项
-      element.tabDelete('root', 'id');
-      othis.addClass('layui-btn-disabled');
-    }
-    ,tabChange: function(){
-      //切换到指定Tab项
-      element.tabChange('root', '22'); 
-    }
+user_search:function(){user_search();}
 };
 //用户搜索
 function user_search(){
@@ -464,6 +454,16 @@ function randomnum(length) {
   for (var i = length; i > 0; --i) 
     result += str[Math.floor(Math.random() * str.length)];
   return result;
+}
+//取Cookie
+function getCookie(cname){
+	var name = cname + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0; i<ca.length; i++) {
+		var c = ca[i].trim();
+		if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
+	}
+	return "";
 }
 });
 </script>
