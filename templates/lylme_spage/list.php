@@ -34,7 +34,7 @@ foreach ($links as $link) {
 						    ?><a rel="nofollow" href="./index.php?c=click&id=<?php echo $link['id']; ?>&u=<?php echo $u?>" title="<?php echo $link['description']; ?>" target="_blank"><?php
 						};
 						?>
-        <img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link);}else{echo $libs.'/Other/default.ico';} ?>" alt="<?php echo $link['title']; ?>" />
+        <img src="<?php echo geticourl($IconAPI,$link); ?>" alt="<?php echo $link['title']; ?>" />
         <span><?php echo $link['title']; ?></span>
     </a>
 </li>

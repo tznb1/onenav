@@ -431,7 +431,7 @@
                                 <div class="card-body">
                                     <div class="url-content d-flex align-items-center">
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
-                                            <img class="lazy" src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link);}else{echo $libs.'/Other/default.ico';} ?>" alt="<?php echo $link['title']; ?>">
+                                            <img class="lazy" src="<?php echo geticourl($IconAPI,$link); ?>" alt="<?php echo $link['title']; ?>">
                                         </div>
                                         <div class="url-info flex-fill">
                                             <div class="text-sm overflowClip_1">

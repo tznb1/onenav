@@ -70,6 +70,9 @@ if ($count){
 function geticourl($icon,$link){
     if(!empty( $link['iconurl'])){
         return($link['iconurl']);
+    }elseif (getconfig('LoadIcon') != 'on'){
+        global $libs;
+        return($libs.'/Other/default.ico');
     }elseif ($icon ==1){
         return('./favicon/index2.php?url='.$link['url']);
     }elseif($icon ==2){

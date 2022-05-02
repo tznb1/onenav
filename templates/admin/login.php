@@ -59,11 +59,11 @@ layui.use(['form'], function(){
     var form = layui.form;
     form.on('submit(login)', function(data){
         data.field.pass = $.md5(data.field.pass);
-        $.post('./index.php?c=<?php echo $c; ?>&u='+data.field.user,data.field,function(data,status){
-            if(data.code == 0) {
-                window.location.href = './index.php?c=admin&u=<?php echo $u; ?>';
+        $.post('./index.php?c=<?php echo $c; ?>&u='+data.field.user,data.field,function(re,status){
+            if(re.code == 0) {
+                window.location.href = './index.php?c=admin&u='+ re.u;
             }else{
-                layer.msg(data.msg, {icon: 5});
+                layer.msg(re.msg, {icon: 5});
             }
         });
     return false; 
@@ -72,11 +72,11 @@ layui.use(['form'], function(){
 //手机登录 
     form.on('submit(mobile_login)', function(data){
         data.field.pass = $.md5(data.field.pass);
-        $.post('./index.php?c=<?php echo $c; ?>&u='+data.field.user,data.field,function(data,status){
-        if(data.code == 0) {
+        $.post('./index.php?c=<?php echo $c; ?>&u='+data.field.user,data.field,function(re,status){
+        if(re.code == 0) {
             window.location.href = './';
         }else{
-            layer.msg(data.msg, {icon: 5});
+            layer.msg(re.msg, {icon: 5});
         }
     });
     return false;

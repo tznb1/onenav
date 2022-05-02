@@ -1268,7 +1268,7 @@ function Onecheck(){
 
 //获取onenav最新版本号
 function get_latest_version() {
-    global $udb;
+    global $udb,$version;
     try {
         $NewVer = $udb->get("config","Value",["Name"=>'NewVer']); //缓存的版本号
         $NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当前版本!
@@ -1290,6 +1290,8 @@ function get_latest_version() {
                 Writeconfigd($udb,'config','NewVer',$NewVer);
                 Writeconfigd($udb,'config','NewVerGetTime',$NewVerGetTime);
                 $gitee = true;
+            }else{
+                $NewVer = $version;
             }
         }
         

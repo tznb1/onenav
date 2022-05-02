@@ -7,14 +7,17 @@ $is_login=is_login2();
 
 if($is_login){
     //查询所有分类目录
-    $categorys = $db->select('on_categorys','*',[
-        "ORDER" =>  ["weight" => "DESC"]
-    ]);
+    // $categorys = $db->select('on_categorys','*',[
+    //     "ORDER" =>  ["weight" => "DESC"]
+    // ]);
     //查询一级分类目录，分类fid为0的都是一级分类
     $category_parent = $db->select('on_categorys','*',[
         "fid"   =>  0,
         "ORDER" =>  ["weight" => "DESC"]
     ]);
+    
+
+    
     //根据分类ID查询二级分类，分类fid大于0的都是二级分类
     function get_category_sub($id) {
         global $db;
@@ -44,10 +47,10 @@ if($is_login){
 //如果没有登录，只获取公有链接
 else{
     //查询分类目录
-    $categorys = $db->select('on_categorys','*',[
-        "property"  =>  0,
-        "ORDER" =>  ["weight" => "DESC"]
-    ]);
+    // $categorys = $db->select('on_categorys','*',[
+    //     "property"  =>  0,
+    //     "ORDER" =>  ["weight" => "DESC"]
+    // ]);
     //查询一级分类目录，分类fid为0的都是一级分类
     $category_parent = $db->select('on_categorys','*',[
         "fid"   =>  0,
@@ -81,6 +84,27 @@ else{
     //右键菜单标识
     $onenav['right_menu'] = 'user_menu();';
 }
+
+// 重新整理分类顺序,让二级跟在父后面
+$categorys = []; //清空数组,然后遍历父分类!
+$i = 0;
+foreach ($category_parent as $category) {
+    array_push($categorys,$category);
+    //查找父分类下的二级分类
+    if($is_login){
+        $category_subs = $db->select('on_categorys','*',["fid" => $category['id'],"ORDER" => ["weight" => "DESC"] ]);
+    }else{ //未登录只查询公开分类
+        $category_subs = $db->select('on_categorys','*', ["fid" => $category['id'],"ORDER" => ["weight" => "DESC"] ,'property' =>  0]);
+    }
+    
+    //写父分类下面有几个子分类,可用于后面判断是否需要折叠分类!
+    $category_parent[$i]['count'] = count($category_subs);
+    //合并数组
+    $categorys = array_merge ($categorys,$category_subs);
+    $i++;
+}
+
+
 // ICP备案号和底部代码(全局)
 $ICP    = $udb->get("config","Value",["Name"=>'ICP']);
 $Ofooter = $udb->get("config","Value",["Name"=>'footer']);

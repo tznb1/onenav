@@ -124,8 +124,8 @@ body{
 		<a href="#category-<?php echo $category['id']; ?>">
 			<li class="mdui-list-item mdui-ripple">
 				<div class="mdui-list-item-content category-name CFC">
-				    <?php echo geticon($category['Icon']).$category['name']; ?></div>
-				    <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+				    <?php echo geticon($category['Icon']).$category['name'].$category['count']; ?></div>
+				    <?php echo !empty($category['count'])?'<i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>':""; ?> 
 			</li>
 		</a>
 		</div>
@@ -192,16 +192,10 @@ body{
 						</div>
 						<?php } ?>
 						<!-- 角标END -->
-						<?php 
-						if ( $site['urlz']   == 'on'  ){
-						    ?><a class="TFC" href="<?php echo $link['url']; ?>" target="_blank" title = "<?php echo $link['description']; ?>"><?php
-						}else{
-						    ?><a class="TFC" href="./index.php?c=click&id=<?php echo $link['id'].'&u='.$u; ?>" target="_blank" title = "<?php echo $link['description']; ?>"><?php
-						};
-						?>
+						<a class="TFC" href="<?php echo geturl($link); ?>" target="_blank" title = "<?php echo $link['description']; ?>">
 							<div class="mdui-card-primary" >
 									<div class="mdui-card-primary-title link-title">
-										<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link);}else{echo $libs.'/Other/default.ico';} ?>" alt="HUAN" width="16px" height="16px">
+										<img src="<?php echo geticourl($IconAPI,$link); ?>" alt="HUAN" width="16px" height="16px">
 										<span class="link_title"><?php echo $link['title']; ?></span> 
 									</div>
 							</div>

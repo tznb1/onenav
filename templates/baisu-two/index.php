@@ -201,7 +201,7 @@ $SBimg = getconfig($config.'SBimg');
 						<div class="list urllist" id="id_<?php echo $link['id']; ?>" data-id="<?php echo $link['id']; ?>" data-url="<?php echo $link['url']; ?>">
 							<a href="<?php echo $linkURL; ?>" target="_blank">
 								<p class="name">
-									<img src="<?php if ($site['LoadIcon']){echo geticourl($IconAPI,$link);}else{echo $libs.'/Other/default.ico';} ?>">
+									<img src="<?php echo geticourl($IconAPI,$link); ?>">
 									<?php echo $link['title']; ?>
 								</p>
 								<p class="desc">

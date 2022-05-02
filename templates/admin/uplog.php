@@ -1,6 +1,17 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年05月02日</h4>
+      <ul>
+        <li>修复公用登录入口无法登录非默认账号的bug</li>
+        <li>优化二级分类,解决二级分类没有跟在父分类下面的问题!</li>
+        <li>优化默认主题(加强版)左侧分类目录不存在二级分类时不显示折叠小箭头!</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年05月01日</h4>
       <ul>
         <li>新增离线站点图标 (使用标题第一个字符),站长在网站管理,图标API设置!</li>
