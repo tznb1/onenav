@@ -68,6 +68,8 @@ elseif($c == 'api'){
 	include_once("./controller/api.php");}//API
 elseif($c == 'ico'){
 	include_once("./controller/ico.php");}//图标
+elseif($c == 'apply'){
+	include_once("./controller/apply.php");}//图标
 else{msg(-1001,'请求的接口不存在!');}
 
 

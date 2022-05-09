@@ -33,7 +33,7 @@
         <?php foreach ($categorys as $category) {
           # code...
         ?>
-        <option <?php $分类id = @$_GET['category']; if ($分类id === $category['id'] ){echo 'selected';}?> value="<?php echo $category['id'] ?>"><?php echo $category['name']; ?></option>
+        <option <?php $fid = @$_GET['category']; if ($fid === $category['id'] ){echo 'selected';}?> value="<?php echo $category['id'] ?>"><?php echo ($category['fid'] == 0 ? "":"├ ").$category['name']; ?></option>
         <?php } ?>
       </select>
 				</div>

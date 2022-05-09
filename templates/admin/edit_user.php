@@ -30,7 +30,7 @@ $session =getconfig('session');
     <div class="layui-inline">
       <label class="layui-form-label">原密码</label>
       <div class="layui-input-inline">
-        <input type="password" name="password"  value='' placeholder='原密码' autocomplete="off" class="layui-input">
+        <input type="password" name="password" id="password" value='' placeholder='原密码' autocomplete="off" class="layui-input">
       </div>
       <div class="layui-form-mid layui-word-aux">修改本页信息需要输入原密码!</div>
     </div>
@@ -120,5 +120,4 @@ $session =getconfig('session');
 </div>
 <!-- 内容主题区域END -->
 </div>
-
 <?php $md5=true; include_once('footer.php'); ?>

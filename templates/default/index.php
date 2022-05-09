@@ -124,7 +124,7 @@ body{
 		<a href="#category-<?php echo $category['id']; ?>">
 			<li class="mdui-list-item mdui-ripple">
 				<div class="mdui-list-item-content category-name CFC">
-				    <?php echo geticon($category['Icon']).$category['name'].$category['count']; ?></div>
+				    <?php echo geticon($category['Icon']).$category['name']; ?></div>
 				    <?php echo !empty($category['count'])?'<i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>':""; ?> 
 			</li>
 		</a>

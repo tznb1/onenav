@@ -9,6 +9,7 @@ $ICP    = $udb->get("config","Value",["Name"=>'ICP']);
 $footer = $udb->get("config","Value",["Name"=>'footer']);
 $footer = htmlspecialchars_decode(base64_decode($footer));
 $Plug     = $udb->get("config","Value",["Name"=>'Plug']);
+$apply  = $udb->get("config","Value",["Name"=>'apply']);
 ?>
 
 <style type="text/css">
@@ -159,6 +160,18 @@ $Plug     = $udb->get("config","Value",["Name"=>'Plug']);
       </select>
       </div>
       <div class="layui-form-mid layui-word-aux">所有API接口均由其他大佬提供!若有异常请尝试更换接口!</div>
+    </div>
+ </div>
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">收录功能</label>
+      <div class="layui-input-inline">
+      <select id="apply" name="apply"  >
+        <option value="0" <?php if($apply==0){echo'selected=""';}?>>关闭功能</option>
+        <option value="1" <?php if($apply==1){echo'selected=""';}?>>开启功能</option>
+      </select>
+      </div>
+      <div class="layui-form-mid layui-word-aux">此为全局开关,关闭后所有账号无法使用此功能,账号自己还可设置是否开启!</div>
     </div>
  </div> 
   <div class="layui-form-item layui-form-text">

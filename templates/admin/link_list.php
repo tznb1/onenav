@@ -8,12 +8,17 @@
         <div class="layui-inline layui-form">
         <label class="layui-form-label " style="width:60px;padding-left: 5px;padding-right: 5px;">所属分类:</label>
         <div class="layui-input-inline">
-        <select id="fid" name="categorys" lay-filter="aihao" >
+        <select id="fid" name="categorys" lay-search >
         <option value="0" selected="">全部</option>
 <?php 
-        $categorys = $db->select('on_categorys','*',["ORDER" =>  ["weight" => "DESC"]]);
+        $categorys = get_category();
         foreach ($categorys as $category) {
-        echo '        <option value="'.$category['id'].'">'.$category['name']."</option>\n";
+            if($category['fid'] == 0){
+                echo '        <option value="'.$category['id'].'">'.$category['name']."</option>\n";
+            }else{
+                echo '        <option value="'.$category['id'].'">├ '.$category['name']."</option>\n";
+            }
+        
 }?>
         </select>
         </div>

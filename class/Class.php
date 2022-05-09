@@ -1,4 +1,23 @@
 <?php
+
+//删除指定目录下N分钟前的文件!
+function delfile($dir,$minute){
+    
+    //如果目录为空则返回!
+    if(!is_dir($dir) || empty($minute) ){return;}
+    //查找扩展名为html和db3的文件!
+    $files = glob($dir.'/'.'*.{html,db3}',GLOB_BRACE);
+    $time  = time();
+    //var_dump($files);
+    
+    foreach ($files as $file){
+        if (is_file($file) && basename($file) != 'index.html'){
+          if ($time - filemtime($file) >= $minute * 60) {
+            unlink($file);
+          }
+        }
+    }
+}
 //验证邮箱
 function checkEmail($email){
     $pregEmail = "/([a-z0-9]*[-_\.]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?/i";

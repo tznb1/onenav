@@ -622,8 +622,18 @@ form.on('submit(get_link_info)', function(data){
     console.log(data.field) 
     return false; 
 });
+
+//导出书签
+window.export_bookmarks = function(name){
+    layer.prompt({formType: 1,value: '',title: '输入登录密码:',shadeClose: true},function(value, index, elem){
+        window.open('./index.php?c=api&method=export_'+ name +'&u='+u +'&pass=' + value);
+        layer.closeAll('iframe');
+    }); 
+}
+
 //导入书签
 form.on('submit(imp_link)', function(data){
+    layer.msg('数据导入中,请稍后...', {offset: 'b',anim: 0,time: 60*1000});
     layer.load(1, {shade:[0.1,'#fff']});//加载层
     //用ajax异步加载
     $.post('./index.php?c=api&method=imp_link&u='+u,data.field,function(data,status){
@@ -655,6 +665,27 @@ upload.render({
       //上传完毕回调
       if( res.code == 0 ) {
         $("#filename").val(res.file_name);
+        if(res.suffix == 'html'){
+            $("#fid").show();
+            $("#AutoClass").show();
+            $("#property").show();
+            $("#all").hide();
+        }else if(res.suffix == 'db3'){
+            $("#fid").hide();
+            $("#AutoClass").hide();
+            $("#property").hide();
+            $("#all").show();
+        }else{
+            $("#fid").show();
+            $("#AutoClass").show();
+            $("#property").show();
+            $("#all").show();
+        }
+        
+        $("#imp_link").show();
+        //$("#filed").show();
+        $('#guide').text('第二步:选择好您需要的选项,并点击开始导入!导入过程中请勿刷新或关闭页面!');
+        $("#up_html").hide();
       }
       else if( res.code < 0) {
         layer.msg(res.msg, {icon: 5});
@@ -663,6 +694,19 @@ upload.render({
     }
     ,error: function(){
       //请求异常回调
+    }
+  });
+  
+ //监听指定开关
+  form.on('switch(AutoClass)', function(data){
+    if(this.checked){
+        $('#propertytxt').text('导入的链接和创建的分类将设为私有!');
+        $("#ADD_DATE").show();
+        $("#icon").show();
+    }else{
+        $('#propertytxt').text('导入的链接将设为私有!');
+        $("#ADD_DATE").hide();
+        $("#icon").hide();
     }
   });
   
@@ -689,11 +733,12 @@ function theme_preview(key,name){
 }
 
 function theme_config(key,name){
+    if(document.body.clientWidth < 768){area = ['100%' , '100%'];}else{area = ['550px' , '99%'];}
     layer.open({
         type: 2,
         title: name + ' - 主题配置',
         shadeClose: true, //点击遮罩关闭层
-        area : ['550px' , '99%'],
+        area : area,
         anim: 5,
         offset: 'rt',
         content: './index.php?c=admin&page=config&u='+u+'&Theme='+key+'&source=admin'

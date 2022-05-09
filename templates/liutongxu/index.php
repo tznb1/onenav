@@ -10,6 +10,7 @@
 	<?php if($site['description'] !=''){echo '<meta name="description" content="'.$site['description'].'"/>'."\n";}?>
     <link rel='stylesheet' id='wp-block-library-css' href='<?php echo $Theme?>/wp-includes/css/dist/block-library/style.min-5.6.2.css' type='text/css' media='all'>
     <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui-icon.css">
     <link rel='stylesheet' id='iconfont-css' href='<?php echo $Theme?>/wp-content/themes/onenav/css/iconfont-3.03029.1.css' type='text/css' media='all'>
     <link rel='stylesheet' id='iconfontd-css' href='<?php echo $Theme?>/t/font_1620678_7g0p3h6gbl-3.03029..css' type='text/css' media='all'>
     <link rel='stylesheet' id='bootstrap-css' href='<?php echo $Theme?>/wp-content/themes/onenav/css/bootstrap.min-3.03029.1.css' type='text/css' media='all'>
@@ -142,12 +143,20 @@
                             <ul>
                                 <?php
                                     //遍历分类目录并显示
-                                    foreach ($categorys as $category) {
+                                    foreach ($category_parent as $category) {
                                 ?>
                                     <li class="sidebar-item">
-                                        <a href="#category-<?php echo $category['id']; ?>" class="smooth"><?php echo geticon3($category['Icon']); ?>
-                                            <?php echo $category['name']; ?>
+                                        <a href="#category-<?php echo $category['id']; ?>" class="smooth "><?php echo geticon3($category['Icon']); ?>
+                                            <span><?php echo $category['name']; ?></span>
+                                            <?php echo !empty($category['count'])?'<i class="iconfont icon-arrow-r-m sidebar-more text-sm"></i>':""; ?>
                                         </a>
+                                        <?php if( !empty($category['count'])) { 
+                                            echo '<ul>';
+                                            foreach (get_category_sub( $category['id'] ) AS $category_sub){
+                                                echo '<li><a href="#category-'.$category_sub['id'].'" class="smooth"><span>'.$category_sub['name'].'</span></a></li>';
+                                            }
+                                            echo '</ul>';
+                                         } ?>
                                     </li>
                                 <?php } ?>
                             </ul>

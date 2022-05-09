@@ -1,6 +1,20 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年05月09日</h4>
+      <ul>
+        <li>优化二级分类,后台链接相关选择时二级分类前加 ├ 来表示,使其更加分明</li>
+        <li>刘桐序主题适配二级分类</li>
+        <li>书签导入页面调整,新增自动分类(保留时间,提取图标)选项!调整文件命名方式防止同名冲突,隐藏前端书签路径!</li>
+        <li>书签导入时自动扫描upload目录并清理5分钟前的文件!(上传后未导入造成的遗留)</li>
+        <li>(数据库升级)新增收录管理,支持全局关闭(默认关闭),支持用户自己开关,可选关闭,需要审核,无需审核!此功能刚上线,可能存在一些安全隐患,请慎用!</li>
+        <li>书签导入更名为书签管理,新增书签导出功能</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年05月02日</h4>
       <ul>
         <li>修复公用登录入口无法登录非默认账号的bug</li>

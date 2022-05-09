@@ -33,7 +33,7 @@ if(!is_login2()){
 function demo(){
     global $method;
     // 禁止修改主页|账号设置|删除用户|上传书签|导入输入|查登录日志
-    $pattern = "/(edit_homepage|edit_user|user_list_del|upload|imp_link|loginlog_list)/i";
+    $pattern = "/(edit_homepage|edit_user|user_list_del|upload|imp_link|loginlog_list|edit_root)/i";
     if ( preg_match($pattern,$method) ) {msg(-1010,'演示站禁止此操作!');}
 }
 
@@ -423,6 +423,8 @@ function get_link_info() {
 
 //上传书签
 function upload(){
+    global $username;
+    delfile('data/upload',5);
     $type = $_GET['type'];//获取上传类型
     if ($_FILES["file"]["error"] > 0){
         msg(-1015,'文件上传失败!');
@@ -439,27 +441,29 @@ function upload(){
             unlink($filename);//不支持的文件,删除临时文件!
             msg(-1014,'不支持的文件后缀名！');
         }
+        $filename = time().'-'.$username.'.'.$suffix;
         //检查目录
         if(!is_dir('data/upload')){
             mkdir('data/upload',0755,true);
         }
         //转移上传的文件(不转移的话代码执行完毕文件就会被删除) 待测试在二级目录上传是否正常!!!!!!
         if(copy($temp,'data/upload/'.$filename)){
-            msgA(['code'=>0,'file_name' =>'data/upload/'.$filename]);
+            msgA(['code'=>0,'file_name' =>'data/upload/'.$filename ,"suffix" => $suffix] );
         }
     }
 }
 //书签导入
 function imp_link() {
-    global $db;
+    global $db,$userdb;
     $filename = trim($_POST['filename']);//书签路径
     //过滤$filename
     $filename = str_replace('../','',$filename);
     $filename = str_replace('./','',$filename);
     $fid = intval($_POST['fid']); //所属分类
     $property = intval(@$_POST['property']); //私有属性
-    $all =intval(@$_POST['all']); //保留属性
+    $all = intval(@$_POST['all']); //保留属性
     $suffix = strtolower(end(explode('.',$filename)));
+    $AutoClass = $_POST['AutoClass'];
     //路径过滤
     if(substr($filename,0, 12)!=='data/upload/'){
         msg(-1016,'路径非法!');
@@ -474,6 +478,8 @@ function imp_link() {
         $categorys = $tempdb->select('on_categorys','*');//列出分类
         $data = $tempdb->query("select * from sqlite_master where name = 'on_categorys' and sql like '%Icon%'")->fetchAll(); //查找字段
         $icon = count($data)==0 ? false:true ; //判断有没有图标字段!如果没有则尝试从名称取图标写到专用字段
+        // $data = $tempdb->query("select * from sqlite_master where name = 'on_categorys' and sql like '%Icon%'")->fetchAll(); //查找字段
+        // $icon = count($data)==0 ? false:true ; //判断有没有图标字段!如果没有则尝试从名称取图标写到专用字段
         $fail =0;$success=0;//初始计数
         //遍历分类
         foreach ($categorys as $category) {
@@ -500,6 +506,7 @@ function imp_link() {
                         'up_time'       =>  $all == 1 ? $category['up_time']:null,
                         'weight'        =>  $all == 1 ? $category['weight']:0,
                         'property'      =>  empty($category['property']) ? 0 : 1,
+                        'fid'           =>  empty($category['fid']) ? 0 : intval($category['fid']) ,
                         'description'   =>  htmlspecialchars($category['description'],ENT_QUOTES),
                         'Icon'          =>  htmlspecialchars($ico,ENT_QUOTES)
                         ];
@@ -552,7 +559,7 @@ function imp_link() {
         msgA(['code'=>0,'msg'=>'总数：'.$total.' 成功：'.$success.' 失败：'.$fail,'res'  =>  $res.'</tbody></table>','fail'=>$fail]);
     }
     //导入数据为HTML
-    if($suffix==='html'){
+    if($suffix==='html' && $AutoClass != '1'){
         //判断所属分类
         if(empty($fid)){msg(-1016,'上传html格式时所属分类不能为空!');}
         $content = file_get_contents($filename);//读入文件
@@ -608,6 +615,155 @@ function imp_link() {
             ];
         msgA($data);
     }
+    
+    //导入数据为HTML 新版分类!
+    if($suffix==='html' && $AutoClass === '1'){
+        if(empty($fid)){msg(-1016,'上传html格式时所属分类不能为空!');}
+        $content = file_get_contents($filename);//读入文件
+        $HTMLs = explode("\n",$content);//分割文本
+        $data = []; //链接组
+        $categorys = []; //分类信息组
+        $categoryt = []; //分类信息表
+        $ADD_DATE =  intval(@$_POST['ADD_DATE']);
+        $icon     =  intval(@$_POST['icon']);  
+        $iconcount = 0 ;
+        $default_category = $db-> get('on_categorys', 'name', ['id' => $fid]);
+        if(empty($default_category)){msg(-1016,'获取分类名失败!');}
+        
+        //如果提取图标的话检测目录是否存在,不存在则创建目录
+        $new_file = 'favicon/'.$userdb['User'];
+        if($icon == 1 && !file_exists($new_file)){
+            mkdir($new_file, 0777);
+        }
+        
+        // 遍历HTML
+        foreach( $HTMLs as $HTMLh ){
+            if( preg_match("/<DT><H3.+>(.*)<\/H3>/i",$HTMLh,$category) ){
+                //匹配到文件夹名时加入数组
+                $category[1] = empty($category[1]) ? $default_category : $category[1];
+                array_push($categoryt,$category[1]);
+                array_push($categorys,$category[1]);
+            }elseif( preg_match('/<DT><A HREF="(.*)" ADD_DATE="(\d*)".*>(.*)<\/A>/i',$HTMLh,$urls) ){
+                // 1.链接 2.添加时间 3.标题
+                $datat['category']  = $categorys[count($categorys) -1];
+                $datat['category']  = empty($datat['category']) ? $default_category : $datat['category'] ;
+                $datat['ADD_DATE']  = $urls[2];
+                $datat['title']     = $urls[3];
+                $datat['url']       = $urls[1];
+                $datat['html']   = $HTMLh;
+                
+                
+                array_push($data,$datat);
+            }elseif( preg_match('/<\/DL><p>/i',$HTMLh) ){
+                //匹配到文件夹结束标记时删除一个
+                array_pop($categorys);
+            }
+        }
+        //遍历结束,分类名去重!
+        $categoryt = array_unique($categoryt);
+        //var_dump($categoryt);var_dump($data);exit;
+         
+        // 检查和创建分类
+        $fids = [];
+        $currenttime = time();
+        foreach( $categoryt as $name ){
+            $id = $db-> get('on_categorys', 'id', ['name' => $name]);
+            if( empty($id) ){
+                //插入分类目录
+                $db->insert("on_categorys",['name' => $name,'add_time' => $currenttime,'property' => $property]); 
+                $id = $db->id();//返回ID
+                if(empty($id)){
+                    msg(-1000,'意外结束:分类已存在!');
+                }else{
+                    $fids[$name] = $id;
+                }
+            }else{
+                $fids[$name] = $id;
+            }
+        }
+        //var_dump($fids);var_dump($data);exit;
+
+        // 遍历导入链接
+        $fail = 0; $success = 0;
+        $data = array_reverse($data); //数组倒序(这样导入后链接的顺序和浏览器一样)
+        
+        if( $ADD_DATE != 1 ) { $time = $currenttime; } //如果不保留时间则使用当前时间!
+        foreach( $data as $link ){
+            //如果标题或链接为空，则不导入
+            if( empty($link['url']) || empty($link['title']) ) {
+                $fail++;//失败计数+1,写失败原因!
+                $res=$res.'<tr><td>'.mb_substr($link['title'], 0, 30).'</td><td>'.mb_substr($link['url'], 0, 30).'</td><td>标题或URL为空</td></tr>';
+                continue;//跳过
+            }
+            //检查链接xss
+            if(check_xss($link['url'])){
+                $fail++;
+                $res=$res.'<tr><td>'.mb_substr(htmlspecialchars($link['title'],ENT_QUOTES), 0, 30).'</td><td>'.mb_substr(htmlspecialchars($link['url'],ENT_QUOTES), 0, 30).'</td><td>URL存在非法字符</td></tr>';
+                continue;
+            }
+            //检查标题xss
+            if(check_xss($link['title'])){
+                $fail++;
+                $res=$res.'<tr><td>'.mb_substr(htmlspecialchars($link['title'],ENT_QUOTES), 0, 30).'</td><td>'.mb_substr(htmlspecialchars($link['url'],ENT_QUOTES), 0, 30).'</td><td>标题存在非法字符</td></tr>';
+                continue;
+            }
+            // 检测链接是否合法
+            if( !filter_var($link['url'], FILTER_VALIDATE_URL) ) {
+                $fail++;
+                $res=$res.'<tr><td>'.mb_substr(htmlspecialchars($link['title'],ENT_QUOTES), 0, 30).'</td><td>'.mb_substr(htmlspecialchars($link['url'],ENT_QUOTES), 0, 30).'</td><td>链接无效,只支持识别http/https协议的链接!</td></tr>';
+                continue;
+            }
+            // 如果书签时间不合理则使用当前时间!
+            if( $ADD_DATE == 1 ){
+                $time = intval($link['ADD_DATE']);
+                if( $time > $currenttime || $currenttime < 788889600){
+                    $time = $currenttime;
+                }
+            }
+            
+            //匹配图片 data:image/png;base64,iVBORw0KGgoAAAANSUhEU
+            if ($icon == 1 && preg_match('/ICON="data:image\/png;base64,(iVBORw0KGgoAAAANSUhEU\S+)"/', $link['html'], $result)){
+                $path = $new_file.'/'.( $urlid + 1 ) .'.png';
+                if (strlen($result[1]) <= 2731 && file_put_contents($path, base64_decode($result[1]) )  ){
+                    $iconcount++;
+                    $path = "./".$path;
+                }else{
+                    $path = '';
+                }
+            }else{
+                $path = '';
+            }
+                
+            //插入数据库
+            $re = $db->insert('on_links',[
+                'fid'           =>  $fids[$link['category']],
+                'add_time'      =>  $time,
+                'title'         =>  $link['title'] ,
+                'url'           =>  $link['url'],
+                'property'      =>  $property,
+                'iconurl'       =>  $path
+            ]);
+            $row = $re->rowCount();//返回影响行数
+            if( $row ){
+                $urlid = $db->id();
+                $success++;
+            }else{
+                $res=$res.'<tr><td>'.mb_substr($link['title'], 0, 30).'</td><td>'.mb_substr($link['url'], 0, 40).'</td><td>URL重复'.'</td></tr>';
+                $fail++;
+                unlink($path);
+            }
+        }
+        unlink($filename);//删除临时文件
+        $data = [
+            'code'      =>  0,
+            'msg'       =>  '总数：'.count($data).' 成功：'.$success.' 失败：'.$fail.( $icon == 1 ? ' 图标：'.$iconcount:''),
+            'res'       =>  $res.'</tbody></table>',
+            'fail'      =>  $fail
+            ];
+        msgA($data);
+        msg(0,'总数：'.count($data).' 成功：'.$success.' 失败：'.$fail);
+    }
+    
     msg(-1016,'不支持的文件类型!');
 }
 
@@ -763,6 +919,7 @@ function edit_root(){
     $XSS        = $_POST['XSS'];  //防XSS脚本
     $SQL        = $_POST['SQL'];  //防SQL注入
     $Plug       = $_POST['Plug'];  //插件支持
+    $apply      = $_POST['apply'];  //收录功能
     if($udb->get("user","Level",["User"=>$u]) !== '999'){ //权限判断
         msg(-1102,'您没有权限修改全局配置!');
     }elseif($udb->count("user",["User"=>$DUser]) === 0 ){ //账号检测
@@ -787,6 +944,8 @@ function edit_root(){
         msg(-1103,'防XSS脚本参数错误!');
     }elseif($SQL !== '0' && $SQL !== '1'){
         msg(-1103,'防SQL注入参数错误!');
+    }elseif($apply !== '0' && $apply !== '1'){
+        msg(-1103,'收录功能参数错误!');
     }
 
     Writeconfigd($udb,'config','DUser',$DUser);
@@ -801,6 +960,7 @@ function edit_root(){
     Writeconfigd($udb,'config','XSS',$XSS);
     Writeconfigd($udb,'config','SQL',$SQL);
     Writeconfigd($udb,'config','Plug',$Plug);
+    Writeconfigd($udb,'config','apply',$apply);
     Writeconfigd($udb,'config','footer',base64_encode($footer));
     msg(0,'successful');
 }
@@ -1234,7 +1394,9 @@ function Onecheck(){
         $log = $log ."数据库>用户：只读,请将".$SQLite3."的权限设为755 \n";
     }
     // 检查登录日志数据库
-    if(is_writable('./data/login.log.db3')){
+    if(!file_exists('./data/login.log.db3')){
+        $log = $log ."数据库>日志：不存在 (退出登录,重新登录可自动生成)\n";
+    }elseif(is_writable('./data/login.log.db3')){
         $log = $log ."数据库>日志：正常\n";
     }else{
         $log = $log ."数据库>日志：只读,请将./data/login.log.db3的权限设为755 \n";
@@ -1307,6 +1469,187 @@ function get_latest_version() {
     msgA($data);
 }
 
+//申请收录相关
+//列表
+function apply_list(){
+    global $u,$db,$userdb,$udb;
+    if($udb->get("config","Value",["Name"=>'apply']) != 1){msg(-1,'管理员禁止了此功能!');}
+    $page  = empty(intval($_POST['page']))  ? 1  : intval($_POST['page' ]);//页码
+    $limit = empty(intval($_REQUEST['limit'])) ? 20 : intval($_REQUEST['limit']);//每页条数
+    setcookie_lm_limit($limit);
+    $offset = ($page - 1) * $limit;//起始行号
+    $sql ="SELECT * FROM \"lm_apply\" LIMIT {$limit} OFFSET {$offset}";
+    $count = $db->count('lm_apply');//统计条数
+    $datas = $db->query($sql)->fetchAll();//执行搜索
+    $datas = ['code'=>0,'msg'=>'successful','count'=>$count,'data'=>$datas];//返回数组(最好在处理下,剔除不需要的数据)
+    msgA($datas);
+}
+//保存配置
+function apply_save(){
+    global $u,$db,$userdb,$udb;
+    if($udb->get("config","Value",["Name"=>'apply']) != 1){msg(-1,'管理员禁止了此功能!');}
+    
+    $apply   = intval($_POST['apply']);   // 功能选项0.关闭 1.需要审核  2.无需审核
+    $Notice  = $_POST['Notice'];  // 公告
+    if($apply < 0 || $apply > 2 ){ 
+        msg(-1102,'参数错误!');
+    }elseif(strlen($Notice) > 512){
+        msg(-1102,'公告长度超限!');
+    }
+
+    Writeconfig('apply_switch',$apply);
+    Writeconfig('apply_Notice',$Notice);
+    msg(0,'保存成功');
+}
+function apply_fn(){
+    global $u,$db,$userdb,$udb;
+    if($udb->get("config","Value",["Name"=>'apply']) != 1){msg(-1,'管理员禁止了此功能!');}
+    $fn   = intval($_GET['fn']);
+    $id = intval($_POST['id']);
+    if($fn === 1){  //编辑
+        $category_id = intval($_POST['edit_category']); 
+        $title = $_POST['title'];
+        $url = $_POST['url'];
+        $iconurl = $_POST['iconurl'];
+        $description = $_POST['description'];
+        $category_name = $db->get("on_categorys","name",["id"=> $category_id ]);
+        $data = [
+            'category_id'   =>  $category_id,
+            'category_name' =>  $category_name,
+            'title'         =>  htmlspecialchars($title,ENT_QUOTES),
+            'url'           =>  $url,
+            'description'   =>  htmlspecialchars($description,ENT_QUOTES),
+            'iconurl'       =>  $iconurl
+            ];
+        $re = $db->update('lm_apply',$data,[ 'id' => $id]); //更新数据
+        $row = $re->rowCount();//返回影响行数
+        if($row){
+            msg(0,'修改成功');
+        }else{
+            msg(-1011,'URL已经存在！');
+        }
+    }elseif($fn === 2){ //通过
+        $id = intval($_POST['id']); 
+        $link =  $db->get("lm_apply","*",["id"=> $id ]);
+        if(empty($id)){
+            msg(-1111,'id错误');
+        }elseif(empty($link['category_id'])){
+            msg(-1111,'分类id错误');
+        }elseif(empty($link['title'])){
+            msg(-1111,'标题不能为空');
+        }elseif(empty($link['url'])){
+            msg(-1111,'链接不能为空');
+        }elseif($link['state'] != 0){
+            msg(-1111,'此申请信息不是待审核状态!');
+        }
+        check_link($link['category_id'],$link['title'],$link['url'],''); //检测链接是否合法
+        $data = [
+            'fid'           =>  $link['category_id'],
+            'title'         =>  htmlspecialchars($link['title'],ENT_QUOTES),
+            'url'           =>  $link['url'],
+            'description'   =>  htmlspecialchars($description,ENT_QUOTES),
+            'add_time'      =>  time(),
+            'iconurl'       =>  $link['iconurl']
+            ];
+        $re = $db->insert('on_links',$data);//插入数据库
+        $row = $re->rowCount();//返回影响行数
+        if($row){
+            $db->update('lm_apply',["state" => 1 ],[ 'id' => $id]);
+            msg(0,'已通过申请');
+        }else{
+            msg(-1011,'URL已经存在！');
+        }
+    }elseif($fn === 3){ //拒绝
+        $id = intval($_POST['id']); 
+        if(empty($id)){
+            msg(-1111,'id错误');
+        }
+        $re = $db->update('lm_apply',["state" => 2 ],[ 'id' => $id]);
+        $row = $re->rowCount();//返回影响行数
+        if($row){
+            msg(0,'已拒绝');
+        }else{
+            msg(-1011,'操作失败');
+        }
+    }elseif($fn === 4){ //删除
+        $id = intval($_POST['id']); 
+        if(empty($id)){
+            msg(-1111,'id错误');
+        }
+        $re = $db->delete('lm_apply',[ 'id' => $id]);
+        $row = $re->rowCount();//返回影响行数
+        if($row){
+            msg(0,'已删除');
+        }else{
+            msg(-1011,'删除失败');
+        }
+    }elseif($fn === 40){ //清空
+        $db->query("delete from lm_apply")->fetchAll();
+        $db->query("UPDATE sqlite_sequence SET seq = 0 WHERE name='lm_apply';")->fetchAll();
+        msg(0,'删除中,请稍后..');
+    }
+    msg(0,"fn:{$fn} 码不支持!");
+}
+// 收录结束
+
+//导出请求
+function export_db3(){
+    global $SQLite3,$userdb,$db,$RegTime,$password;
+    $pass = $_GET['pass'];
+    if(md5(md5($pass).$RegTime) !== $password && md5($pass.$RegTime) !== $password ){
+        exit('密码错误,请核对后再试！');
+    }
+    header("Cache-Control: public");
+    header("Content-Description: File Transfer");
+    header('Content-disposition: attachment; filename='.basename($userdb["SQLite3"])); //文件名
+    header("Content-Type: application/db3"); //zip格式的
+    header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件
+    header('Content-Length: '. filesize($SQLite3)); //告诉浏览器，文件大小
+    readfile($SQLite3);
+}
+//导出请求
+function export_html(){
+    global $SQLite3,$userdb,$db,$RegTime,$password;
+    $pass = $_GET['pass'];
+    if(md5(md5($pass).$RegTime) !== $password && md5($pass.$RegTime) !== $password ){
+        exit('密码错误,请核对后再试！');
+    }
+    header("Cache-Control: public");
+    header("Content-Description: File Transfer");
+    header('Content-disposition: attachment; filename=OneNavExtend_bookmarks_'.date("Ymd_His").'.html'); //文件名
+    header("Content-Type: application/text"); 
+    header("Content-Transfer-Encoding: binary"); 
+    echo( base64_decode("PCFET0NUWVBFIE5FVFNDQVBFLUJvb2ttYXJrLWZpbGUtMT4NCjwhLS0gVGhpcyBpcyBhbiBhdXRvbWF0aWNhbGx5IGdlbmVyYXRlZCBmaWxlLg0KICAgICBJdCB3aWxsIGJlIHJlYWQgYW5kIG92ZXJ3cml0dGVuLg0KICAgICBETyBOT1QgRURJVCEgLS0+DQo8TUVUQSBIVFRQLUVRVUlWPSJDb250ZW50LVR5cGUiIENPTlRFTlQ9InRleHQvaHRtbDsgY2hhcnNldD1VVEYtOCI+DQo8VElUTEU+T25lTmF2IEV4dGVuZCBCb29rbWFya3M8L1RJVExFPg0KPEgxPk9uZU5hdiBFeHRlbmQgQm9va21hcmtzPC9IMT4NCjxETD48cD4NCg=="));
+    echo ('    <DT><H3 ADD_DATE="1643738522" LAST_MODIFIED="1643738522" PERSONAL_TOOLBAR_FOLDER="true">书签栏</H3>'."\n");
+    echo ("    <DL><p>\n");
+    $categorys = [];
+    //获取父分类
+    $category_parent = $db->select('on_categorys','*',["fid"   =>  0,"ORDER" =>  ["weight" => "DESC"]]);
+    foreach ($category_parent as $category) {
+        echo '            <DT><H3 ADD_DATE="'.$category['add_time'].'" LAST_MODIFIED="'.$category['add_time'].'">'.$category['name']."</H3>\n";
+        echo "            <DL><p>\n";
+        //二级分类
+        $category_subs = $db->select('on_categorys','*',["fid" => $category['id'],"ORDER" => ["weight" => "DESC"] ]);
+        foreach ($category_subs as $category_sub) {
+            echo '              <DT><H3 ADD_DATE="'.$category['add_time'].'" LAST_MODIFIED="'.$category['add_time'].'">'.$category_sub['name']."</H3>\n";
+            echo "              <DL><p>\n";
+            $links = $db->select('on_links','*',["fid"   =>  $category_sub['id'],"ORDER" =>  ["weight" => "DESC"]]);
+            foreach ($links as $link) {
+                echo '                  <DT><A HREF="'.$link["url"].'" ADD_DATE="'.$link["add_time"].'">'.$link["title"].'</A>'."\n";
+            }
+            echo "              </DL><p>\n";
+        }//二级分类End
+        
+        $links = $db->select('on_links','*',["fid"   =>  $category['id'],"ORDER" =>  ["weight" => "DESC"]]);
+        foreach ($links as $link) {
+            echo '                <DT><A HREF="'.$link["url"].'" ADD_DATE="'.$link["add_time"].'">'.$link["title"].'</A>'."\n";
+        }
+        echo "            </DL><p>\n";
+    }
+    echo "    </DL><p>";
+    echo base64_decode("DQo8L0RMPjxwPg0K");
+    exit;
+}
 //是否为管理员
 function is_admin(){
     global $userdb;

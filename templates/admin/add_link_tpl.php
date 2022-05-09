@@ -34,7 +34,7 @@
         <?php foreach ($categorys as $category) {
           # code...
         ?>
-        <option value="<?php echo $category['id'] ?>"><?php echo $category['name']; ?></option>
+        <option value="<?php echo $category['id'] ?>"><?php echo ($category['fid'] == 0 ? "":"├ ").$category['name']; ?></option>
         <?php } ?>
       </select>
     </div>

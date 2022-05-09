@@ -61,7 +61,7 @@ if ( $page == 'add_category' ) {
 //如果页面是修改link
 if ($page == 'edit_link') {
     //查询所有分类信息，用于分类框选择
-    $categorys = $db->select('on_categorys','*',[ 'ORDER'  =>  ['weigth'    =>  'DESC'] ]);
+    $categorys = get_category();
     //获取id
     $id = intval($_GET['id']);
     //查询单条链接信息
@@ -79,10 +79,27 @@ if ($page == 'edit_link') {
     }
 }
 
+function get_category() {
+    global $db;
+    $categorys = [];
+    //获取父分类
+    $category_parent = $db->select('on_categorys','*',["fid"   =>  0,"ORDER" =>  ["weight" => "DESC"]]);
+    //遍历父分类下的二级分类
+    foreach ($category_parent as $category) {
+        array_push($categorys,$category);
+        $category_subs = $db->select('on_categorys','*',["fid" => $category['id'],"ORDER" => ["weight" => "DESC"] ]);
+        //合并数组
+        $categorys = array_merge ($categorys,$category_subs);
+    }
+    return $categorys;
+}
+
+
+
 //如果页面是添加链接页面
 if ( ($page == 'add_link') || ($page == 'add_link_tpl') || ($page == 'add_quick_tpl' ) || ($page == 'add_link_tpl_m' )) {
     //查询所有分类信息
-    $categorys = $db->select('on_categorys','*',[ 'ORDER'  =>  ['weight'    =>  'DESC'] ]);
+    $categorys = get_category();
     //checked按钮
     if( $category['property'] == 1 ) {
         $category['checked'] = 'checked';
@@ -95,7 +112,7 @@ if ( ($page == 'add_link') || ($page == 'add_link_tpl') || ($page == 'add_quick_
 //导入书签页面
 if ( $page == 'imp_link' ) {
     //查询所有分类信息
-    $categorys = $db->select('on_categorys','*',[ 'ORDER'  =>  ['weight'    =>  'DESC'] ]);
+    $categorys = get_category();
     //checked按钮
     if( $category['property'] == 1 ) {
         $category['checked'] = 'checked';

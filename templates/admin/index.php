@@ -4,27 +4,6 @@ include_once('left.php');
 $HOST = getindexurl();
 $NewVer = $udb->get("config","Value",["Name"=>'NewVer']); //缓存的版本号
 $NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当前版本!
-$NewVerGetTime = $udb->get("config","Value",["Name"=>'NewVerGetTime']); //上次从Git获取版本号的时间
-
-//如果缓存时间大于1800秒(30分钟),则重新从Git获取!
-if( time() - intval($NewVerT) >= 1800 ) {
-    //设置参数Get请求,3秒超时!
-    $opts = array( 'http'=>array( 'method'=>"GET", 'timeout'=>3, )); 
-    //获取git上面的版本号
-    $NewVer = file_get_contents('https://gitee.com/tznb/OneNav/raw/master/initial/version.txt', false, stream_context_create($opts)); 
-    if(preg_match('/^v.+-(\d{8})$/i',$NewVer,$matches)){
-        $NewVerGetTime = time();
-        Writeconfigd($udb,'config','NewVer',$NewVer);
-        Writeconfigd($udb,'config','NewVerGetTime',$NewVerGetTime);
-    }else{
-        //读取失败
-        $NewVer = $version;
-    }
-}
-preg_match('/^v.+-(\d{8})$/i',$NewVer,$matches);
-$NewVerTime = $matches[1];
-preg_match('/^v.+-(\d{8})$/i',$version,$matches);
-$VerTime = $matches[1];
 ?>
 
 <style type="text/css">
@@ -59,7 +38,7 @@ $VerTime = $matches[1];
     <div class="layui-inline">
       <label class="layui-form-label">最新版本</label>
         <div class="layui-input-inline">
-        <input value='获取中...'disabled class="layui-input" id="NewVer">
+        <input value='<?php if($udb->get("user","Level",["User"=>$u]) === '999'){ echo "获取中..."; } else{ echo $NewVer; } ?>'disabled class="layui-input" id="NewVer">
       </div> 
     </div>
     <div class="layui-inline">

@@ -12,6 +12,7 @@
             <?php if($udb->get("user","Level",["User"=>$u]) == 999){
             echo'<dd><a href="./index.php?c=admin&page=root&u='.$u.'"><i class="layui-icon layui-icon-website"></i> 网站管理</a></dd>';
             }?>
+            <dd><a href="./index.php?c=admin&page=apply/apply-admin&u=<?php echo $u?>"><i class="layui-icon layui-icon-release"></i> 收录管理</a></dd>
           </dl>
         </li>
       </ul>
@@ -30,7 +31,7 @@
           <dl class="layui-nav-child">
             <dd><a href="./index.php?c=admin&page=link_list&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-link"></i> 我的链接</a></dd>
             <dd><a href="./index.php?c=admin&page=add_link&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加链接</a></dd>
-            <dd><a href="./index.php?c=admin&page=imp_link&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-upload-drag"></i> 书签导入</a></dd>
+            <dd><a href="./index.php?c=admin&page=imp_link&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-upload-drag"></i> 书签管理</a></dd>
             <dd><a href="./index.php?c=admin&page=add_quick_sm&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-rate-solid"></i> 一键添加</a></dd>
           </dl>
         </li>

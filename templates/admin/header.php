@@ -29,6 +29,7 @@
           <dd><a href="./index.php?c=admin&page=edit_user&u=<?php echo $u?>"><i class="layui-icon layui-icon-auz"></i> 账号设置</a></dd>
           <dd><a href="./index.php?c=admin&page=edit_homepage&u=<?php echo $u?>#tab=1"><i class="layui-icon layui-icon-fonts-code"></i> 站点设置</a></dd>
           <dd><a href="./index.php?c=admin&page=Theme&u=<?php echo $u?>"><i class="layui-icon layui-icon-theme"></i> 主题模板</a></dd>
+          <dd><a href="./index.php?c=admin&page=apply/apply-admin&u=<?php echo $u?>"><i class="layui-icon layui-icon-release"></i> 收录管理</a></dd>
           <dd><a href="./index.php?c=admin&page=link_list&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-link"></i> 我的链接</a></dd>
           <dd><a href="./index.php?c=admin&page=add_link&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加链接</a></dd>
           <dd><a href="./index.php?c=admin&page=category_list&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-list"></i> 分类列表</a></dd>
