@@ -319,7 +319,24 @@ function edit_link(){
         msg(-1011,'URL已经存在！');
     }
 }
-
+//批量设置链接属性
+function set_link_attribute() {
+    global $db;
+    $ids = $_POST['ids'];
+    $property = intval($_POST['property']);
+    if( $property != 0 && $property !=1 ){msg(-2000,'链接属性错误,只能是0或1!');}
+    $re = $db->update('on_links',["property" => $property],[ 'id' => explode(",",$ids)]);
+    //拼接SQL文件
+    // $sql = "UPDATE on_links SET property = $property WHERE id IN ($ids)";
+    // $re = $db->query($sql);
+    //返回影响行数
+    $row = $re->rowCount();
+    if ( $row > 0 ){
+        msg(200,"success");
+    }else{
+        msg(-2000,"failed"); 
+    }
+}
 //删除链接
 function del_link(){
     global $db;

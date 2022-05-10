@@ -68,7 +68,7 @@ foreach ($categorys as $category) {//遍历分类?>
 </div>
 </header><!-- 左侧栏End -->  
 <!-- 窄屏顶部栏 -->
-<div class="header">
+<div class="header" style="position: fixed;z-index: 9999;">
 <div class="logo"><a href="./?u=<?php echo $u?>"><?php echo $site['logo'];?></a></div>
 <div class="nav-bar">
 <i class="fa fa-bars"></i>

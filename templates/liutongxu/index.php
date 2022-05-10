@@ -146,7 +146,7 @@
                                     foreach ($category_parent as $category) {
                                 ?>
                                     <li class="sidebar-item">
-                                        <a href="#category-<?php echo $category['id']; ?>" class="smooth "><?php echo geticon3($category['Icon']); ?>
+                                        <a href="#category-<?php echo $category['id']; ?>" class="smooth "><?php if(empty( $category['Icon']) ){echo '<i class="fa fa-star icon-fw icon-lg mr-2"></i>';}{  echo geticon3($category['Icon']);} ?>
                                             <span><?php echo $category['name']; ?></span>
                                             <?php echo !empty($category['count'])?'<i class="iconfont icon-arrow-r-m sidebar-more text-sm"></i>':""; ?>
                                         </a>
@@ -167,6 +167,13 @@
                 <div class="border-top py-2 border-color">
                     <div class="flex-bottom">
                         <ul>
+                            <?php if($udb->get("config","Value",["Name"=>'apply']) == 1 && getconfig('apply_switch','0') != 0) { ?>
+                            <li id="menu-item-237" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-237 sidebar-item">
+                                <a href="./index.php?c=apply&u=<?php echo $u?>" target="_blank">
+                                    <i class="io io-tijiao icon-fw icon-lg mr-2"></i>
+                                    <span>网站提交</span></a>
+                            </li>
+                            <?php } ?>
                             <?php if($is_login) { ?>
                             <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-237 sidebar-item">
                                 <a href="./index.php?c=admin&u=<?php echo $u?>" target="_blank"><i class="fa fa-user icon-fw icon-lg mr-2"></i><span>后台管理</span></a>
@@ -199,8 +206,6 @@
                                     </label>
                                 </div>
                                 <ul class="navbar-nav site-menu" style="margin-right: 16px;">
-
-                                    
                                     <?php if($is_login) { ?>
                                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-281"><a href="./index.php?c=admin&u=<?php echo $u?>"><i class="fa fa-user-circle-o icon-fw icon-lg mr-2"></i><span>管理</span></a></li>
                                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-281"><a href="./index.php?c=admin&page=logout&u=<?php echo $u?>"><i class="fa fa-sign-out fa-lg mr-2"></i><span>退出</span></a></li>
@@ -236,6 +241,31 @@
                                     <script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script>
                                 </div>
                             </div>
+                            <ul class="nav navbar-menu text-xs order-1 order-md-2">
+<?php  if( getconfig($config.'hitokoto','0') == 1 ){ ?>
+                                <!-- 一言 -->
+                                <li class="nav-item mr-3 mr-lg-0 d-none d-lg-block">
+                                    <script>
+                                        fetch('https://v1.hitokoto.cn')
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                const hitokoto = document.getElementById('hitokoto_text')
+                                                hitokoto.href = 'https://hitokoto.cn/?uuid=' + data.uuid
+                                                hitokoto.innerText = data.hitokoto
+                                            })
+                                            .catch(console.error)
+                                    </script>
+                                    <div id="hitokoto"><a href="#" target="_blank" id="hitokoto_text">我爱你，洛千婷</a></div>
+                                </li>
+                                <!-- 一言 end -->
+<?php };?>
+                                <li class="nav-search ml-3 ml-md-4">
+                                    <a href="javascript:" data-toggle="modal" data-target="#search-modal"><i class="iconfont icon-search icon-2x"></i></a>
+                                </li>
+                                <li class="nav-item d-md-none mobile-menu ml-3 ml-md-4">
+                                    <a href="javascript:" id="sidebar-switch" data-toggle="modal" data-target="#sidebar"><i class="iconfont icon-classification icon-2x"></i></a>
+                                </li> 
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -690,6 +720,12 @@ var theme = {"ajaxurl":"https:\/\/nav.iowen.cn\/wp-admin\/admin-ajax.php","addic
 <script type='text/javascript' src='<?php echo $Theme?>/wp-content/themes/onenav/js/lazyload.min-3.03029.1.js' id='lazyload-js'></script>
 <script type='text/javascript' src='<?php echo $Theme?>/wp-content/themes/onenav/js/jquery.fancybox.min-3.03029.1.js' id='lightbox-js-js'></script>
 <script type='text/javascript' src='<?php echo $Theme?>/wp-content/themes/onenav/js/app-3.03029.1.js' id='appjs-js'></script>
+<?php  if( getconfig($config.'Live2D','0') == 1 ){ ?>
+<script type="text/javascript">
+const live2d_path = "<?php echo $Theme?>/live2d/";
+</script>
+<script src="<?php echo $Theme?>/live2d/autoload.js"></script>
+<?php };?>
 <script type="text/javascript">
     $(document).ready(function(){
         var siteWelcome = $('#loading');

@@ -12,7 +12,7 @@
 ?>
 
 <ul class="mylist row">
-    <li class="title"><span><?php echo geticon($category['Icon']).'&nbsp;'.$category['name'].'&nbsp;'.$property;?></span></li>
+    <li id="group_<?php echo geticon($category['id']) ?>" class="title"><span><?php echo geticon($category['Icon']).'&nbsp;'.$category['name'].'&nbsp;'.$property;?></span></li>
     
                 <?php
 foreach ($links as $link) {

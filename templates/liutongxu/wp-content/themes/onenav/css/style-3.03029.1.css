@@ -94,7 +94,7 @@ a>i.sidebar-more{transform:scale(.8)}
 --------------------------------------------------------------*/
 .sidebar-popup div{background:#151618}
 .sidebar-popup{display:block;position:absolute;position:fixed;border:3px solid rgba(60,71,76,0)}
-.sidebar-popup.second{left:60px}
+.sidebar-popup.second{left:60px;z-index: 1081;}
 .sidebar-popup div{border-radius:5px}
 .sidebar-popup i,.sidiebar-popup .label-Primary{display:none}
 .sidebar-popup.sidebar-menu-inner a span{margin-left:0px}

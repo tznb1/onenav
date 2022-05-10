@@ -1,6 +1,20 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年05月10日</h4>
+      <ul>
+        <li>链接列表新增批量设为私有和公有</li>
+        <li>当收录功能被关闭时不显示管理入口</li>
+        <li>修复分类列表特定条件下无法加载的bug</li>
+        <li>刘桐序主题添加Live2D和一言(后台主题模板>配置),支持手机端侧边栏,分类未设置图标时默认显示星星图标!开启收录时显示收录入口!其他细节调整!</li>
+        <li>六零导航新增侧栏功能,支持自定义宽度!优化多分类支持!</li>
+        <li>百素主题给侧边分类栏添加滚动条,手机端添加固定顶部栏!</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年05月09日</h4>
       <ul>
         <li>优化二级分类,后台链接相关选择时二级分类前加 ├ 来表示,使其更加分明</li>

@@ -23,8 +23,8 @@
       <li class="layui-nav-item layui-hide-sm">
         <a href="javascript:;"><i class="layui-icon layui-icon-set layui-hide-sm" ></i> 菜单</a>
         <dl class="layui-nav-child">
-          <?php if($udb->get("user","Level",["User"=>$u]) == 999){
-            echo'<dd><a href="./index.php?c=admin&page=root&u='.$u.'"><i class="layui-icon layui-icon-website"></i> 网站管理</a></dd>';
+<?php if($udb->get("user","Level",["User"=>$u]) == 999){
+            echo'          <dd><a href="./index.php?c=admin&page=root&u='.$u.'"><i class="layui-icon layui-icon-website"></i> 网站管理</a></dd>'."\n";
             }?>
           <dd><a href="./index.php?c=admin&page=edit_user&u=<?php echo $u?>"><i class="layui-icon layui-icon-auz"></i> 账号设置</a></dd>
           <dd><a href="./index.php?c=admin&page=edit_homepage&u=<?php echo $u?>#tab=1"><i class="layui-icon layui-icon-fonts-code"></i> 站点设置</a></dd>

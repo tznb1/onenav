@@ -41,6 +41,8 @@
             <button class="layui-btn layui-btn-sm " lay-event="MC">修改分类</button>
             <button class="layui-btn layui-btn-sm " lay-event="zhiding">置顶</button>
             <button class="layui-btn layui-btn-sm " lay-event="addlink">添加</button>
+            <button class="layui-btn layui-btn-sm " lay-event="set_private">设为私有</button>
+            <button class="layui-btn layui-btn-sm " lay-event="set_public">设为公有</button>
         </div>
         </script>
         <!-- 开启表格头部工具栏END -->

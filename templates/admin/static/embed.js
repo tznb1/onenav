@@ -66,7 +66,7 @@ table.render({
           }
       }}
       ,{field: 'fname', title: '父级分类', width:160,templet: function(d){ 
-          if ( d.fname == null ){ return ''; }
+          if ( d.fIcon == null ){ if (d.fname == null) {return '';} else { return d.fname;} }
           
           if (d.fIcon.substr(0,3) =='lay'){
               return '<i class="layui-icon '+d.fIcon+'"></i> '+d.fname;
@@ -408,9 +408,35 @@ table.on('toolbar(mylink)', function(obj){
              }
              });
             };
-          break;              
+            break;  
+      case 'set_private':
+        var data = checkStatus.data;
+        for (let i = 0; i < data.length; i++) {if (i < data.length-1){id +=data[i].id+','}else{id +=data[i].id}} //生成id表
+        set_link_attribute(id,1);
+          break;
+      case 'set_public':
+        var data = checkStatus.data;
+        for (let i = 0; i < data.length; i++) {if (i < data.length-1){id +=data[i].id+','}else{id +=data[i].id}} //生成id表
+        set_link_attribute(id,0);
+          break;
     }
 });
+
+//设置链接属性，公有或私有
+function set_link_attribute(ids,property) {
+    if( ids.length === 0 ) {
+      layer.msg("请先选择链接!",{icon:5});
+    }else{
+      $.post("./index.php?c=api&method=set_link_attribute&u="+u,{ids:ids,property:property},function(data,status){
+        if( data.code == 200 ){
+            link_q();
+            layer.msg("设置已更新！",{icon:1});
+        }else{
+            layer.msg("设置失败！",{icon:5});
+        }
+      });
+    }
+}
 //链接表头部工具栏事件
   table.on('tool(mylink)', function(obj){
     var data = obj.data;

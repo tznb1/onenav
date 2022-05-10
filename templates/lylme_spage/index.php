@@ -21,7 +21,9 @@
 		<link rel="stylesheet" href="<?php echo $Theme?>/css/bootstrap.min.css" type="text/css">
 		<link rel="stylesheet" href="<?php echo $Theme?>/css/style.css" type="text/css">
 		<link rel="stylesheet" href="<?php echo $Theme?>/css/font.css" type="text/css">
-		<?php echo $site['custom_header']; ?> 
+		<link rel="stylesheet" href="<?php echo $Theme?>/css/tag.css" type="text/css">
+		<style>.change-type .showListType{width:<?php echo getconfig($config.'changewidth','130');?>px;}</style>
+		<?php echo $site['custom_header']; ?>
 	</head>
     <body onload="FocusOnInput()">
         <div class="banner-video">
@@ -29,12 +31,48 @@
 			<div class="bottom-cover" style="background-image: linear-gradient(rgba(255, 255, 255, 0) 0%, rgb(244 248 251 / 0.6) 50%, rgb(244 248 251) 100%);">
 			</div>
 		</div>
+<div class="box"  style="height:90%;">
+    <div class="change-type"  style="height:80%;">
+        <div style="overflow-y:auto;" class="type-left" :class="showType == true ? 'showListType':''">
+            <ul>
+<li  data-lylme="search"><a>搜索</a><span></span></li>
+<?php
+//遍历分类目录并显示
+foreach ($categorys as $category) {
+    echo '<li data-lylme="group_'. $category["id"] . '"><a>'. $category["name"] . '</a><span></span></li>'."\n";
+} 
+?>
+
+
+
+            </ul>
+        </div>
+        
+    </div>
+</div>	
+<script>
+    $(function(){
+        $('.type-right').click(function(){
+            $('.type-left').toggleClass('showListType')
+        });
+        $('.type-left ul li').click(function(){
+            $(this).addClass('active').siblings('li').removeClass('active');
+            $('.type-left').toggleClass('showListType');
+            var lylme_tag = '#'+$(this).attr("data-lylme");
+            $('html,body').animate({scrollTop:$(lylme_tag).offset().top},500);
+            
+        })
+    })
+</script>
 		<!--topbar开始-->
 		<nav class="navbar navbar-expand-lg navbar-light fixed-top" style="position: absolute; z-index: 10000;">
 		<button class="navbar-toggler collapsed" style="border: none; outline: none;"type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
 		    <svg class="icon" width="200" height="200"><use xlink:href="#icon-menus"></use></svg>
 		    <span><svg class="bi bi-x" 	fill="currentColor" id="x"><use xlink:href="#icon-closes"></use></svg><span>
 		</button>
+		<div class="type-right" >
+           <svg  t="1651476001599" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6329" width="200" height="200"><path d="M512 491.52l286.72-286.72-522.24 174.08L512 491.52zM137.216 337.92L866.304 96.256c16.384-6.144 34.816 4.096 40.96 20.48 2.048 6.144 2.048 14.336 0 20.48L665.6 866.304c-6.144 16.384-24.576 26.624-40.96 20.48-8.192-2.048-14.336-8.192-18.432-16.384L450.56 552.96 133.12 399.36c-16.384-8.192-22.528-26.624-14.336-43.008 2.048-8.192 10.24-14.336 18.432-18.432z" fill="#304ECE" p-id="6330"></path></svg>
+        </div>
 			<div class="collapse navbar-collapse" id="navbarsExample05">
 				<ul class="navbar-nav mr-auto">
 				    <li class="nav-item"><a class="nav-link" href="" target="_blant">首页</a></li>

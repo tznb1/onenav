@@ -1,6 +1,8 @@
 <?php
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     Writeconfig($config.'backgroundURL',$_POST['backgroundURL']);
+    Writeconfig($config.'changewidth', intval($_POST['changewidth']));
+    
     msg(0,"修改成功");
 }
 ?>
@@ -33,6 +35,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     <input type="url" id = "backgroundURL" name="backgroundURL" value = "<?php echo getconfig($config.'backgroundURL','https://api.isoyu.com/bing_images.php');?>" placeholder="请输入图片URL" autocomplete="off" class="layui-input">
     </div>
     </div>
+    
+    <div class="layui-form-item">
+    <label class="layui-form-label">侧栏宽度</label>
+    <div class="layui-input-inline" style="width: 73%;">
+    <input type="number" id = "changewidth" name="changewidth" value = "<?php echo getconfig($config.'changewidth','130');?>" placeholder="侧栏宽度,默认130" autocomplete="off" class="layui-input">
+    </div>
+    </div>
+    
   <div class="layui-form-item">
     <div class="layui-input-block">
       <button class="layui-btn" lay-submit lay-filter="edit_homepage">保存</button>
