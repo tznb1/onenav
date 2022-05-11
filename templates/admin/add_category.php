@@ -2,14 +2,13 @@
 <?php include_once('left.php'); ?>
 <div class="layui-body">
 <!-- 内容主体区域 -->
-<link href="<?php echo $libs?>/font-awesome/4.7.0/css/font-awesome.css?v=4.7.0" rel="stylesheet"> 
 <div class="layui-row content-body">
     <div class="layui-col-lg12">
     <form class="layui-form">
   <div class="layui-form-item">
     <label class="layui-form-label">分类名称</label>
     <div class="layui-input-block">
-      <input type="text" name="name" required  lay-verify="required" placeholder="请输入分类名称" autocomplete="off" class="layui-input">
+      <input type="text" name="name" required  lay-verify="required" value="<?php if(empty( $categorys )){ echo "默认分类"; }?>" placeholder="请输入分类名称" autocomplete="off" class="layui-input">
     </div>
   </div>
     <div class="layui-form-item">

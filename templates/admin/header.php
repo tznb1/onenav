@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>OneNav Extend - <?php echo $u; ?></title>
   <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui.css">
-  <link rel='stylesheet' href='./templates/admin/static/style.css?v=<?php echo $version; ?>'>
   <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
+  <link rel='stylesheet' href='./templates/admin/static/style.css?v=<?php echo $version; ?>'>
 </head>
 <body>
 <div class="layui-layout layui-layout-admin">

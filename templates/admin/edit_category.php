@@ -2,7 +2,6 @@
 <?php include_once('left.php'); ?>
 <div class="layui-body">
 <!-- 内容主体区域 -->
-<link href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css?v=4.7.0" rel="stylesheet"> 
 <div class="layui-row content-body">
     <div class="layui-col-lg12">
     <form class="layui-form">

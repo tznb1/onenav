@@ -3,6 +3,7 @@ ul {
 }
 li {
     list-style: none;
+    overflow:hidden;
 }
 a:hover,a:active,a:focus {
     text-decoration: none;
@@ -22,7 +23,48 @@ body {
 i.icon,i.fa {
     margin-right: 6px
 }
+.menu {
+	height: calc(100% - 60px);
+	/*padding: 0 25px 100px;*/
+	overflow: auto;
+}
 
+/* 整个滚动条 */
+
+.menu::-webkit-scrollbar {
+	width: 6px;
+	background-color: transparent;
+}
+
+
+/* 滚动条上的按钮 (上下箭头). */
+
+.menu::-webkit-scrollbar-button {
+	height: 0px;
+	width: 0px;
+}
+
+
+/* 滚动条上的滚动滑块. */
+
+.menu::-webkit-scrollbar-thumb {
+	background-color: #dedede;
+	border-radius: 50px;
+}
+
+
+/*  滚动条轨道. */
+
+.menu::-webkit-scrollbar-track {
+	background-color: transparent;
+}
+
+
+/* 滚动条没有滑块的轨道部分 */
+
+.menu::-webkit-scrollbar-track-piece {
+	background-color: transparent;
+}
 .comment-body {
   padding-top: 70px;
 }
@@ -198,7 +240,7 @@ header .animated2 .bottom {
     color: #ccc;
 }
 .left-bar .menu {
-    height: 450px;
+    /*height: 450px;*/
     margin-bottom: 15px;
     border-bottom: 1px solid #424242
 }
@@ -408,6 +450,7 @@ input::-webkit-input-placeholder {
     -moz-transition: all 0.2s ease-out;
     -webkit-transition: all 0.2s ease-out;
     -o-transition: all 0.2s ease-out;
+    white-space: nowrap;
 }
 .card-link:hover {
     transform: translateY(-5px);
@@ -424,13 +467,16 @@ input::-webkit-input-placeholder {
     font-weight: 700;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal;
+    display:inline-block; 
+    vertical-align: bottom;
+    width:88%;
 }
 .card-tit img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     margin-right: 5px;
+    
 }
 .card-desc {
     color: gray;
@@ -595,7 +641,7 @@ input::-webkit-input-placeholder {
         padding-left: 10px;
     }
     .left-bar .menu {
-        height: 600px;
+        /*height: 600px;*/
         border-top: 1px solid #f2f2f2;
         border-bottom: 1px solid #f2f2f2
     }

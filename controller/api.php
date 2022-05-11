@@ -92,6 +92,18 @@ function add_category(){
         msg(-1004,'分类名称不能为空！');
     }elseif(!empty($Icon) && !preg_match('/^(layui-icon-|fa-)([A-Za-z0-9]|-)+$/',$Icon)){
         msg(-1004,'无效的分类图标！');
+    }elseif($fid !== 0 ){
+        $count = $db->count("on_categorys", ["fid" => $id]);
+        if(!empty($count)) {
+            msg(-2000,'添加失败，该分类下已存在子分类！');
+        }
+        $target_fid = $db->get("on_categorys", "fid", ["id" => $fid]);
+        if($target_fid > 0 ) { 
+            msg(-2000,'添加失败，父级分类不能是二级分类！');
+        }elseif($target_fid === null){
+            msg(-2000,'添加失败，父级分类不存在！');
+        }
+       
     }
 
     $data = [
@@ -116,25 +128,32 @@ function add_category(){
 function edit_category(){
     global $db;
     $id = intval($_POST['id']);//获取ID
+    $fid = intval($_POST['fid']); //获取父分类ID
     $name = $_POST['name'];//获取分类名称
     $Icon = $_POST['Icon'];//获取分类图标
     $property = empty($_POST['property']) ? 0 : 1;//获取私有属性
     $weight = empty($_POST['weight']) ? 0 : intval($_POST['weight']);//获取权重
     $description = $_POST['description']; //获取描述
-    $fid = $_POST['fid'];
     if(empty($id)){
         msg(-1003,'分类ID不能为空！');
     }elseif(empty($name)){
         msg(-1004,'分类名称不能为空！');
     }elseif(!empty($Icon) && !preg_match('/^(layui-icon-|fa-)([A-Za-z0-9]|-)+$/',$Icon)){
         msg(-1004,'无效的分类图标！');
-    }else{
-        //根据分类ID查询改分类下面是否已经存在子分类，如果存在子分类了则不允许设置为子分类，实用情况：一级分类下存在二级分类，无法再将改一级分类修改为二级分类
+    }elseif($id === $fid ){
+        msg(-1004,'父级分类不能是自己！');
+    }elseif($fid !== 0 ){
         $count = $db->count("on_categorys", ["fid" => $id]);
-        //改分类下的子分类数量大于0，并且将父级ID修改为其它分类
-        if( ( $count > 0 ) && ( $fid !== 0 ) ) {
+        if(!empty($count)) {
             msg(-2000,'修改失败，该分类下已存在子分类！');
         }
+        $target_fid = $db->get("on_categorys", "fid", ["id" => $fid]);
+        if($target_fid > 0 ) { 
+            msg(-2000,'修改失败，父级分类不能是二级分类！');
+        }elseif($target_fid === null){
+            msg(-2000,'修改失败，父级分类不存在！');
+        }
+       
     }
 
     $data = [
@@ -1609,6 +1628,27 @@ function apply_fn(){
 }
 // 收录结束
 
+
+//数据清空
+function data_empty(){
+    global $SQLite3,$userdb,$db,$RegTime,$password;
+    $pass = $_GET['pass'];
+    if(md5(md5($pass).$RegTime) !== $password && md5($pass.$RegTime) !== $password ){
+        exit('密码错误,请核对后再试！');
+    }
+    $db->query("delete from on_links")->fetchAll();
+    $db->query("UPDATE sqlite_sequence SET seq = 0 WHERE name='on_links';")->fetchAll();
+    $db->query("delete from on_categorys")->fetchAll();
+    $db->query("UPDATE sqlite_sequence SET seq = 0 WHERE name='on_categorys';")->fetchAll();
+    $count_categorys = $db->Count("on_categorys");
+    $count_links = $db->Count("on_links");
+    if($count_categorys === 0 && $count_links === 0 ){
+        msg(0,"清空成功");
+    }else{
+        msg(-1111,"清空失败");
+    }
+    
+}
 //导出请求
 function export_db3(){
     global $SQLite3,$userdb,$db,$RegTime,$password;

@@ -97,14 +97,28 @@
     </fieldset> 
     
     <blockquote class="layui-elem-quote" style="margin-top: 30px;">
-    <a  target="_blank" style="cursor:pointer;"  rel = "nofollow" onclick = "export_bookmarks('db3')">导出数据库 ( 支持导入OneNav Extend ) &nbsp;>>&nbsp; 备份推荐用这个 </a>
+    <a  target="_blank" style="cursor:pointer;"  rel = "nofollow" onclick = "bookmarks('export_db3')">导出数据库 ( 支持导入OneNav Extend ) &nbsp;>>&nbsp; 备份推荐用这个 </a>
     </blockquote>
     
     <blockquote class="layui-elem-quote" style="margin-top: 10px;">
-    <a  target="_blank" style="cursor:pointer;"  rel = "nofollow" onclick = "export_bookmarks('html')">导出HTML ( 支持导入浏览器 / OneNav / OneNav Extend ) &nbsp;>>&nbsp; 导出支持层级,导入不支持</a>
+    <a  target="_blank" style="cursor:pointer;"  rel = "nofollow" onclick = "bookmarks('export_html')">导出HTML ( 支持导入浏览器 / OneNav / OneNav Extend ) &nbsp;>>&nbsp; 导出支持层级,导入不支持</a>
     </blockquote>
 </div>
+
+<div class="layui-col-lg6 layui-col-md-offset3">
+    
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+    <legend>数据清空</legend>
+    </fieldset> 
+    
+    <blockquote class="layui-elem-quote" style="margin-top: 30px;border-left: 5px solid #ff5858;">
+    <a  target="_blank" style="cursor:pointer;color: #ff5858;"  rel = "nofollow" onclick = "bookmarks('data_empty')">数据清空 ( 仅分类和链接数据 ) &nbsp;>>&nbsp; 不可逆,请提前备份! </a>
+    </blockquote>
+    
+
+</div>
+
 </div>
 <!-- 内容主题区域END -->
 </div>
-<?php include_once('footer.php'); ?>
+<?php $md5=true; include_once('footer.php'); ?>

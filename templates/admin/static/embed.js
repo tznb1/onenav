@@ -649,13 +649,34 @@ form.on('submit(get_link_info)', function(data){
     return false; 
 });
 
-//导出书签
-window.export_bookmarks = function(name){
+//书签管理 
+window.bookmarks = function(name){
+    // 清空数据库
+    if( name === "data_empty"){
+        layer.prompt({formType: 1,value: 'OneNavExtend',title: '输入OneNavExtend确定清空数据:',shadeClose: true},function(value, index, elem){
+            if (value === "OneNavExtend"){
+                layer.prompt({formType: 1,value: 'admin',title: '输入登录密码:',shadeClose: true},function(value, index, elem){
+                    $.get('./index.php?c=api&method=data_empty&u='+ u +'&pass=' + $.md5(value),function(data,status){
+                        if(data.code == 0) {
+                            layer.msg("清空成功", {icon: 1});
+                        }else{
+                            layer.msg(data.msg, {icon: 5});
+                        }
+                    });
+                    layer.closeAll();
+                }); 
+            }
+        });
+        return false; 
+    }
+    
+    // 导出数据
     layer.prompt({formType: 1,value: '',title: '输入登录密码:',shadeClose: true},function(value, index, elem){
-        window.open('./index.php?c=api&method=export_'+ name +'&u='+u +'&pass=' + value);
-        layer.closeAll('iframe');
+        window.open('./index.php?c=api&method='+ name +'&u='+u +'&pass=' + $.md5(value));
+        layer.closeAll();
     }); 
 }
+
 
 //导入书签
 form.on('submit(imp_link)', function(data){

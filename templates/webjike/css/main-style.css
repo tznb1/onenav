@@ -1,7 +1,16 @@
 ul{ padding: 0; }
-li{ list-style: none;}
+li{ list-style: none;
+    overflow: hidden;
+}
 a:hover,a:active,a:focus{ text-decoration: none; }
 body{ background: #f2f2f2; overflow-x:hidden; overflow-y:auto;}
+.menu {
+	height: calc(100% );
+	/*padding: 0 25px 100px;*/
+	overflow: auto;
+	
+}
+
 i.icon,i.fa{ margin-right: 6px }
 /* 滚动条样式 */
 #Yscrollouter{width: 4px; height: 340px;position: absolute;top:0; right: 0; display: none;}
@@ -1736,7 +1745,7 @@ input::-webkit-input-placeholder{
         padding-left: 10px;
     }
     .left-bar .menu{
-        height: calc(100% - 170px);
+        height: calc(100% - 120px);
         border-top: 1px solid #f2f2f2;
     }
     .left-bar .tree-menu{  border-bottom: 1px solid #e8e8e8;}

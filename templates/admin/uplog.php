@@ -1,6 +1,18 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年05月11日</h4>
+      <ul>
+        <li>SimpleWeb主题:侧边分类栏新增滚动条支持,禁止分类名超长换行,优化卡片标题禁止换行,超出隐藏!让卡片大小保持统一!</li>
+        <li>小呆导航主题:侧边分类栏新增滚动条支持,禁止分类名超长换行</li>
+        <li>书签管理:新增数据清空</li>
+        <li>修复分类父级可以是自己的bug,其他细节完善</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年05月10日</h4>
       <ul>
         <li>链接列表新增批量设为私有和公有</li>

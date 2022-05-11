@@ -40,6 +40,7 @@ if ( $page == 'edit_category' ) {
     //查询父级分类
     $categorys = $db->select('on_categorys','*',[
         'fid'   => 0,
+        'id[!]'   => $id,
         'ORDER' =>  ['weight'    =>  'DESC'] 
     ]);
     //checked按钮
