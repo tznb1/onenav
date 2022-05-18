@@ -720,6 +720,7 @@ var theme = {"ajaxurl":"https:\/\/nav.iowen.cn\/wp-admin\/admin-ajax.php","addic
 <script type='text/javascript' src='<?php echo $Theme?>/wp-content/themes/onenav/js/lazyload.min-3.03029.1.js' id='lazyload-js'></script>
 <script type='text/javascript' src='<?php echo $Theme?>/wp-content/themes/onenav/js/jquery.fancybox.min-3.03029.1.js' id='lightbox-js-js'></script>
 <script type='text/javascript' src='<?php echo $Theme?>/wp-content/themes/onenav/js/app-3.03029.1.js' id='appjs-js'></script>
+<script type='text/javascript' src="<?php echo $libs?>/Other/holmes.js"></script>
 <?php  if( getconfig($config.'Live2D','0') == 1 ){ ?>
 <script type="text/javascript">
 const live2d_path = "<?php echo $Theme?>/live2d/";
@@ -832,5 +833,31 @@ function switchNightMode(){
     }
 }
 </script>
+
+<script>
+var h = holmes({
+    input: '.search-key',
+    find: '.url-card',
+    placeholder: '<h3 style=" padding-left: 30px;">未搜索到匹配结果！</h3>',
+    mark: false,
+	hiddenAttr: true,
+    class: {
+      hidden: 'hidden'
+    },
+    onFound(el) {
+	  $(".url-card").addClass("hidden");
+    },
+    onInput(el) {
+		$(".url-card").addClass("hidden");
+    },
+    onVisible(el) {
+		$(".url-card").removeClass("hidden");
+    },
+    onEmpty(el) {
+		$(".url-card").removeClass("hidden");
+    }
+  });
+</script>
+
 </body>
 </html>

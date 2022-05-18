@@ -258,6 +258,7 @@ if(!file_exists('./data/lm.user.db3')){
             $Expire = $session == 0 ? time()+86400 : GetExpire2($session);
             $key = Getkey2($USER,$PassMD5,$Expire,$Skey,$time);
             setcookie($USER.'_key2', $key.'.'.$Expire.'.'.$time, $session == 0 ? 0 : $Expire,"/",'',false,$HttpOnly==1);
+            WriteloginLog($USER,$PassMD5,$RegIP,$RegTime,$USER.'.db3','初始管理员');
             msgA(['code'=>0,'msg'=>'安装成功！','user'=>$USER,'pass'=>$PASS ]);
         }else{
             msg(-1004,'-1234:安装失败!');

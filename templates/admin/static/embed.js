@@ -653,9 +653,9 @@ form.on('submit(get_link_info)', function(data){
 window.bookmarks = function(name){
     // 清空数据库
     if( name === "data_empty"){
-        layer.prompt({formType: 1,value: 'OneNavExtend',title: '输入OneNavExtend确定清空数据:',shadeClose: true},function(value, index, elem){
+        layer.prompt({formType: 1,value: '',title: '输入OneNavExtend确定清空数据:',shadeClose: true},function(value, index, elem){
             if (value === "OneNavExtend"){
-                layer.prompt({formType: 1,value: 'admin',title: '输入登录密码:',shadeClose: true},function(value, index, elem){
+                layer.prompt({formType: 1,value: '',title: '输入登录密码:',shadeClose: true},function(value, index, elem){
                     $.get('./index.php?c=api&method=data_empty&u='+ u +'&pass=' + $.md5(value),function(data,status){
                         if(data.code == 0) {
                             layer.msg("清空成功", {icon: 1});
@@ -665,6 +665,8 @@ window.bookmarks = function(name){
                     });
                     layer.closeAll();
                 }); 
+            }else{
+                layer.msg("输入错误,请注意大小写!", {icon: 5});
             }
         });
         return false; 

@@ -1634,7 +1634,7 @@ function data_empty(){
     global $SQLite3,$userdb,$db,$RegTime,$password;
     $pass = $_GET['pass'];
     if(md5(md5($pass).$RegTime) !== $password && md5($pass.$RegTime) !== $password ){
-        exit('密码错误,请核对后再试！');
+        msg(-1111,"密码错误,请核对后再试!");
     }
     $db->query("delete from on_links")->fetchAll();
     $db->query("UPDATE sqlite_sequence SET seq = 0 WHERE name='on_links';")->fetchAll();

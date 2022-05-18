@@ -12,6 +12,16 @@
     <link rel="stylesheet" href="<?php echo $libs?>/Layui/v2.6.8/css/layui-icon.css">
     <link rel="stylesheet" href="<?php echo $Theme?>/static/style.css?v=<?php echo $version; ?>">
     <?php echo $site['custom_header']; ?>
+	<style>
+	<?php if( getconfig($config.'link_description','show') == "hide" ) { ?>
+		.link-content{
+			display:none;
+		}
+		.link-line{
+			height:56px;
+		}
+	<?php } ?>
+	</style>
 </head>
 <?php
 	// 根据cookie来设置mdui主题
@@ -28,9 +38,9 @@
 	<header class = "mdui-appbar mdui-appbar-fixed">
 		<div class="mdui-toolbar mdui-color-theme">
 		<span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-drawer="{target: '#drawer', swipe: true}"><i class="mdui-icon material-icons">menu</i></span>
-		  <a href="" class = "mdui-typo-headline" title = "<?php echo $site['description'];?>"><span class="mdui-typo-title"><?php echo $site['logo'] ;?></span></a>
+		  <a href="" class = "mdui-typo-headline" title = "<?php echo $site['description'] ?>"><span class="mdui-typo-title default-title"><h1><?php echo $site['title']; ?></h1></span></a>
 		  <div class="mdui-toolbar-spacer"></div>
-		  	<div class="mdui-col-md-4 mdui-col-xs-6">
+		  	<div class="mdui-col-md-3 mdui-col-xs-6">
 				<div class="mdui-textfield mdui-textfield-floating-label">
 					<input class="mdui-textfield-input search" style = "color:#FFFFFF;" placeholder="输入书签关键词进行搜索" type="text" />
 					<i class="mdui-icon material-icons" style = "position:absolute;right:2px;">search</i>
@@ -152,7 +162,7 @@
 	</div>
 	<!--左侧抽屉导航END-->
 	<!--正文内容部分-->
-	<div class="mdui-container">
+	<div class="<?php echo ( getconfig($config.'full_width_mode','off')  == "off") ? "mdui-container" : "mdui-container-fluid"; ?>">
 		<div class="mdui-row">
 			<!-- 遍历分类目录 -->
             <?php foreach ( $categorys as $category ) {
@@ -178,7 +188,8 @@
 					$id = $link['id'];
 			?>
 			<a href="<?php echo geturl($link); ?>" target="_blank" title = "<?php echo $link['description']; ?>">
-			<div class="mdui-col-lg-3 mdui-col-md-4 mdui-col-xs-12 link-space" id = "id_<?php echo $link['id']; ?>" link-title = "<?php echo $link['title']; ?>" link-url = "<?php echo $link['url']; ?>">
+			<div class="mdui-col-lg-2 mdui-col-md-3 mdui-col-sm-4 mdui-col-xs-6 link-space" id = "id_<?php echo $link['id']; ?>" link-title = "<?php echo $link['title']; ?>" link-url = "<?php echo $link['url']; ?>">
+			    <span style = "display:none;"><?php echo $link['url']; ?></span>
 				<!--定义一个卡片-->
 				<div class="mdui-card link-line mdui-hoverable">
 						<!-- 如果是私有链接，则显示角标 -->

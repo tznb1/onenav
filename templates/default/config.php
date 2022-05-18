@@ -190,7 +190,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         </div>
         
         <div class="layui-form-item">
-            <input id="ClickLocation-input" type="hidden" value="<?php echo getconfig($config.'ClickLocation','1');?>">
+            <input id="ClickLocation-input" type="hidden" value="<?php echo getconfig($config.'ClickLocation','0');?>">
             <label class="layui-form-label">点击位置</label>
             <div class="layui-input-inline">
             <select lay-verify="required"  id="ClickLocation" name="ClickLocation" lay-search>

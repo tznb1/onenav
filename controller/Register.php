@@ -66,6 +66,7 @@ $Expire = $session == 0 ? time()+86400 : GetExpire2($session);
 $key = Getkey2($user,$PassMD5,$Expire,$Skey,$time);
 setcookie($user.'_key2', $key.'.'.$Expire.'.'.$time, $session == 0 ? 0 : $Expire,"/",'',false,$HttpOnly==1);
 if (getconfig('User') === $user && getconfig('Pass') === $PassMD5 ){
+    WriteloginLog($user,$PassMD5,getIP(),$time,$user.'.db3','注册成功');
     msgA(['code'=> 0,'msg' =>'注册成功','user' =>$user]);
 }else{
     //unlink($dbPath);//写入失败时删除数据库..

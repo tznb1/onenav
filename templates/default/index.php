@@ -5,7 +5,7 @@ $background = getconfig($config.'backgroundURL','');
 $DescrRowNumber = intval(getconfig($config.'DescrRowNumber','2'));
 $WeatherKey = getconfig($config.'WeatherKey','dd2e9ab2728d4b3c91245fe4057cb9ce');
 $WeatherPosition =  intval(empty($WeatherKey)?"0":getconfig($config.'WeatherPosition','2'));
-if(getconfig($config.'ClickLocation','1') =='0'){
+if(getconfig($config.'ClickLocation','0') =='0'){
     $CLALL = "</a>";
 }else{
     $CLBT = "</a>";
@@ -183,6 +183,7 @@ body{
 				//var_dump($link);
 			?>
 			<div class="mdui-col-lg-3 mdui-col-md-4 mdui-col-xs-12 link-space"  id = "id_<?php echo $link['id']; ?>" link-title = "<?php echo $link['title']; ?>" link-url = "<?php echo $link['url']; ?>">
+			    <span style = "display:none;"><?php echo $link['url']; ?></span>
 				<!--定义一个卡片-->
 				<div class="mdui-card link-line mdui-hoverable CBC">
 						<!-- 如果是私有链接，则显示角标 -->

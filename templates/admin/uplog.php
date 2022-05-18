@@ -1,6 +1,20 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年05月18日</h4>
+      <ul>
+        <li>优化书签管理>数据清空的处理逻辑</li>
+        <li>应粉丝要求,给刘桐序主题添加书签搜索</li>
+        <li>默认主题搜索支持匹配URL</li>
+        <li>修改默认主题角标大小</li>
+        <li>登录日志新增注册和初始安装记录</li>
+        <li>默认主题原版新增设置:链接描述开关和全宽模式开关</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年05月11日</h4>
       <ul>
         <li>SimpleWeb主题:侧边分类栏新增滚动条支持,禁止分类名超长换行,优化卡片标题禁止换行,超出隐藏!让卡片大小保持统一!</li>
