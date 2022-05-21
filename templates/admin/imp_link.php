@@ -92,7 +92,19 @@
 
 <div class="layui-col-lg6 layui-col-md-offset3">
     
-    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+    <legend>书签克隆</legend>
+    </fieldset> 
+    
+    <blockquote class="layui-elem-quote" style="margin-top: 30px;border-left: 5px solid #1e9fff;">
+    <a  target="_blank" style="cursor:pointer;"  rel = "nofollow" onclick = "bookmarks('Reprint')">书签克隆 ( 输入他人的OneNav站点地址,对其数据进行复制 ) &nbsp;>>&nbsp; 未输入Token时仅对公开数据复制!</a>
+    </blockquote>
+
+</div>
+
+<div class="layui-col-lg6 layui-col-md-offset3">
+    
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
     <legend>书签导出</legend>
     </fieldset> 
     
@@ -107,7 +119,7 @@
 
 <div class="layui-col-lg6 layui-col-md-offset3">
     
-    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
     <legend>数据清空</legend>
     </fieldset> 
     
@@ -121,4 +133,40 @@
 </div>
 <!-- 内容主题区域END -->
 </div>
+
+<!--链接复刻-->
+<ul class="Reprint" style = "margin-top:18px;display:none;padding-right: 10px;" >
+    <form class="layui-form" lay-filter="Reprint">
+    <div class="layui-form-item">
+    <label class="layui-form-label">url</label>
+    <div class="layui-input-block">
+    <input type="text" name="url" required   lay-verify="required" placeholder="https://nav.rss.ink"  value=""  class="layui-input">
+    </div>
+    </div>
+    
+    <div class="layui-form-item">
+    <label class="layui-form-label">Token</label>
+    <div class="layui-input-block">
+    <input type="text" name="token" placeholder="OneNav Extend 默认不允许匿名(游客)访问API接口" class="layui-input">
+    </div>
+    </div>
+    
+    <div class="layui-form-item">
+    <label class="layui-form-label">user</label>
+    <div class="layui-input-block">
+    <input type="text" name="user" placeholder="OneNav Extend 参数,原版留空!" value="" class="layui-input">
+    </div>
+    </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">id:</label>
+    <div class="layui-form-mid layui-word-aux">当数据库为空时,会连id也一起克隆,否则使用新id</div>
+    </div>  
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="Reprint">开始克隆</button>
+            </div>
+        </div>
+  </form>
+</ul>
+
 <?php $md5=true; include_once('footer.php'); ?>

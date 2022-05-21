@@ -99,7 +99,7 @@ $NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当�
 <div class="layui-tab-item"><!--开发文档-->
 
 
-<blockquote class="layui-elem-quote layui-text">此版项目地址：<a href="https://gitee.com/tznb/OneNav" target="_blank">Gitee 码云 (唯一地址)  </a>&ensp; QQ: 271152681&ensp; PS:各位大哥,如果可以的话麻烦大家帮忙宣传一下..目前用户数太少了,根本没动力更新!</blockquote>
+<blockquote class="layui-elem-quote layui-text">此版项目地址：<a href="https://gitee.com/tznb/OneNav" target="_blank">Gitee    </a>&ensp;<a href="https://github.com/tznb1/onenav" target="_blank">Github   </a>&ensp; QQ: 271152681&ensp; PS:各位大哥,如果可以的话麻烦大家帮忙宣传一下..目前用户数太少了,根本没动力更新!</blockquote>
 <blockquote class="layui-elem-quote layui-text">原著项目地址 ：<a href="https://github.com/helloxz/onenav" target="_blank">github</a>&ensp; QQ群1：147687134 &ensp;QQ群2：932795364&ensp;QQ:337003006</blockquote>
 <blockquote class="layui-elem-quote layui-text">帮助文档 ：<a href="https://doc.xiaoz.me/books/onenav-extend" target="_blank">藏经阁&ensp;</a><a href="https://gitee.com/tznb/OneNav/wikis/" target="_blank">码云Wiki</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">原著博客 ：<a href="https://www.xiaoz.me" target="_blank">www.xiaoz.me</a></blockquote>

@@ -32,9 +32,9 @@ if(!is_login2()){
 //demo(); //演示模式下禁止一些操作!
 function demo(){
     global $method;
-    // 禁止修改主页|账号设置|删除用户|上传书签|导入输入|查登录日志
-    $pattern = "/(edit_homepage|edit_user|user_list_del|upload|imp_link|loginlog_list|edit_root)/i";
-    if ( preg_match($pattern,$method) ) {msg(-1010,'演示站禁止此操作!');}
+    // 禁止修改主页|账号设置|删除用户|上传书签|导入输入|查登录日志|全局设置|清空数据|设置主题
+    $pattern = "/(edit_homepage|edit_user|user_list_del|upload|imp_link|loginlog_list|edit_root|data_empty|set_theme)/i";
+    if ( preg_match($pattern,$method) ) { msg(-1010,'演示站禁止此操作!'.($method=="set_theme" ?"看主题效果请点击>预览":""));}
 }
 
 //是否加载防火墙
@@ -64,19 +64,36 @@ function category_list(){
     $limit = empty(intval($_REQUEST['limit'])) ? 20 : intval($_REQUEST['limit']);
     setcookie_lm_limit($limit);
     $offset = ($page - 1) * $limit; //起始行号
-    $property = $OnlyOpen == true ? ' And property = 0 ':''; //访客模式,添加查询语句只查询公开分类
-    //$sql = "SELECT *,(SELECT count(*) FROM on_links  WHERE fid = on_categorys.id ) AS count  FROM on_categorys  WHERE (name LIKE '%{$q}%' or description LIKE '%{$q}%' ) {$property} ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
     
-    $sql = "SELECT *,(SELECT Icon FROM on_categorys WHERE id = a.fid LIMIT 1 ) AS fIcon,(SELECT name FROM on_categorys WHERE id = a.fid LIMIT 1 ) AS fname ,(SELECT count(*) FROM on_links  WHERE fid = a.id ) AS count FROM on_categorys as a WHERE (name LIKE '%{$q}%' or description LIKE '%{$q}%' )  ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
-    if ($OnlyOpen){
-        //游客/访客模式,取公开数量
-        $count = $db->count('on_categorys','*',[ "AND"=>["OR"=>['name[~]'=>$q,'description[~]'=>$q],"property"=>'0']] );
+    if($OnlyOpen){
+        $WHERE = 'a.property = 0 AND (fproperty = 0 OR fproperty is null)';
     }else{
-        $count = $db->count('on_categorys','*',["OR" =>['name[~]'=>$q,'description[~]'=>$q]]); //统计总数
+        $WHERE = "(a.name LIKE '%$q%' OR a.description LIKE '%$q%')";
     }
+
+    $query_sql = 
+        "SELECT a.*,\n". 
+        "(SELECT Icon FROM on_categorys WHERE id = a.fid LIMIT 1 ) AS fIcon,\n".
+        "(SELECT name FROM on_categorys WHERE id = a.fid LIMIT 1 ) AS fname,\n".
+        "(SELECT property FROM on_categorys WHERE id = a.fid LIMIT 1 ) AS fproperty,\n".
+        "(SELECT count(*) FROM on_links  WHERE fid = a.id ) AS count\n".
+        "FROM on_categorys AS a\n".
+        "WHERE $WHERE\n".
+        "ORDER BY a.weight DESC, a.id DESC LIMIT 0, 20";
     
-    $datas = $db->query($sql)->fetchAll(); //原生查询
-    msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas ,'sql' =>$sql]);
+    $count_sql = 
+        "SELECT COUNT(1) AS COUNT,\n". 
+        "(SELECT property FROM on_categorys WHERE id = a.fid LIMIT 1 ) AS fproperty\n".
+        "FROM on_categorys AS a WHERE $WHERE";
+
+    //统计总数
+    $count_re = $db->query($count_sql)->fetchAll();
+    $count = intval($count_re[0]['COUNT']);
+    //查询
+    $datas = $db->query($query_sql)->fetchAll(); //原生查询
+    msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas 
+    //,'sql' =>$query_sql
+    ]);
 }
 
 //添加分类
@@ -191,8 +208,11 @@ function del_category(){
     if(empty($batch)||$batch=='0'){
         //单条删除
         $count = $db->count("on_links", ["fid" => $id]); //查询数据条数
+        $count2 = $db->count("on_categorys", ["fid" => $id]); 
         if($count > 0) { 
             msg(-1006,'分类目录下存在数据,不允许删除!');
+        }elseif($count2 > 0){
+            msg(-1006,'分类目录下存在二级分类,不允许删除!');
         }else{
             $data = $db->delete('on_categorys',[ 'id' => $id] );
             $row  = $data->rowCount();//返回影响行数
@@ -208,9 +228,14 @@ function del_category(){
         $res='<table class="layui-table" lay-even><colgroup><col width="55"><col width="200"><col></colgroup><thead><tr><th>ID</th><th>分类名称</th><th>状态信息</th></tr></thead><tbody>';
         foreach($idgroup as $_id){
             $count = $db->count("on_links", ["fid" => $_id]);
+            $count2 = $db->count("on_categorys", ["fid" => $id]); 
             $name  = geticon($db->get("on_categorys","Icon",["id"=>$_id])).$db->get("on_categorys","name",["id"=>$_id]);
             //分类有下有数据,强制删除时先删除分类ID相符的链接!
             if ($count > 0 && $force =='1'){ 
+                if($count2 > 0 ){
+                    $res = $res.'<tr><td>'.$_id.'</td><td>'.$name.'</td><td>强行删除:失败,因分类下存在二级分类!</td></tr>';
+                    continue;
+                }
                 $data = $db->delete('on_links',[ 'fid' => $_id]);
                 if ($count = $data->rowCount()){
                     $res = $res.'<tr><td>'.$_id.'</td><td>'.$name.'</td><td>强行删除:'.$data->rowCount().'条链接,已删除!</td></tr>';
@@ -218,9 +243,9 @@ function del_category(){
                 }else{
                     $res=$res.'<tr><td>'.$_id.'</td><td>'.$name.'</td><td>分类下存在:'.$count.'条链接,强行删除:'.$data->rowCount().'条链接,删除失败!</td></tr>';
                 }
-            }elseif($count > 0){ 
+            }elseif($count > 0 || $count2 > 0){ 
                 //分类下有数据,非强制删除,提示删除失败
-                $res=$res.'<tr><td>'.$_id.'</td><td>'.$name.'</td><td>分类目录下存在'.$count.'条数据,删除失败!</td></tr>';
+                $res=$res.'<tr><td>'.$_id.'</td><td>'.$name.'</td><td>分类目录下存在'.$count.'条链接,'.$count2.'组分类,删除失败!</td></tr>';
             }else{
                 //分类下没有数据,直接删除
                 $data = $db->delete('on_categorys',[ 'id' => $_id] );
@@ -245,28 +270,30 @@ function link_list(){
     setcookie_lm_limit($limit);
     $offset = ($page - 1) * $limit; //起始行号
     $fid = intval(@$_POST['fid']); //获取分类ID
-    //判断分类筛选,统计条数
-    if ($fid ==0 ){
-        $class ='';
-        if($OnlyOpen){
-            $count = $db->count('on_links','*',[ "AND"=>["OR"=>['title[~]'=>$q,'description[~]'=>$q,'url[~]'=>$q],"property"=>"0"]]);
-        }else{
-            $count = $db->count('on_links','*',["OR" =>['title[~]'=>$q,'description[~]'=>$q,'url[~]'=>$q]]);
-        }
-        
-    }else{
-        $class =' And fid ='.intval($fid); //查询语句
-         if($OnlyOpen){
-             $count = $db->count('on_links','*',[ "AND"=>["OR"=>['title[~]'=>$q,'description[~]'=>$q,'url[~]'=>$q],"fid"=>$fid,"property"=>"0"]]);
-         }else{
-             $count = $db->count('on_links','*',[ "AND"=>["OR"=>['title[~]'=>$q,'description[~]'=>$q,'url[~]'=>$q],"fid"=>$fid]]);
-         }
-        
+    
+    //查询条件
+    $class = empty($fid) ? "":"And on_links.fid = $fid";  //分类筛选
+    if($OnlyOpen){ //访客模式(不支持搜索,仅支持分类筛选)
+        $WHERE = "on_links.property = 0 AND f.property = 0 AND (fcp = 0 OR fcp is null) $class";
+        $fcp = "(SELECT property FROM on_categorys WHERE id = f.fid LIMIT 1 ) AS fcp,"; //查询父分类的私有属性
+    } else{  
+        $WHERE = "(on_links.title LIKE '%$q%' OR on_links.description LIKE '%$q%' OR on_links.url LIKE '%$q%') $class";
     }
-    $property = $OnlyOpen == true ? ' And property = 0 ':'';
-    $sql = "SELECT *,(SELECT name FROM on_categorys WHERE id = on_links.fid) AS category_name FROM on_links WHERE (title LIKE '%{$q}%' or description LIKE '%{$q}%' or url LIKE '%{$q}%') {$class} {$property} ORDER BY weight DESC,id DESC LIMIT {$limit} OFFSET {$offset}";
-    $datas = $db->query($sql)->fetchAll();
-    msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas]);
+    
+    //统计语句
+    $count_sql = "SELECT {$fcp}COUNT(1) AS COUNT FROM on_links INNER JOIN on_categorys AS f ON f.id = on_links.fid WHERE $WHERE";
+    //查询语句
+    $query_sql = "SELECT {$fcp}on_links.*, f.name AS category_name FROM on_links INNER JOIN on_categorys AS f ON f.id = on_links.fid ".
+                 "WHERE $WHERE ORDER BY weight DESC,id DESC LIMIT $limit OFFSET $offset";
+                 
+    //统计总数
+    $count_re = $db->query($count_sql)->fetchAll();
+    $count = intval($count_re[0]['COUNT']);
+    //查询
+    $datas = $db->query($query_sql)->fetchAll();  
+    msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas,
+    "sql" => $query_sql 
+    ]);
 }
 
 //添加链接
@@ -396,14 +423,23 @@ function get_a_link(){
     if(empty($id)){ $id = intval(trim($_POST['id'])); }
     if(empty($id)){ msg(-1010,'id不能为空！'); }
     $link_info = $db->get("on_links","*",["id" => intval($id)]);
+    
     //访客模式,如果链接是私有就返回空
     if($OnlyOpen){
         if ( $link_info['property'] == "0" ) {
-            msgA( ['code'=>0,'data'=>$link_info] );
-        }else{
+            $category_property = $db->get("on_categorys","*",["id" => $link_info['fid']]);
+            if( $category_property["fid"] > 0 ){ //如果分类是二级则追查父的属性
+                $fcategory_property = $db->get("on_categorys","property",["id" => $category_property["fid"]]);
+            }
+            if($category_property["property"] == 0 && $fcategory_property == 0){ //判断父分类是否公有
+                msgA( ['code'=>0,'data'=>$link_info] );
+            }else{
+                msgA( ['code'=>0,'data'=>[] ] );
+            }
+        }else{ //链接私有返回空
             msgA( ['code'=>0,'data'=>[] ] );
         }
-    }else{
+    }else{ //登录状态,直接返回
         msgA(['code'=>0,'data'=>$link_info]);
     }
 }
@@ -411,19 +447,22 @@ function get_a_link(){
 function get_a_category() {
     global $db,$OnlyOpen;
     $id = intval(trim($_GET['id']));
-    if(empty($id)){ $id = intval(trim($_POST['id'])); }
-    if(empty($id)){ msg(-1010,'id不能为空！'); }
-    $category_info = $db->get("on_categorys","*",["id" => $id]);
-    //var_dump($category_info);
-    //访客模式,如果分类是私有就返回空
-    if($OnlyOpen){
-        if ( $category_info['property'] == "0" ) {
-            msgA( ['code'=>0,'data'=>$category_info] );
-        }else{
-            msgA( ['code'=>0,'data'=>[] ] );
-        }
+    if( empty($id) ){  //如果Get取ID为空则尝试从POST取
+        $id = intval(trim($_POST['id'])); 
+    }
+    if( empty($id) ){  //如果还是为空则报错
+        msg(-1010,'id不能为空！'); 
+    }
+    
+    $query_sql = "SELECT *, (SELECT property FROM on_categorys WHERE id = a.fid LIMIT 1 ) AS fproperty FROM on_categorys AS a WHERE a.id = " . $id . ($OnlyOpen ? " AND a.property = 0":"") . " LIMIT 1";
+    
+    $category_info = $db->query($query_sql)->fetchAll()[0];  
+    if($category_info == null ){
+        msgA( ['code'=>0,'data'=>[] ] );
+    }elseif ( $OnlyOpen && $category_info['fproperty'] == "1" ){
+        msgA( ['code'=>0,'data'=>[] ,'msg' => "父分类为私有"] );
     }else{
-        msgA(['code'=>0,'data'=>$category_info]);
+        msgA( ['code'=>0,'data'=>$category_info] );
     }
 }
 //获取链接信息
@@ -1178,6 +1217,151 @@ switch ($_POST['fn']) {
     case 'test':   msg(0,'测试成功.'.time());   break;//测试
     default:       msg(-1000,'方法错误!');      break;//错误的方法
 }}
+// 链接复刻
+function Reprint() {
+    global $db;
+    $url = $_POST['url'];
+    $token = $_POST['token'];
+    $user = $_POST['user'];
+    if (empty($url)){
+        msg(-111,"URL不能为空!");
+    }
+    
+    // 获取分类列表
+    $url = $url."/index.php?c=api&method=category_list".(!empty($user)? "&u=".$user :"")."&limit=9999";
+    $curl  =  curl_init ( $url ) ; //初始化
+    curl_setopt ( $curl , CURLOPT_POST ,  1 ) ;
+    curl_setopt ( $curl , CURLOPT_TIMEOUT, 10 ); //超时
+    curl_setopt($curl, CURLOPT_FAILONERROR, true);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt ( $curl , CURLOPT_POSTFIELDS ,  array ("token"  =>  $token ,'page' => 1 ,'limit' => 9999 ) ) ; //设置POST内容
+    $Res = curl_exec   ( $curl ) ;//执行
+    curl_close  ( $curl ) ;//关闭URL请求
+    $data = json_decode($Res, true);
+    $count = count($data["data"]);
+    if( $count === 0 ) { 
+        if($data["code"] == -1000){
+            msg(-1111,"他站是Extend版,需要提供正确的Token或者对方允许游客访问API(即兼容模式2)"); 
+        }else if($data["code"] == -1002){
+            msg(-1112,"他站返回鉴权失败,请提供正确的Token或者留空读取共有数据"); 
+        }else if($data["code"] == -2000){
+            msg(-1113,"他站似乎没有设置Token,请核对后才试"); 
+        }else{
+            msg(-1114,"获取分类列表失败");
+        }
+    }
+    $cid =  ($db -> count('on_categorys') ) > 0 ? false : true ; //后续用于如果空表则复刻id
+    for($i=0; $i<$count; $i++){
+        $categorys_name = strip_tags(htmlspecialchars_decode(trim($data["data"][$i]["name"]),ENT_QUOTES));
+        $categorys_id = $db-> get('on_categorys', 'id', ['name' => $categorys_name]);
+        
+        // 父id处理
+        if(intval($data["data"][$i]["fid"]) != 0){ //父id不是0,说明是二级分类!尝试查找它的父!
+            $categorys_fid =  $db-> get('on_categorys', 'id', ['name' => $data["data"][$i]["fname"]]);
+        }else{
+            $categorys_fid = 0 ;
+        }
+        
+        //图标处理
+        if( !empty($data["data"][$i]["font_icon"]) ){
+            $Icon = trim( str_replace("fa ","",$data["data"][$i]["font_icon"]) );
+        }else if(!empty($data["data"][$i]["Icon"])){
+            $Icon = $data["data"][$i]["Icon"];
+        }else if(preg_match('/<i class="fa (.+)"><\/i>/i',htmlspecialchars_decode(trim($data["data"][$i]["name"])),$matches) != 0) {
+            $Icon = trim( $matches[1] );
+        }else{
+            $Icon = '';
+        }
+        
+        //不存在时创建
+        if( empty($categorys_id) ){ 
+             $categorys = [
+                'name'          =>  $categorys_name,
+                'add_time'      =>  intval($data["data"][$i]["add_time"]),
+                'up_time'       =>  intval($data["data"][$i]["up_time"]) == 0 ? null : intval($data["data"][$i]["up_time"]),
+                'weight'        =>  intval($data["data"][$i]["weight"]),
+                'property'      =>  intval($data["data"][$i]["property"]),
+                'description'   =>  htmlspecialchars(trim($data["data"][$i]["description"]),ENT_QUOTES),
+                'fid'           =>  intval($categorys_fid),
+                'Icon'          =>  $Icon,
+                'id'            =>  intval($data["data"][$i]["id"]) 
+            ];
+            if( !$cid ) { array_pop($categorys);}
+            $db->insert("on_categorys",$categorys);
+            $categorys_id = $db->id(); //返回ID
+            if( empty($categorys_id) ){
+                msg(-1000,'创建分类失败,意外结束..');
+            }
+        }
+        $categoryt[$categorys_name] = $categorys_id;
+    }
+    
+    // 获取链接
+    $url = $url."/index.php?c=api&method=link_list".(!empty($user)? "&u=".$user :"")."&limit=9999";
+    $curl  =  curl_init ( $url ) ; //初始化
+    curl_setopt ( $curl , CURLOPT_POST ,  1 ) ;
+    curl_setopt ( $curl , CURLOPT_TIMEOUT, 8 ); //超时
+    curl_setopt($curl, CURLOPT_FAILONERROR, true);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt ( $curl , CURLOPT_POSTFIELDS ,  array ("token"  =>  $token ,'page' => 1 ,'limit' => 9999 ) ) ; //设置POST内容
+    $Res = curl_exec   ( $curl ) ;//执行
+    curl_close  ( $curl ) ;//关闭URL请求
+    $data = json_decode($Res, true);
+    $count = count($data["data"]);
+    if( $count === 0 ) { msg(-1111,"获取链接列表失败.."); }
+    $cid =  ($db -> count('on_links') ) > 0 ? false : true ; //后续用于如果空表则复刻id
+    $pattern = "/^(http:\/\/|https:\/\/|ftp:\/\/|ftps:\/\/|magnet:?|ed2k:\/\/|tcp:\/\/|udp:\/\/|thunder:\/\/|rtsp:\/\/|rtmp:\/\/|sftp:\/\/).+/";
+    for($i=0; $i<$count; $i++){
+        //检查代码,标题不能为空,url地址通过正则判断是否合规!
+        if( empty($data["data"][$i]['title'])  || !preg_match($pattern,$data["data"][$i]['url'])){
+            $info["fail"]++;
+            continue; 
+        }
+        //$categorys_name = htmlspecialchars(trim($data["data"][$i]["category_name"]),ENT_QUOTES);
+        $categorys_name = strip_tags(htmlspecialchars_decode(trim($data["data"][$i]["category_name"]),ENT_QUOTES));
+        
+        if( intval($categoryt[$categorys_name]) == 0 ){ //分类名空时跳过!
+            $info["fail"]++;
+            continue; 
+        }
+        
+        $link_data = [
+                    'fid'           =>  intval($categoryt[$categorys_name]),
+                    'title'         =>  htmlspecialchars($data["data"][$i]['title']),
+                    'description'   =>  htmlspecialchars($data["data"][$i]['description']),
+                    'url'           =>  htmlspecialchars($data["data"][$i]['url']),
+                    'url_standby'   =>  htmlspecialchars($data["data"][$i]['url_standby']),
+                    'iconurl'       =>  $data["data"][$i]['iconurl'],
+                    'add_time'      =>  intval($data["data"][$i]['add_time']),
+                    'up_time'       =>  intval($data["data"][$i]["up_time"]) == 0 ? null : intval($data["data"][$i]["up_time"]),
+                    'click'         =>  intval($data["data"][$i]['click']),
+                    'weight'        =>  intval($data["data"][$i]['weight']),
+                    'property'      =>  intval($data["data"][$i]['property']),
+                    'id'            =>  intval($data["data"][$i]["id"]) 
+                    
+        ];
+        if( !$cid ) { array_pop($link_data);}
+        //插入数据库
+        $re = $db->insert('on_links',$link_data);
+        $id = $db->id();
+        if( empty($id) ){ 
+            $info["fail"]++; //失败
+        }else{
+            $info["success"]++; //成功
+        }
+    }
+    $info["fail"] = intval($info["fail"]);
+    $info["success"] = intval($info["success"]);
+    
+    msg(0,"处理完毕,总数:{$count},成功:{$info['success']},失败:{$info['fail']}");
+}
+
 
 function get_sql_update_list() {
     global $db;

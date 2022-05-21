@@ -1,6 +1,17 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年05月21日</h4>
+      <ul>
+        <li>书签管理新增链接复刻功能</li>
+        <li>修复兼容模式2(API接口)数据泄漏的问题,使用此模式的站长请尽快更新!</li>
+        <li>修复删除分类的bug</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年05月18日</h4>
       <ul>
         <li>优化书签管理>数据清空的处理逻辑</li>

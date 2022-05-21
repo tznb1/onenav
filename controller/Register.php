@@ -29,8 +29,9 @@ if(!preg_match('/^[A-Za-z0-9]{4,13}$/', $user)){
     msg(-1131,'数据库:'.$user.'已存在,请联系管理员!');
 }elseif($udb->count("user",["Email"=>$Email]) != 0 ){
     msg(-1131,'邮箱已存在!');
+}elseif(preg_match("/(class|controller|data|favicon|initial|static|templates|index|root|cache|upload)/i",$user) ) {
+    msg(-1132,'禁止注册保留用户名!');
 }
-
 //插入用户表和创建初始数据库
 $RegTime = time();
 $PassMD5 = md5($pass.$RegTime);

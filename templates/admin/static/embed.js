@@ -671,14 +671,40 @@ window.bookmarks = function(name){
         });
         return false; 
     }
-    
+    if ( name === "Reprint"){
+        if(document.body.clientWidth < 768){area = ['100%' , '100%'];}else{area = ['768px' , '350px'];}
+        layer.open({
+                type: 1,
+                shadeClose: true,
+                title: '书签克隆',
+                area : area,
+                content: $('.Reprint')
+        });
+        return false; 
+    }
     // 导出数据
     layer.prompt({formType: 1,value: '',title: '输入登录密码:',shadeClose: true},function(value, index, elem){
         window.open('./index.php?c=api&method='+ name +'&u='+u +'&pass=' + $.md5(value));
         layer.closeAll();
     }); 
 }
-
+    //开始复刻
+    form.on('submit(Reprint)', function(data){
+        console.log(data.field);
+        layer.load(2, {shade: [0.1,'#fff']});//加载层
+        $.post('./index.php?c=api&method=Reprint' + "&u=" + u ,data.field,function(data,status){
+            layer.closeAll('loading');//关闭加载层
+            console.log(data,status);
+            if(data.code == 0){
+                layer.msg(data.msg, {icon: 1});
+                //setTimeout(() => {location.reload();}, 700);
+            }else{
+                layer.msg(data.msg, {icon: 5});
+            }
+            
+        });
+        return false; 
+    });
 
 //导入书签
 form.on('submit(imp_link)', function(data){
