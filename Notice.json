@@ -1,0 +1,16 @@
+{
+    "code": 200,
+    "msg": "",
+    "rt": 1653212496,
+    "et": 1684531220,
+    "data": [
+        {
+            "name": "第一条公告",
+            "description": "#"
+        },
+        {
+            "name": "第二条公告",
+            "description": "https://gitee.com/tznb/OneNav"
+        }
+    ]
+}
