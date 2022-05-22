@@ -5,12 +5,12 @@
     "et": 1684531220,
     "data": [
         {
-            "name": "第一条公告",
-            "description": "#"
+            "title": "第一条公告",
+            "url": "#"
         },
         {
-            "name": "第二条公告",
-            "description": "https://gitee.com/tznb/OneNav"
+            "title": "第二条公告",
+            "url": "https://gitee.com/tznb/OneNav"
         }
     ]
 }
