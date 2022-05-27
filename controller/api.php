@@ -183,7 +183,7 @@ function edit_category(){
         'fid'           =>  intval($fid)
         ];
     //防止未传递父id时被清空
-    if( !isset($fid) ) {
+    if( !isset($_POST['fid']) ) {
         array_pop($data);
     }
     $re  = $db->update('on_categorys',$data,[ 'id' => $id]);
@@ -467,6 +467,7 @@ function get_a_category() {
 }
 //获取链接信息
 function get_link_info() {
+    global $offline;
     $url = @$_POST['url']; //获取URL
     //检查链接是否合法
     if( empty($url) ) {
@@ -476,6 +477,7 @@ function get_link_info() {
     }elseif( !filter_var($url, FILTER_VALIDATE_URL) ) {
          msg(-1010,'URL无效!');
     }
+    if ( $offline ){ msgA(['code'=>0,'data'=>[]]); } //离线模式
     //获取网站标题
     $c = curl_init(); 
     curl_setopt($c, CURLOPT_URL, $url); 
@@ -891,10 +893,77 @@ function set_theme(){
     }elseif($type == 'Pad'){
         Writeconfig('Theme2' , $name);
     }
-    
+    //加个检测是否存在!
     msg(0,'设置成功');
 }
+//主题下载
+function download_theme(){
+    global $offline,$udb,$version;
+    if ( $offline ){ msg(-5555,"离线模式禁止下载主题!"); } //离线模式
+    $dir = $_POST['dir'];
+    $name = $_POST['name'];
+    $i = intval($_POST['i']);
+    //读取数据库 解析json 查找 取url1 下载  解压 返回
+    if(preg_match('/^v.+-(\d{8})$/i',$version,$matches)){
+        $sysver = intval( $matches[1] );
+    }else{
+        msg(-1110,"获取程序版本异常");
+    }
+    //从数据库查找主题信息
+    $template = $udb->get("config","Value",["Name"=>'templatejson']);
+    if(empty($template)){
+        msg(-1111,'-1,未找到数据');
+    }else{
+        $data = json_decode($template, true); //转为数组
+        foreach($data["data"] as $key){
+            if( $key['dir'] === $dir && $sysver >= intval($key["low"])  && $sysver <= intval($key["high"])){
+                $file = $key['dir'].".tar.gz";
+                $filePath = "./data/upload/{$file}";
+                break; //找到跳出
+            }
+        }
+        if(empty($file)){
+            msg(-1112,'-2,未找到数据');
+        }
+    }
+    
+    require ('./class/downFile.php');//载入下载函数
+    
+    for($i=1; $i<=2; $i++){
+        if(!empty($key['url'.$i])){ //URL不为空
+            if(downFile( $key['url'.$i] , $file , './data/upload/')){
+                $file_md5 = md5_file($filePath);
+                if($file_md5 === $key['md5']){
+                    $downok = true;
+                    break;//下载成功,跳出循环!
+                }else{
+                    unlink($filePath);
+                }
+            }
+        }
+    }
+    
+    if(!$downok || !file_exists($filePath)){
+        msg(-1111,'-1,下载失败');
+    }elseif($file_md5 != $key['md5']){
+        msgA(['code'=>-1112,'msg'=> '效验压缩包异常','key_md5'=> $key['md5'],'file_md5'=>$file_md5]);
+    }
 
+    
+    try {
+        $phar = new PharData($filePath);
+        $phar->extractTo('./templates', null, true); //路径 要解压的文件 是否覆盖
+        unlink($filePath);//删除文件
+    } catch (Exception $e) {
+        msg(-1114,'-2,安装失败');
+    } finally{
+        if(file_exists("./templates/".$key['dir']."/index.php")){
+            msgA(['code'=>0,'msg'=> '下载成功','url'=> $i,'file_md5'=>$file_md5]);
+        }else{
+            msgA(['code'=>-1233,'msg'=> '-3,安装失败','url'=> $i,'file_md5'=>$file_md5]);
+        }
+    }
+}
 
 //账号设置
 function edit_user(){
@@ -995,6 +1064,7 @@ function edit_root(){
     $SQL        = $_POST['SQL'];  //防SQL注入
     $Plug       = $_POST['Plug'];  //插件支持
     $apply      = $_POST['apply'];  //收录功能
+    $offline    = $_POST['offline'];  //离线模式
     if($udb->get("user","Level",["User"=>$u]) !== '999'){ //权限判断
         msg(-1102,'您没有权限修改全局配置!');
     }elseif($udb->count("user",["User"=>$DUser]) === 0 ){ //账号检测
@@ -1021,6 +1091,8 @@ function edit_root(){
         msg(-1103,'防SQL注入参数错误!');
     }elseif($apply !== '0' && $apply !== '1'){
         msg(-1103,'收录功能参数错误!');
+    }elseif($offline !== '0' && $offline !== '1'){
+        msg(-1103,'离线模式参数错误!');
     }
 
     Writeconfigd($udb,'config','DUser',$DUser);
@@ -1037,6 +1109,7 @@ function edit_root(){
     Writeconfigd($udb,'config','Plug',$Plug);
     Writeconfigd($udb,'config','apply',$apply);
     Writeconfigd($udb,'config','footer',base64_encode($footer));
+    Writeconfigd($udb,'config','offline',$offline);
     msg(0,'successful');
 }
 
@@ -1219,14 +1292,14 @@ switch ($_POST['fn']) {
 }}
 // 链接复刻
 function Reprint() {
-    global $db;
+    global $db,$offline;
     $url = $_POST['url'];
     $token = $_POST['token'];
     $user = $_POST['user'];
     if (empty($url)){
         msg(-111,"URL不能为空!");
     }
-    
+    if ( $offline ){ msg(-5555,"获取失败 -5555"); } //离线模式
     // 获取分类列表
     $url = $url."/index.php?c=api&method=category_list".(!empty($user)? "&u=".$user :"")."&limit=9999";
     $curl  =  curl_init ( $url ) ; //初始化
@@ -1644,51 +1717,144 @@ function Onecheck(){
         $log = $log ."upload目录：异常,请检查权限!\n";
     }
     
-     //$log = $log .phpinfo();
      msg(-1000,$log);
 }
 
 //获取onenav最新版本号
 function get_latest_version() {
-    global $udb,$version;
-    try {
-        $NewVer = $udb->get("config","Value",["Name"=>'NewVer']); //缓存的版本号
-        $NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当前版本!
-        $NewVerGetTime = $udb->get("config","Value",["Name"=>'NewVerGetTime']); //上次从Git获取版本号的时间
-        //如果距上次获取时间超过30分钟则重新获取!
-        if( time() - intval( $NewVerGetTime ) >= 1800 ) {
-            $curl = curl_init("https://gitee.com/tznb/OneNav/raw/master/initial/version.txt");
-            curl_setopt($curl, CURLOPT_FAILONERROR, true);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($curl , CURLOPT_TIMEOUT, 3); //超时3s
-            $NewVer = curl_exec($curl);
-            curl_close($curl);
-            //如果获取成功则写入数据库!
-            if(preg_match('/^v.+-(\d{8})$/i',$NewVer,$matches)){
-                $NewVerGetTime = time();
-                Writeconfigd($udb,'config','NewVer',$NewVer);
-                Writeconfigd($udb,'config','NewVerGetTime',$NewVerGetTime);
-                $gitee = true;
-            }else{
-                $NewVer = $version;
-            }
+    global $udb,$version,$offline;
+    if ( $offline ){ msgA(["code"=> 200,"msg"=>  "offline","data"=>  $version]); } //离线模式
+    
+    $NewVerGetTime = $udb->get("config","Value",["Name"=>'NewVerGetTime']); //上次从Git获取版本号的时间
+    //如果距上次获取时间超过30分钟则重新获取!
+    if($_GET['cache'] === 'no' || time() - intval( $NewVerGetTime ) > 1800 ) {
+                        
+        if(preg_match('/^v.+-(\d{8})$/i',$version,$matches)){
+            $sysver = intval( $matches[1] );
+        }else{
+            msgA(["code" => 200,"msg" => "获取程序版本异常","data" => "null"]);
         }
         
-        $data = ["code" => 200,"msg" => ( $gitee ? 'on-line' : 'cache' ),"data" => $NewVer];
-        
-    } catch (\Throwable $th) {
-        $data = [
-            "code"      =>  200,
-            "msg"       =>  "",
-            "data"      =>  ""
-        ];
-    }
-    msgA($data);
-}
+        //加载远程数据
+        $urls = [ "https://update.lm21.top/OneNav/updata.json","https://gitee.com/tznb/OneNav/raw/data/updata.json"];
+        foreach($urls as $url){ 
+            $Res = ccurl($url,3);
+            $data = json_decode($Res["content"], true);
+            if($data["code"] == 200 ){ //如果获取成功
+                break; //跳出循环.
+            } 
+        }
 
+        if($data["code"] != '200'){
+            msgA(["code" => 200,"msg" => "状态码错误","data" => "null"]);
+        }else{
+            //遍历查找合适的版本
+            foreach($data["data"] as $key){
+                if( $sysver >= $key["low"]  && $sysver <= $key["high"] &&  $key["update"] > $sysver){
+                    $NewVer = "v{$key['version']}-{$key['update']}";
+                    break;
+                }
+            }
+        }
+        //如果获取成功则写入数据库!
+        if(preg_match('/^v.+-(\d{8})$/i',$NewVer,$matches)){
+            $NewVerGetTime = time();
+            Writeconfigd($udb,'config','NewVer',$NewVer);
+            Writeconfigd($udb,'config','NewVerGetTime',$NewVerGetTime);
+            $on_line = true;
+        }else{
+            $NewVer = $version;
+        }
+    }else{
+        $NewVer = $NewVer = $udb->get("config","Value",["Name"=>'NewVer']);
+    }
+
+    msgA(["code" => 200,"msg" => ( $on_line ? 'on-line' : 'cache' ),"data" => $NewVer]);
+}
+//一键更新/系统升级
+function System_Upgrade() {
+    global $udb,$version,$offline;
+    is_admin();
+    if ( $offline ){ msg(-5555,"离线模式禁止下载更新!"); } //离线模式
+    
+    if(preg_match('/^v.+-(\d{8})$/i',$version,$matches)){
+        $sysver = intval( $matches[1] );
+    }else{
+        msg(-1110,"获取程序版本异常");
+    }
+    
+    //检查指定文件夹是否可写
+    $paths = ["./"
+              ,"./class","./controller","./data","./data/upload","./favicon"
+              ,"./initial","./initial/sql","./static","./templates","./templates/admin"
+              ,"./templates/admin/static","./templates/default"
+             ];
+    foreach($paths as $path){
+        if(!is_writable($path)){
+            msg(-1112,"文件夹不可写 >> $path");
+        }
+    }
+    //设置执行时长,防止数据较多时超时!
+    set_time_limit(5*60);//设置执行最长时间，0为无限制。单位秒!
+    ignore_user_abort(true);//关闭浏览器，服务器执行不中断。
+    //加载远程数据
+    $urls = [ "https://update.lm21.top/OneNav/updata.json","https://gitee.com/tznb/OneNav/raw/data/updata.json"];
+    foreach($urls as $url){ 
+        $Res = ccurl($url,3);
+        $data = json_decode($Res["content"], true);
+        if($data["code"] == 200 ){ //如果获取成功
+            break; //跳出循环.
+        } 
+    }
+    
+    if($data["code"] != '200'){
+        msg(-1111,'获取更新信息失败,请稍后再试..');
+    }else{
+        foreach($data["data"] as $key){
+            if( $sysver >= $key["low"]  && $sysver <= $key["high"] &&  $key["update"] > $sysver){
+                $file = "System_Upgrade.tar.gz";
+                $filePath = "./data/upload/{$file}";
+                break; //找到跳出
+            }
+        }
+        if(empty($file)){
+            msg(-1112,'暂无可用更新,请稍后再试..');
+        }
+    }
+    
+
+    
+    require ('./class/downFile.php');//载入下载函数
+    unlink($filePath);
+    for($i=1; $i<=2; $i++){
+        if(!empty($key['url'.$i])){ //URL不为空
+            if(downFile( $key['url'.$i] , $file , './data/upload/')){
+                $file_md5 = md5_file($filePath);
+                if($file_md5 === $key['md5']){
+                    break;//下载成功,跳出循环!
+                }else{
+                    unlink($filePath);
+                }
+            }
+        }
+    }
+
+    if(empty($file_md5) ){
+        msg(-1111,'下载更新包失败,请重试');
+    }elseif($file_md5 != $key['md5']){
+        msgA(['code'=>-1112,'msg'=> '效验失败,请重试','key_md5'=> $key['md5'],'file_md5'=>$file_md5]);
+    }
+
+    try {
+        $phar = new PharData($filePath);
+        $phar->extractTo('./', null, true); //路径 要解压的文件 是否覆盖
+        unlink($filePath);//删除文件
+    } catch (Exception $e) {
+        msg(-1114,'更新失败,请检查写入权限');//解压出问题了
+    } finally{
+        msgA(['code'=>0,'msg'=> '更新成功!','url'=> $i,'file_md5'=>$file_md5]);
+    }
+}
 //申请收录相关
 //列表
 function apply_list(){
@@ -1897,6 +2063,13 @@ function is_admin(){
     if( $userdb['Level'] !== '999'){ msg(-1111,'您没有权限使用此功能');}
 }
 //其他函数
+
+//用户状态
+function check_login(){
+    $status = is_login2() ? "true" : "false";
+    msgA(["code" => 200 ,"data" => $status ,"msg" => ""]);
+}
+
 //验证其他账户是否登陆
 function is_login_o($username){
     global $udb;

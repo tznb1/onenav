@@ -12,7 +12,7 @@
 <div class="layui-layout layui-layout-admin">
   <!-- 头部区域 -->
   <div class="layui-header">
-    <div class="layui-logo layui-hide-xs" style ="box-shadow: 0 0 0 rgba(0,0,0,0);"><a href="./index.php?c=admin&u=<?php echo $u;?>"  title = "原落幕魔改版改名啦,这是我的新名字" style="color:#009688;"><h3>OneNav Extend</h3></a></div>
+    <div class="layui-logo layui-hide-xs" style ="box-shadow: 0 0 0 rgba(0,0,0,0);"><a href="./index.php?c=admin&u=<?php echo $u;?>&cache=no"  title = "原落幕魔改版改名啦,这是我的新名字" style="color:#009688;"><h3>OneNav Extend</h3></a></div>
     <ul class="layui-nav layui-layout-left">
       <li class="layui-nav-item layui-hide-xs"><a href="./?u=<?php echo $u; ?>"><i class="layui-icon layui-icon-home"></i> 首页</a></li>
       <li class="layui-nav-item layui-hide-xs"><a href="./index.php?c=admin&page=category_list&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-list"></i> 分类</a></li>
@@ -29,7 +29,9 @@
           <dd><a href="./index.php?c=admin&page=edit_user&u=<?php echo $u?>"><i class="layui-icon layui-icon-auz"></i> 账号设置</a></dd>
           <dd><a href="./index.php?c=admin&page=edit_homepage&u=<?php echo $u?>#tab=1"><i class="layui-icon layui-icon-fonts-code"></i> 站点设置</a></dd>
           <dd><a href="./index.php?c=admin&page=Theme&u=<?php echo $u?>"><i class="layui-icon layui-icon-theme"></i> 主题模板</a></dd>
-          <dd><a href="./index.php?c=admin&page=apply/apply-admin&u=<?php echo $u?>"><i class="layui-icon layui-icon-release"></i> 收录管理</a></dd>
+<?php if($udb->get("config","Value",["Name"=>'apply']) == 1 ){
+            echo '          <dd><a href="./index.php?c=admin&page=apply/apply-admin&u=<?php echo $u?>"><i class="layui-icon layui-icon-release"></i> 收录管理</a></dd>'."\n";
+            }?>
           <dd><a href="./index.php?c=admin&page=link_list&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-link"></i> 我的链接</a></dd>
           <dd><a href="./index.php?c=admin&page=add_link&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加链接</a></dd>
           <dd><a href="./index.php?c=admin&page=category_list&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-list"></i> 分类列表</a></dd>

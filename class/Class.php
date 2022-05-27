@@ -1,5 +1,22 @@
 <?php
-
+function ccurl($url,$overtime = 3){
+    try {
+        $curl  =  curl_init ( $url ) ; //初始化
+        curl_setopt($curl, CURLOPT_TIMEOUT, $overtime ); //超时
+        curl_setopt($curl, CURLOPT_FAILONERROR, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        $Res["content"] = curl_exec   ( $curl ) ;
+        $Res["code"] = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close  ( $curl ) ;
+        
+    } catch (\Throwable $th) {
+        return false; 
+    }
+    return $Res;
+}
 //删除指定目录下N分钟前的文件!
 function delfile($dir,$minute){
     

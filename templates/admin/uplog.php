@@ -1,9 +1,25 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年05月27日</h4>
+      <ul>
+        <li>新增涂山的简约主题</li>
+        <li>新增公告栏,在后台首页展示(如果有)</li>
+        <li>新增离线模式,位于网站管理,适用服务器无法访问互联网的环境,关闭后不在获取新版本,公告,禁止书签克隆,在线主题,链接识别等!</li>
+        <li>备注:离线模式只管服务器不访问互联网,部分主题需要访问第三方资源,如果客户端也未联网,建议图标API使用离线图标,使用默认主题并关闭天气功能!</li>
+        <li>新增主题在线下载功能(缓存30分钟,仅管理员可下载和更新),此版本后只集成默认主题,其他主题请按需下载!</li>
+        <li>主题设置页面顶部新增导航条,正在被使用的主题标题显示为蓝色</li>
+        <li>新增一键更新支持,可更新时在管理员后台首页显示一键更新按钮!</li>
+        <li>修复已知bug</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年05月21日</h4>
       <ul>
-        <li>书签管理新增链接复刻功能</li>
+        <li>书签管理新增书签克隆功能</li>
         <li>修复兼容模式2(API接口)数据泄漏的问题,使用此模式的站长请尽快更新!</li>
         <li>修复删除分类的bug</li>
       </ul>

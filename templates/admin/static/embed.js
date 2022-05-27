@@ -819,7 +819,22 @@ function theme_config(key,name){
         content: './index.php?c=admin&page=config&u='+u+'&Theme='+key+'&source=admin'
         });
 }
-
+function download_theme(dir,name){
+    layer.load(1, {shade:[0.1,'#fff']});//加载层
+    layer.msg('下载安装中,请稍后..', {offset: 'b',anim: 1,time: 60*1000});
+    $.post("/index.php?c=api&method=download_theme&u="+u,{dir:dir,name:name},function(data,status){
+        layer.closeAll();
+        if( data.code == 0 ) {
+            layer.msg(data.msg, {icon: 1});
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        }
+        else{
+            layer.msg(data.msg, {icon: 5});
+        }
+    });
+}
 function set_theme(key,name) {
     layer.open({
         title:name

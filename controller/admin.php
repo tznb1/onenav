@@ -181,13 +181,13 @@ if( $page == 'Theme' ) {
             $themes[$value]['info']->screenshot="";
         }
         $themes[$value]['info']->config = is_file($tpl_dir.$value.'/config.php') ? '1':'0';
-        // 截图优先顺序
-        //$first = 'local';
+        // 预览图优先顺序
+        if ( !$offline ){ $first = 'local'; }  //离线模式优先使用本地预览图
         if( $first == 'local' && is_file($tpl_dir.$value.'/screenshot.png') ){
             $themes[$value]['info']->screenshot = "./templates/".$value."/screenshot.png";
         }elseif($first == 'local' && is_file($tpl_dir.$value.'/screenshot.jpg') ){
             $themes[$value]['info']->screenshot = "./templates/".$value."/screenshot.jpg";
-        }elseif(empty($themes[$value]['info']->screenshot)){
+        }elseif(empty($themes[$value]['info']->screenshot)){ 
             $themes[$value]['info']->screenshot = "./templates/admin/static/42ed3ef2c4a50f6d.png";
         }
         
@@ -197,6 +197,58 @@ if( $page == 'Theme' ) {
     //获取当前主题
     $current_themes1 = getconfig('Theme');  //PC 
     $current_themes2 = getconfig('Theme2'); //Pad
+    $admin = $userdb['Level'] === '999';
+    //在线主题处理 
+    if ( !$offline && $admin){ 
+        if(preg_match('/^v.+-(\d{8})$/i',$version,$matches)){
+            $sysver = intval( $matches[1] );
+        }else{
+            exit("获取程序版本异常");
+        }
+        //读取缓存
+        $template = $udb->get("config","Value",["Name"=>'templatejson']);
+        if(!empty($template)){
+            $data = json_decode($template, true);
+        }
+        
+        //没有缓存 或 禁止缓存 或 缓存过时
+        if(empty($template) ||   $_GET['cache'] === 'no'  || time() -  $data["time"] > 1800 ){ 
+            $urls = [ "https://update.lm21.top/OneNav/template.json","https://gitee.com/tznb/OneNav/raw/data/template.json"];
+        }else{
+            $cache = true;
+        }
+        
+        //远程获取
+        foreach($urls as $url){ 
+            $Res = ccurl($url,3);
+            $data = json_decode($Res["content"], true);
+            if($data["code"] == 200 ){ //如果获取成功
+                $data["time"] = time(); //记录当前时间
+                Writeconfigd($udb,'config','templatejson',json_encode($data)); //写入数据库缓存!
+                break; //跳出循环.
+            } 
+        }
+        
+        //解析
+        foreach($data["data"] as $key){
+            $path = $tpl_dir.$key["dir"];
+            if( is_dir($path) ) {  //本地存在
+                $value = $key["dir"];
+                //检查是否可以更新
+                $update = str_replace('/','',$themes[$value]['info']->update); //本地主题版本
+                $update_new = str_replace('/','',$key["update"]); //远程主题版本
+                if( $sysver >= intval($key["low"])  && $sysver <= intval($key["high"]) &&  $update < $update_new ){
+                    $themes[$value]['info']->up = '1';
+                }
+            }else{
+                //判断是否适配当前系统版本
+                if( $sysver >= intval($key["low"])  && $sysver <= intval($key["high"]) ){
+                    $value = $key["dir"];
+                    $themes[$value]['info'] = json_decode(json_encode($key));
+                }
+            }
+        }
+    } 
 }
 
 //如果是退出

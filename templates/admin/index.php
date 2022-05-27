@@ -4,6 +4,50 @@ include_once('left.php');
 $HOST = getindexurl();
 $NewVer = $udb->get("config","Value",["Name"=>'NewVer']); //缓存的版本号
 $NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当前版本!
+
+//公告
+function Notice(){
+    global $udb;
+    //数据库读取缓存数据
+    $Notice = $udb->get("config","Value",["Name"=>'Notice']);
+    if(!empty($Notice)){
+        $data = json_decode($Notice, true);
+        if( time() - intval( $data["time"] ) < 60 * 0 ){ //缓存时间
+            if(time() < $data["et"] ){
+            foreach($data["data"] as $key){
+                echo "<blockquote class=\"layui-elem-quote layui-text\" style=\"border-left: 5px solid #1e9fff;\"><a href=\"{$key['url']}\" target=\"_blank\" >{$key['title']}</a></blockquote>\n";
+            }}
+            return;
+        }
+    }
+    if ( $offline ){ return; } //离线模式
+    $urls = [ //2个公告获取的地址
+         "https://update.lm21.top/OneNav/Notice.json",
+         "https://gitee.com/tznb/OneNav/raw/data/Notice.json"
+        ];
+    foreach($urls as $url){
+        $curl  =  curl_init ( $url ) ; //初始化
+        curl_setopt($curl, CURLOPT_TIMEOUT, 3 ); //超时
+        curl_setopt($curl, CURLOPT_FAILONERROR, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        $Res = curl_exec   ( $curl ) ;
+        curl_close  ( $curl ) ;
+        $data = json_decode($Res, true);
+        if(time() < $data["et"]){
+        foreach($data["data"] as $key){
+            echo "<blockquote class=\"layui-elem-quote layui-text\"><a href=\"{$key['url']}\" target=\"_blank\" >{$key['title']}</a></blockquote>\n";
+        }}
+        if($data["code"] == 200 ){ //如果获取成功
+            $data["time"] = time(); //记录当前时间
+            Writeconfigd($udb,'config','Notice',json_encode($data)); //写入数据库缓存!
+            break; //跳出循环.
+        } 
+    }
+}
+
 ?>
 
 <style type="text/css">
@@ -11,13 +55,14 @@ $NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当�
 </style>
 <div class="layui-tab layui-tab-brief layui-body " lay-filter="index">
 <ul class="layui-tab-title">
- <li lay-id="1"  >相关信息</li>
+ <li lay-id="1" >相关信息</li>
  <li lay-id="2" >开发文档</li>
  <li lay-id="3" >日志输出</li>
 </ul>
 <div class="layui-tab-content">
 <div class="layui-tab-item layui-show layui-form layui-form-pane"><!--相关信息--> 
 <?php 
+
  if($password === md5(md5('admin').$RegTime)){
      ?>
       <div class="layui-form-item" style="color:#FF0000">
@@ -26,7 +71,7 @@ $NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当�
         <input value='系统检测到您使用的默认密码，请尽快修改！'disabled class="layui-input" style="color:#FF0000">
       </div>
     </div>
- <?php }
+ <?php } 
 ?>
   <div class="layui-form-item">
     <div class="layui-inline">
@@ -40,6 +85,7 @@ $NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当�
         <div class="layui-input-inline">
         <input value='<?php if($udb->get("user","Level",["User"=>$u]) === '999'){ echo "获取中..."; } else{ echo $NewVer; } ?>'disabled class="layui-input" id="NewVer">
       </div> 
+      <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="System_Upgrade()" style = "display:none;" id='sysup'>一键更新</button>
     </div>
     <div class="layui-inline">
       <label class="layui-form-label">数据库</label>
@@ -91,6 +137,7 @@ $NewVer = $NewVer =='' ? $version : $NewVer ;  //如果没有记录就使用当�
         echo $HOST.'?u='.$u;?>'disabled class="layui-input">
       </div>
     </div>
+    <?php Notice();?>
   </div><!--表单End-->
 <ul class="layui-timeline">
     <?php include_once('uplog.php'); ?>
@@ -164,8 +211,8 @@ layui.use(["element", "layer"], function(){
     
     //获取最新版本
 function get_latest_version(){
-    $.post("./index.php?c=api&method=get_latest_version",function(data,status){
-        console.log(data.data);
+    $.post("./index.php?c=api&method=get_latest_version<?php echo $_GET['cache'] === 'no'? "&cache=no":"" ?>&u=<?php echo $u;?>",function(data,status){
+        //console.log(data.data);
         $("#getting").hide();
         
         //获取最新版本
@@ -174,7 +221,7 @@ function get_latest_version(){
 
         //获取当前版本
         let current_version = document.getElementById("version").value;
-        console.log(current_version);
+        //console.log(current_version);
         
         let pattern = /\d{8}/;
         current_version = pattern.exec(current_version)[0];
@@ -182,13 +229,9 @@ function get_latest_version(){
 
         //如果当前版本小于最新版本，则提示更新
         if( current_version < latest_version ) {
-            $("#NewVer").attr("style","color:#FF0000");
+            $("#NewVer").attr("style","color:#FF0000");//字体红色
+            $("#sysup").show();//显示一键更新按钮
             layer.msg(' 检测到新版本,请尽快更新 ', {offset: 'b',anim: 6,time: 60*1000});
-            // layer.confirm('是否去下载更新?',{icon: 3, title:'更新提示:'}, function(index){
-            //     window.open('https://gitee.com/tznb/OneNav');
-            //     layer.close(index);
-            // });
-            //$("#console_log").append('当前版本:'+ current_version + "\n最新版本:" +latest_version+"\n");
         }
     });
 }
@@ -231,20 +274,47 @@ function exe_sql(sqlname) {
     }});
 }
 
-
-
 });
 
 // 一键检测
 function Onecheck(){
-    $.post("./index.php?c=api&method=Onecheck",function(data,status){
-        
+    $.post("./index.php?c=api&method=Onecheck&u=<?php echo $u;?>",function(data,status){
         $("#console_log").append("浏览器UA：" + navigator.userAgent +"\n");
         $("#console_log").append("客户端时间：" +  timestampToTime(Math.round(new Date() / 1000) ) +"\n");
         $("#console_log").append(data.msg +"\n");
-       
     });
 }
+
+<?php if($udb->get("user","Level",["User"=>$u]) === '999'){ ?>
+function System_Upgrade(){
+    layer.open({
+        title:"温馨提示"
+        ,content: "1.更新有风险请备份后再更新<br />2.更新后检查主题是否可更新<br />3.更新时请勿有其他操作<br />4.更新时请勿刷新或关闭页面<br />5.建议更新前访问控制设为禁止<br />6.确保所有文件(夹)是可写权限"
+        ,btn: ['确定更新', '更新内容', '取消']
+        ,yes: function(index, layero){
+            layer.msg('系统更新中,请勿操作.', {offset: 'b',anim: 0,time: 600*1000});
+            layer.load(1, {shade:[0.1,'#fff']});//加载层
+            $.post("./index.php?c=api&method=System_Upgrade&u=<?php echo $u;?>&cache=no",function(data,status){
+                layer.closeAll();//关闭所有层
+                if(data.code == 0) {
+                    layer.msg(data.msg, {icon: 1});
+                    setTimeout(() => {
+                        location.reload();
+                    }, 700);
+                }else{
+                    layer.msg(data.msg, {icon: 5});
+                }
+            });
+        },btn2: function(index, layero){
+            window.open("https://gitee.com/tznb/OneNav/releases");
+        },btn3: function(index, layero){
+            return true;
+        },cancel: function(){ 
+            return true;
+        }
+    });
+}
+<?php } ?> 
 
 //时间戳格式化
 function  timestampToTime(timestamp) {
