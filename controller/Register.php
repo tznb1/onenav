@@ -1,6 +1,11 @@
 <?php //注册
 Visit();//访问控制
-if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
+if($reg === "0"){     
+    header('HTTP/1.1 404 Not Found');
+    header("status: 404 Not Found");
+    exit; 
+}
+if($libs == ''){ exit('<h3>非法请求</h3>') ;}//禁止直接访问此接口!
 elseif($_SERVER['REQUEST_METHOD'] === 'GET'){require('./templates/admin/Register.php');exit;}
 elseif($_SERVER['REQUEST_METHOD'] === 'POST'){}
 else{msg(-1004,'不支持的请求方式');}

@@ -20,8 +20,7 @@
   <span class="layui-breadcrumb" lay-separator="|">
   <a href="https://gitee.com/tznb/OneNav/blob/data/template.md" target="_blank" >更新记录</a>
   <a href="https://doc.xiaoz.me/books/onenav-extend/page/f340f" target="_blank" >使用文档</a>
-  <a href="./index.php?c=admin&page=Theme&cache=no&u=admin" >刷新数据</a>
-  
+  <?php echo $admin?"<a href=\"./index.php?c=admin&page=Theme&cache=no&u={$u}\" >刷新数据</a>":""; ?>
 </span>
 </blockquote>
 <div class="layui-bg-gray" style="padding: 1px;">
@@ -55,7 +54,7 @@ if($current_themes1 == $key && $current_themes2 == $key){
         <div class="layui-card-header">
             <div class="layui-btn-group"><?php  
             if($online ){
-                echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm layui-btn-danger\" onclick = \"download_theme('$key',' {$theme['info']->name} ')\">下载</button>";
+                echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm layui-btn-danger\" onclick = \"download_theme('$key','{$theme['info']->name}','{$theme['info']->desc}')\">下载</button>";
             }elseif($theme['info']->up == 1){
                 echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm layui-btn-danger\" onclick = \"download_theme('$key',' {$theme['info']->name} ')\">更新</button>";
                 echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm\" onclick = \"set_theme('$key',' {$theme['info']->name} ')\">使用</button>";

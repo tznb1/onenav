@@ -182,7 +182,7 @@ if( $page == 'Theme' ) {
         }
         $themes[$value]['info']->config = is_file($tpl_dir.$value.'/config.php') ? '1':'0';
         // 预览图优先顺序
-        if ( !$offline ){ $first = 'local'; }  //离线模式优先使用本地预览图
+        $first = 'local'; //离线模式优先使用本地预览图
         if( $first == 'local' && is_file($tpl_dir.$value.'/screenshot.png') ){
             $themes[$value]['info']->screenshot = "./templates/".$value."/screenshot.png";
         }elseif($first == 'local' && is_file($tpl_dir.$value.'/screenshot.jpg') ){

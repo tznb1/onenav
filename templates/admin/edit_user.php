@@ -6,7 +6,7 @@ $session =getconfig('session');
 
 <div class="layui-body">
 <!-- 内容主体区域 -->
-<div class="layui-row content-body layui-show layui-form layui-form-pane">
+<div class="layui-row content-body layui-show layui-form layui-form-pane" lay-filter="EditUser">
 <div class="layui-col-lg12">
  <div class="layui-form-item">
     <div class="layui-inline">
@@ -109,6 +109,10 @@ $session =getconfig('session');
       <div class="layui-form-mid layui-word-aux">登陆后保持的时间</div>
     </div>
  </div>
+ <div class="layui-input-block" <?php if($Duser==$u && empty($CookieU) ){echo 'style = "display:none;"';}?>>
+  <input type="checkbox" name="DefaultHomePage" lay-filter="DefaultHomePage" lay-skin="primary" title="设为默认主页" >
+ </div>
+ <!--</div>-->
   <div class="layui-form-item">
     <div class="layui-input-block">
       <button class="layui-btn" lay-submit lay-filter="Gtoken">生成令牌</button>

@@ -10,6 +10,20 @@ layui.use(['element','table','layer','form','upload','util'], function(){
     $ = layui.$,
     page = _GET("page");
 
+//账号设置>设为默认主页赋值
+if (page == 'edit_user'){
+    form.val('EditUser', {"DefaultHomePage": getCookie("DefaultDB") === u });
+}
+//账号设置>设为默认主页设置
+form.on('checkbox(DefaultHomePage)', function (data) {
+    if(data.elem.checked==true){ 
+        document.cookie="DefaultDB="+ u +"; expires=Thu, 18 Dec 2099 12:00:00 GMT";
+    }else{
+        document.cookie="DefaultDB="+ u +"; expires=Thu, 18 Dec 2000 12:00:00 GMT";
+    }
+});
+
+//站点设置相关初始化
 if (page == 'edit_homepage'){
     $('#urlz').val(document.getElementById('urlz-input').value);
     $('#gotop').val(document.getElementById('gotop-input').value);
@@ -28,14 +42,14 @@ if (page == 'edit_homepage'){
     });
 }
 
-// 主页预览图点击放大
+// 主题模板预览图点击放大
 $("body").on("click",".img-list img",function(e){
-          layer.photos({
-                 photos: { "data": [{"src": e.target.src,}]}
-          });
+    layer.photos({
+        photos: { "data": [{"src": e.target.src,}]}
     });
+});
 
-
+//每页数量检测,超出阈值是恢复20
 var limit = String(getCookie('lm_limit'));
 if (limit < 10 || limit > 90){
     limit = 20 ;
@@ -671,14 +685,14 @@ window.bookmarks = function(name){
         });
         return false; 
     }
-    if ( name === "Reprint"){
+    if ( name === "link_clone"){
         if(document.body.clientWidth < 768){area = ['100%' , '100%'];}else{area = ['768px' , '350px'];}
         layer.open({
                 type: 1,
                 shadeClose: true,
                 title: '书签克隆',
                 area : area,
-                content: $('.Reprint')
+                content: $('.link_clone')
         });
         return false; 
     }
@@ -688,11 +702,11 @@ window.bookmarks = function(name){
         layer.closeAll();
     }); 
 }
-    //开始复刻
-    form.on('submit(Reprint)', function(data){
+    //开始克隆
+    form.on('submit(link_clone)', function(data){
         console.log(data.field);
         layer.load(2, {shade: [0.1,'#fff']});//加载层
-        $.post('./index.php?c=api&method=Reprint' + "&u=" + u ,data.field,function(data,status){
+        $.post('./index.php?c=api&method=link_clone' + "&u=" + u ,data.field,function(data,status){
             layer.closeAll('loading');//关闭加载层
             console.log(data,status);
             if(data.code == 0){
@@ -798,15 +812,18 @@ form.on('select(session)', function (data) {
 //结束
 });
 
+//主题详情
 function theme_detail(name,description,version,update,author,homepage,screenshot,key){
     layer.open({type: 1,maxmin: false,shadeClose: true,resize: false,title: name + ' - 主题详情',area: ['60%', '59%'],content: '<body class="layui-fluid"><div class="layui-row" style = "margin-top:1em;"><div class="layui-col-sm9" style = "border-right:1px solid #e2e2e2;"><div style = "margin-left:1em;margin-right:1em;"><img src="'+screenshot+'" alt="" style = "max-width:100%;"></div></div><div class="layui-col-sm3"><div style = "margin-left:1em;margin-right:1em;"><h1>'+name+'</h1><p>描述：'+description+'</p><p>版本：'+version+'</p><p>更新时间：'+update+'</p><p>作者：'+author+'</p><p>主页：<a style = "color:#01AAED;" href="'+homepage+'" target="_blank" rel = "nofollow">访问主页</a></p></div></div></div></body>'});
                     
 }
 
+//打开主题预览页面
 function theme_preview(key,name){
- window.open('./index.php?Theme='+key+'&u=' + u);
+    window.open('./index.php?Theme='+key+'&u=' + u);
 }
 
+//载入主题配置
 function theme_config(key,name){
     if(document.body.clientWidth < 768){area = ['100%' , '100%'];}else{area = ['550px' , '99%'];}
     layer.open({
@@ -819,7 +836,28 @@ function theme_config(key,name){
         content: './index.php?c=admin&page=config&u='+u+'&Theme='+key+'&source=admin'
         });
 }
-function download_theme(dir,name){
+//下载主题
+function download_theme(dir,name,desc){
+    if (desc.length != 0){
+        console.log(desc);
+        layer.open({
+            title:name
+            ,content: desc
+            ,btn: ['下载', '取消']
+            ,yes: function(index, layero){
+                download_theme2(dir,name,desc);
+            },btn2: function(index, layero){
+                return true;
+            },cancel: function(){ 
+                return true;
+        }
+        });
+    }else{
+        download_theme2(dir,name,desc);
+    }
+    
+}
+function download_theme2(dir,name,desc){
     layer.load(1, {shade:[0.1,'#fff']});//加载层
     layer.msg('下载安装中,请稍后..', {offset: 'b',anim: 1,time: 60*1000});
     $.post("/index.php?c=api&method=download_theme&u="+u,{dir:dir,name:name},function(data,status){
@@ -930,6 +968,7 @@ function _GET(variable){
        return(false);
 }
 
+//获取Cookie
 function getCookie(cname){
 	var name = cname + "=";
 	var ca = document.cookie.split(';');
@@ -939,26 +978,3 @@ function getCookie(cname){
 	}
 	return "";
 }
-
-function check_weak_password(){
-        layer.open({
-          title:'风险提示！',
-          content: '系统检测到您使用的默认密码，请参考<a href = "https://dwz.ovh/ze1ts" target = "_blank" style = "color:#01AAED;">帮助文档</a>尽快修改！' //这里content是一个普通的String
-        });
-     
-}
-
-    //显示大图片
-    function show_img(url) {
-      //页面层
-      layer.open({
-        type: 1,
-        skin: 'layui-layer-rim', //加上边框
-         area: ['95%', '95%'], //宽高
-        shadeClose: true, //开启遮罩关闭
-        end: function (index, layero) {
-          return false;
-        },
-        content: '<div style="text-align:center" ><img src="' + url + '" /></div>'
-      });
-    }

@@ -1,6 +1,19 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年05月31日</h4>
+      <ul>
+        <li>恢复0411去除的设为默认主页功能,位于账号设置显示(特定条件下不显示)</li>
+        <li>本地主题预览图优先使用本地资源,避免因图床或网络问题造成无法加载(遇到在线图片无法加载时不影响下载)</li>
+        <li>下载主题时如果存在说明则显示说明</li>
+        <li>修复主题模板非admin账号刷新数据异常的问题(普通用户不显示刷新数据)</li>
+        <li>关闭注册时(登录页不显示注册入口,禁止访问注册页面)</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年05月27日</h4>
       <ul>
         <li>新增涂山的简约主题</li>
@@ -133,7 +146,7 @@
       <ul>
         <li>调整更新检测逻辑,仅管理员访问后台首页时触发更新检测,有更新则提示!</li>
         <li>后台支持二级分类目录</li>
-        <li>新增Chrome浏览器插件支持<a href="https://doc.xiaoz.me/link/62#bkmrk-%E5%AE%89%E5%85%A8%E8%AE%BE%E7%BD%AE" target="_blank">(请配置伪静态)</a>  <a href="https://gitee.com/tznb/OneNav/raw/test/chrome_onenav.crx" target="_blank">(下载插件)</a></li>
+        <li>新增Chrome浏览器插件支持</li>
         <li>新增环境检测(安装时)</li>
         <li>默认主题(加强版)适配二级分类</li>
         <li>默认主题(原版)适配二级分类</li>

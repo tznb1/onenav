@@ -1290,8 +1290,8 @@ switch ($_POST['fn']) {
     case 'test':   msg(0,'测试成功.'.time());   break;//测试
     default:       msg(-1000,'方法错误!');      break;//错误的方法
 }}
-// 链接复刻
-function Reprint() {
+// 链接克隆
+function link_clone() {
     global $db,$offline;
     $url = $_POST['url'];
     $token = $_POST['token'];
@@ -1326,7 +1326,7 @@ function Reprint() {
             msg(-1114,"获取分类列表失败");
         }
     }
-    $cid =  ($db -> count('on_categorys') ) > 0 ? false : true ; //后续用于如果空表则复刻id
+    $cid =  ($db -> count('on_categorys') ) > 0 ? false : true ; //后续用于如果空表则克隆id
     for($i=0; $i<$count; $i++){
         $categorys_name = strip_tags(htmlspecialchars_decode(trim($data["data"][$i]["name"]),ENT_QUOTES));
         $categorys_id = $db-> get('on_categorys', 'id', ['name' => $categorys_name]);
@@ -1388,7 +1388,7 @@ function Reprint() {
     $data = json_decode($Res, true);
     $count = count($data["data"]);
     if( $count === 0 ) { msg(-1111,"获取链接列表失败.."); }
-    $cid =  ($db -> count('on_links') ) > 0 ? false : true ; //后续用于如果空表则复刻id
+    $cid =  ($db -> count('on_links') ) > 0 ? false : true ; //后续用于如果空表则克隆id
     $pattern = "/^(http:\/\/|https:\/\/|ftp:\/\/|ftps:\/\/|magnet:?|ed2k:\/\/|tcp:\/\/|udp:\/\/|thunder:\/\/|rtsp:\/\/|rtmp:\/\/|sftp:\/\/).+/";
     for($i=0; $i<$count; $i++){
         //检查代码,标题不能为空,url地址通过正则判断是否合规!
@@ -1672,6 +1672,12 @@ function Onecheck(){
     }else{
         $log = $log ."curl：不支持 (请安装libcurl)\n";
     }
+    //检查是否支持iconv
+    if ( function_exists('iconv') ) {
+        $log = $log ."iconv：支持\n";
+    }else{
+        $log = $log ."iconv：不支持 (链接识别可能受到影响)\n";
+    }
 
     
     // 检查主表
@@ -1849,6 +1855,7 @@ function System_Upgrade() {
         $phar = new PharData($filePath);
         $phar->extractTo('./', null, true); //路径 要解压的文件 是否覆盖
         unlink($filePath);//删除文件
+        if( file_exists("opcache_reset") ) { opcache_reset(); } //清理PHP缓存
     } catch (Exception $e) {
         msg(-1114,'更新失败,请检查写入权限');//解压出问题了
     } finally{

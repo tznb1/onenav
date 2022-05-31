@@ -218,7 +218,7 @@ $apply  = $udb->get("config","Value",["Name"=>'apply']);
         <script type="text/html" id="user_tool">
             <div class="layui-btn-container">
             <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="Del">删除选中</button>
-            <button class="layui-btn layui-btn-sm " lay-event="Reg" >注册账号</button>
+            <button class="layui-btn layui-btn-sm " lay-event="Reg" <?php  echo $reg === '0'? 'style = "display:none;"':'' ?> >注册账号</button>
             <button class="layui-btn layui-btn-sm " lay-event="help" >帮助</button>
             <button class="layui-btn layui-btn-sm " lay-event="repair" >修复/升级</button>
             <button class="layui-btn layui-btn-sm " lay-event="loginlog" >登录日志</button>

@@ -97,7 +97,7 @@
     </fieldset> 
     
     <blockquote class="layui-elem-quote" style="margin-top: 30px;border-left: 5px solid #1e9fff;">
-    <a  target="_blank" style="cursor:pointer;"  rel = "nofollow" onclick = "bookmarks('Reprint')">书签克隆 ( 输入他人的OneNav站点地址,对其数据进行复制 ) &nbsp;>>&nbsp; 未输入Token时仅对公开数据复制!</a>
+    <a  target="_blank" style="cursor:pointer;"  rel = "nofollow" onclick = "bookmarks('link_clone')">书签克隆 ( 输入他人的OneNav站点地址,对其数据进行复制 ) &nbsp;>>&nbsp; 未输入Token时仅对公开数据复制!</a>
     </blockquote>
 
 </div>
@@ -134,9 +134,9 @@
 <!-- 内容主题区域END -->
 </div>
 
-<!--链接复刻-->
-<ul class="Reprint" style = "margin-top:18px;display:none;padding-right: 10px;" >
-    <form class="layui-form" lay-filter="Reprint">
+<!--链接克隆-->
+<ul class="link_clone" style = "margin-top:18px;display:none;padding-right: 10px;" >
+    <form class="layui-form" lay-filter="link_clone">
     <div class="layui-form-item">
     <label class="layui-form-label">url</label>
     <div class="layui-input-block">
@@ -163,7 +163,7 @@
     </div>  
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="Reprint">开始克隆</button>
+                <button class="layui-btn" lay-submit lay-filter="link_clone">开始克隆</button>
             </div>
         </div>
   </form>
