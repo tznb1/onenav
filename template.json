@@ -77,6 +77,7 @@
 			"md5":	"f75188edd89b9c041caf2630bac241a4",
 			"url1":	"https://gitee.com/tznb/OneNav/raw/data/template/liutongxu_aMnGLA.tar.gz",
 			"url2":	"https://pan.bilnn.com/api/v3/file/sourcejump/XrMOEnhd/6JzKQ7pEjKwqhHO3ex639VPVUVOi1CH_6DpC9p0D_x4*",
+			"desc":	"Live2D API接口在国内被墙,可能造成无法加载!",
 			"low":	20220520,
 			"high":	20290909
 		},
@@ -183,6 +184,22 @@
 			"url1":	"https://gitee.com/tznb/OneNav/raw/data/template/webstack_nb8kCT.tar.gz",
 			"url2":	"https://pan.bilnn.com/api/v3/file/sourcejump/QPqgBQCb/7gWFgPVjA4Qo89DBLZ-DmijqFP8sZnokF-Gxz0DUkZI*",
 			"low":	20220520,
+			"high":	20290909
+		},
+		{
+			"name":	"涂山简约",
+			"description":	"改变登录页+过渡页的样式",
+			"homepage":	"",
+			"version":	"0.9.22",
+			"update":	"2022/06/04",
+			"author":	"涂山",
+			"screenshot":	"https://s1.ax1x.com/2022/06/04/Xd8VaR.jpg",
+			"dir":	"o-tushan",
+			"type":	"o",
+			"md5":	"6cbb5028b507901365ddc586137e744e",
+			"url1":	"https://gitee.com/tznb/OneNav/raw/data/template/o-tushan_bkB5kP.tar.gz",
+			"url2":	"https://pan.bilnn.com/api/v3/file/sourcejump/vkp5ExHq/funX7pknfojZYA2ArUBAisj1wKuzOea1NqyGQFYqLi0*",
+			"low":	20220604,
 			"high":	20290909
 		}
 	],
