@@ -23,6 +23,14 @@ if( !$link ){
     exit();
 }
 
+$Themeo = getconfig('Themeo','defaulto');//读取模板名
+$dir = "./templates/$Themeo"; //目录路径
+$path = "./templates/{$Themeo}/link.php"; //模板路径
+//如果不存在则使用默认模板
+if(empty($Themeo) || $Themeo == 'defaulto' ||!file_exists($path) ){
+    $path = './templates/admin/click.php';
+    if($Themeo != 'defaulto') Writeconfig('Themeo','defaulto');//写默认
+}
 $is_login = is_login2();
 
 //查询该ID的父及ID信息
@@ -51,14 +59,14 @@ if( ( $link['property'] == 0 ) && ($category['property'] == 0) ){
     if($update) {
         // 如果存在备用链接则优先使用过渡页
         if( !empty($link['url_standby']) ) {
-            require('./templates/admin/click.php');
+            require($path);
             exit;
         }
         if ($urlz == '302'){
             header('location:'.$link['url']);
             exit;
         }else{
-            require('./templates/admin/click.php');
+            require($path);
             exit;
         }
     }
@@ -78,7 +86,7 @@ elseif( $is_login ) {
         //进行header跳转
         // header('location:'.$link['url']);
         // exit;
-        require('./templates/admin/click.php');
+        require($path);
         exit;
     }
 }

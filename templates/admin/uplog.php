@@ -1,6 +1,21 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年06月04日</h4>
+      <ul>
+        <li>优化链接识别,提高识别率</li>
+        <li>修复已知bug(登录入口异常,0521分类列表异常)</li>
+        <li>API接口更新</li>
+        <li>新增登录页和过渡页模板支持,位于主题模板>其他模板 (下载/更新/切换都在这里操作)</li>
+        <li>其他模板>新上架:涂山简约(含登录页/过渡页)</li>
+        <li>其他细节调整</li>
+        <li><a href="https://doc.xiaoz.me/books/onenav-extend/page/docker" target="_blank">Docker支持:请使用容器安装的用户更新一下镜像!已支持主题下载和系统更新! </a></li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年05月31日</h4>
       <ul>
         <li>恢复0411去除的设为默认主页功能,位于账号设置显示(特定条件下不显示)</li>

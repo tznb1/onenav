@@ -5,7 +5,8 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     require('./templates/admin/initial.php');
     exit;
 }elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
-    if (!is_dir('./data')) mkdir('./data',0777,true) or msg(-1004,'创建数据库目录失败,请检查权限!');
+    if (!is_dir('./data')) mkdir('./data',0777,true) or msg(-1004,'创建data目录失败,请检查权限!');
+    if (!is_dir('./data/upload')) mkdir('./data/upload',0777,true) or msg(-1004,'创建upload目录失败,请检查权限!');
     //设置执行时长,防止数据较多时超时!
     set_time_limit(5*60);//设置执行最长时间，0为无限制。单位秒!
     ignore_user_abort(true);//关闭浏览器，服务器执行不中断。

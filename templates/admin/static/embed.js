@@ -903,6 +903,7 @@ function set_theme2(name,type) {
         }
     });
 }
+
 //异步识别链接信息
 function get_link_info() {
     var url = $("#url").val();

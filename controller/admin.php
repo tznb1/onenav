@@ -182,7 +182,7 @@ if( $page == 'Theme' ) {
         }
         $themes[$value]['info']->config = is_file($tpl_dir.$value.'/config.php') ? '1':'0';
         // 预览图优先顺序
-        $first = 'local'; //离线模式优先使用本地预览图
+        $first = 'local'; 
         if( $first == 'local' && is_file($tpl_dir.$value.'/screenshot.png') ){
             $themes[$value]['info']->screenshot = "./templates/".$value."/screenshot.png";
         }elseif($first == 'local' && is_file($tpl_dir.$value.'/screenshot.jpg') ){
@@ -190,13 +190,11 @@ if( $page == 'Theme' ) {
         }elseif(empty($themes[$value]['info']->screenshot)){ 
             $themes[$value]['info']->screenshot = "./templates/admin/static/42ed3ef2c4a50f6d.png";
         }
-        
-        
     }
-
     //获取当前主题
     $current_themes1 = getconfig('Theme');  //PC 
     $current_themes2 = getconfig('Theme2'); //Pad
+    $current_Themeo = getconfig('Themeo','defaulto'); //其他主题
     $admin = $userdb['Level'] === '999';
     //在线主题处理 
     if ( !$offline && $admin){ 

@@ -1,4 +1,4 @@
-<?php  //入口(落幕修改:2022/04/11)
+<?php  //入口(落幕修改:2022/06/03)
 error_reporting(E_ALL^E_NOTICE^E_WARNING^E_DEPRECATED);
 $t1 = microtime(true);
 if(!file_exists('./data/lm.user.db3')){

@@ -79,7 +79,7 @@ function category_list(){
         "(SELECT count(*) FROM on_links  WHERE fid = a.id ) AS count\n".
         "FROM on_categorys AS a\n".
         "WHERE $WHERE\n".
-        "ORDER BY a.weight DESC, a.id DESC LIMIT 0, 20";
+        "ORDER BY a.weight DESC, a.id DESC LIMIT {$limit} OFFSET {$offset}";
     
     $count_sql = 
         "SELECT COUNT(1) AS COUNT,\n". 
@@ -478,23 +478,22 @@ function get_link_info() {
          msg(-1010,'URL无效!');
     }
     if ( $offline ){ msgA(['code'=>0,'data'=>[]]); } //离线模式
-    //获取网站标题
+    //获取网站标题 (HTML/JS跳转无法识别)
     $c = curl_init(); 
     curl_setopt($c, CURLOPT_URL, $url); 
     curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
     curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
-    //设置超时时间
-    curl_setopt($c , CURLOPT_TIMEOUT, 5);
+    curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1); //允许重定向,解决http跳转到https无法识别
+    curl_setopt($c , CURLOPT_TIMEOUT, 5); //设置超时时间
     $data = curl_exec($c); 
     curl_close($c); 
-    $pos = strpos($data,'utf-8'); 
-    if($pos===false){$data = iconv("gbk","utf-8",$data);} 
-    preg_match("/<title>(.*)<\/title>/i",$data, $title); 
-    $link['title'] =  $title[1];
-    //获取网站描述
-    $tags = get_meta_tags($url);
-    $link['description'] = $tags['description'];
+
+    require ('./class/get_page_info.php');
+    $info = get_page_info($data);
+    //var_dump($info);
+    $link['title'] =  $info['site_title'];
+    $link['description'] = $info['site_description'];
     msgA(['code'=>0,'data'=>$link]);
 }
 
@@ -523,7 +522,7 @@ function upload(){
         if(!is_dir('data/upload')){
             mkdir('data/upload',0755,true);
         }
-        //转移上传的文件(不转移的话代码执行完毕文件就会被删除) 待测试在二级目录上传是否正常!!!!!!
+        //转移上传的文件(不转移的话代码执行完毕文件就会被删除) 
         if(copy($temp,'data/upload/'.$filename)){
             msgA(['code'=>0,'file_name' =>'data/upload/'.$filename ,"suffix" => $suffix] );
         }
@@ -883,8 +882,9 @@ function edit_homepage(){
 
 //主题切换
 function set_theme(){
-    $type = $_POST['type'];
-    $name = $_POST['name'];
+    $type = $_REQUEST['type'];
+    $name = $_REQUEST['name'];
+    
     if( $type == 'PC/Pad'){
         Writeconfig('Theme' , $name);
         Writeconfig('Theme2', $name);
@@ -892,6 +892,10 @@ function set_theme(){
         Writeconfig('Theme' , $name);
     }elseif($type == 'Pad'){
         Writeconfig('Theme2' , $name);
+    }elseif($type == 'o'){
+        Writeconfig('Themeo' , $name);
+    }else{
+        msg(-1000,'参数错误');
     }
     //加个检测是否存在!
     msg(0,'设置成功');
@@ -957,7 +961,7 @@ function download_theme(){
     } catch (Exception $e) {
         msg(-1114,'-2,安装失败');
     } finally{
-        if(file_exists("./templates/".$key['dir']."/index.php")){
+        if(file_exists("./templates/".$key['dir']."/info.json")){
             msgA(['code'=>0,'msg'=> '下载成功','url'=> $i,'file_md5'=>$file_md5]);
         }else{
             msgA(['code'=>-1233,'msg'=> '-3,安装失败','url'=> $i,'file_md5'=>$file_md5]);
@@ -1641,7 +1645,7 @@ function loginlog_list(){
     msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas]);
 }
 
-// 一键检测
+// 一键检测/一键诊断
 function Onecheck(){
     global $SQLite3,$version; //,$db,$udb
     //获取组件信息
@@ -1670,16 +1674,20 @@ function Onecheck(){
     if ( function_exists('curl_init') ) {
         $log = $log ."curl：支持\n";
     }else{
-        $log = $log ."curl：不支持 (请安装libcurl)\n";
+        $log = $log ."curl：不支持 (在线功能将受到影响)\n";
     }
-    //检查是否支持iconv
-    if ( function_exists('iconv') ) {
-        $log = $log ."iconv：支持\n";
+    // //检查是否支持iconv
+    // if ( function_exists('iconv') ) {
+    //     $log = $log ."iconv：支持\n";
+    // }else{
+    //     $log = $log ."iconv：不支持 (链接识别将受到影响)\n";
+    // }
+    //检查是否已安装mbstring扩展
+    if ( extension_loaded('mbstring') ) {
+        $log = $log ."mbstring：支持\n";
     }else{
-        $log = $log ."iconv：不支持 (链接识别可能受到影响)\n";
+        $log = $log ."mbstring：不支持 (链接识别将受到影响)\n";
     }
-
-    
     // 检查主表
     if(is_writable('./data/lm.user.db3')){
         $log = $log ."数据库>主表：正常\n";
@@ -1720,7 +1728,7 @@ function Onecheck(){
             $log = $log ."upload目录：创建文件成功,删除文件失败\n";
         }
     }else{
-        $log = $log ."upload目录：异常,请检查权限!\n";
+        $log = $log ."upload目录：异常,请检查权限!(可尝试在网站管理>用户管理>点击修复)\n";
     }
     
      msg(-1000,$log);
@@ -2138,6 +2146,82 @@ function check_link($fid,$title,$url,$url_standby){
     return true;
 }
 
+
+
+// 书签同步
+function sync() {
+    $data = $_POST['data'];
+    $data = json_decode($data, true); // JSON字符串转数组
+    $data = $data[0]["children"]; //取根节点
+    if( !count($data) ) msg (-2000,'解析失败..'); 
+   
+    // 遍历根节点(id:1 = 书签栏 id:2 = 其他书签)
+    for($i=0; $i<count($data); $i++){
+        $info = get_sync_link($data[$i]["children"],$data[$i]['title']);
+    }
+    msgA(['code'=>  0,'msg'=>  '总数：'.intval($info["total"]).' 成功：'.intval($info["success"]).' 失败：'.intval($info["fail"])  ]);
+}
+    
+//书签同步处理
+function get_sync_link($data,$folder) {
+    global $db;
+    static $info; //声明一个静态变量.用于计数!
+    static $pattern = "/^(http:\/\/|https:\/\/|ftp:\/\/|ftps:\/\/|magnet:?|ed2k:\/\/|tcp:\/\/|udp:\/\/|thunder:\/\/|rtsp:\/\/|rtmp:\/\/|sftp:\/\/).+/";
+    // 如果文件夹名为空,则使用默认分类!
+    if(empty($folder) ){$folder = "默认分类";}
+        
+    //根据文件夹名称查找分类id 
+    $categorys_name = htmlspecialchars(trim($folder),ENT_QUOTES);
+    $categorys_id = $db-> get('on_categorys', 'id', ['name' => $categorys_name]);
+    $info["categorys"]++; //分类计数
+    if( empty($categorys_id) && !empty($data) ){  //如果没找到就创建一个! (如果是空文件夹则不创建)
+        $categorys = [
+                'name'          =>  $categorys_name,
+                'add_time'      =>  time(),
+                'weight'        =>  0,
+                'property'      =>  1,
+                'description'   =>  "书签同步时自动创建",
+                'fid'           =>  0
+            ];
+        $db->insert("on_categorys",$categorys);
+        $categorys_id = $db->id();//返回ID
+        if( empty($categorys_id) ){
+            msg(-1000,'创建分类失败,意外结束..');
+        }
+    }
+    
+    foreach ($data as $key => $value) {
+        if( empty($value['url']) ) { //如果URL为空则为文件夹!
+            get_sync_link($value['children'],$value['title'],$value['id']); //调用自身,继续遍历!
+        }else{
+            $info["total"]++; //总数
+            //检查代码,标题不能为空,url地址通过正则判断是否合规!
+            if( empty($value['title'])  || !preg_match($pattern,$value['url'])){
+                $info["fail"]++;
+                continue; 
+            }
+
+            $link_data = [
+                'fid'           =>  intval($categorys_id),
+                'title'         =>  htmlspecialchars($value['title']),
+                'url'           =>  htmlspecialchars($value['url'],ENT_QUOTES),
+                'add_time'      =>  time(),
+                'weight'        =>  0,
+                'property'      =>  0
+            ];
+            //插入数据库
+            $re = $db->insert('on_links',$link_data);
+            $id = $db->id();
+
+            if( empty($id) ){ 
+                $info["fail"]++; //失败
+            }else{
+                $info["success"]++; //成功
+            }
+        }
+    }
+    return $info;
+}
 
 
 function check_xss($value){

@@ -3,7 +3,17 @@ if($libs==''){
     exit('<h3>非法请求</h3>');
 }elseif($_SERVER['REQUEST_METHOD'] === 'GET'){
     //Get请求,载入登陆页面!
-    require('./templates/admin/login.php');
+    $Themeo = getconfig('Themeo','defaulto');//读取模板名
+    $dir = "./templates/$Themeo"; //目录路径
+    $path = "./templates/{$Themeo}/login.php"; //模板路径
+    //如果不存在则使用默认模板
+    if(empty($Themeo) || $Themeo == 'defaulto' ||!file_exists($path) ){
+        $path = './templates/admin/login.php';
+        if($Themeo != 'defaulto') Writeconfig('Themeo','defaulto');//写默认
+    }
+    
+    
+    require($path);
     exit;
 }elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
     //POST请求
@@ -34,10 +44,8 @@ $ip = getIP();
 if(!file_exists($SQLite3)){
     msg(-1002,'没有找到用户数据库!');
 }
-if($c !='login' && $c !=$Elogin){
-    //理论上这里是用不到的,因为前面过不来直接报接口不存在了.
-    msg(-1002,$c.'登陆入口异常!'.$Elogin);
-}
+// if($c !='login' && $c !=$Elogin && $c != $login) msg(-1002,'登陆入口异常!');
+
 $db = new Medoo\Medoo(['database_type'=>'sqlite','database_file'=>$SQLite3]);
 Writeconfig('LoginRequestDate',time());//写请求时间
 $LoginFailed = getconfig('LoginFailed');//读登陆失败次数
