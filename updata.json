@@ -3,7 +3,16 @@
 	"msg":	"",
 	"rt":	1653212496,
 	"data":	
-	[
+	[{
+			"version":	"0.9.22",
+			"update":	"20220604",
+			"md5":	"5d7bec024de1e69c71b106c631f16f10",
+			"url1":	"https://update.lm21.top/OneNav/updata/v0.9.22-20220604-Mini.tar.gz",
+			"url2":	"https://gitee.com/tznb/OneNav/raw/data/updata/v0.9.22-20220604-Mini.tar.gz",
+			"desc":	"v0.9.22-20220604-Mini",
+			"low":	20220527,
+			"high":	20220604
+		},
 		{
 			"version":	"0.9.22",
 			"update":	"20220531",
