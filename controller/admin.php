@@ -79,7 +79,7 @@ if ($page == 'edit_link') {
         $link['checked'] = '';
     }
 }
-
+//获取分类列表
 function get_category() {
     global $db;
     $categorys = [];
@@ -94,8 +94,12 @@ function get_category() {
     }
     return $categorys;
 }
-
-
+//获取标签列表
+function get_tags() {
+    global $db;
+    $tags = $db->select('lm_tag','*');
+    return $tags;
+}
 
 //如果页面是添加链接页面
 if ( ($page == 'add_link') || ($page == 'add_link_tpl') || ($page == 'add_quick_tpl' ) || ($page == 'add_link_tpl_m' )) {
@@ -249,6 +253,12 @@ if( $page == 'Theme' ) {
     } 
 }
 
+//站点订阅页面
+if( $page == 'root' ) {
+    //获取当前站点信息
+    $subscribe = $udb->get("config","Value",["Name"=>'s_subscribe']);
+    $subscribe = unserialize($subscribe);
+}
 //如果是退出
 if ($page == 'logout') {
     global $username;

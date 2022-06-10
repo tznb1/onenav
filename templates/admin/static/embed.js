@@ -153,18 +153,20 @@ addcategory:function(){window.open('./index.php?c=admin&page=add_category&u='+u,
 //链接搜索
 function link_q(){
 var fid = document.getElementById("fid").value;
+var tagid = document.getElementById("tagid").value;
 var keyword = document.getElementById("link_keyword").value;//获取输入内容
 console.log(fid,keyword);
 table.reload('link_list', {
   url: './index.php?c=api&method=link_list&u='+u
   ,method: 'post'
   ,request: {
-   pageName: 'page' //页码的参数名称，默认：page
-   ,limitName: 'limit' //每页数据量的参数名，默认：limit
+   pageName: 'page' //页码的参数名称
+   ,limitName: 'limit' //每页数据量的参数名
   }
   ,where: {
    query : keyword,
-   fid : fid
+   fid : fid,
+   tagid : tagid
   }
   ,page: {
    curr: 1
@@ -199,8 +201,8 @@ table.reload('category_list', {
   url: './index.php?c=api&method=category_list&u='+u
   ,method: 'post'
   ,request: {
-   pageName: 'page' //页码的参数名称，默认：page
-   ,limitName: 'limit' //每页数据量的参数名，默认：limit
+   pageName: 'page' //页码的参数名称
+   ,limitName: 'limit' //每页数据量的参数名
   }
   ,where: {
    query : inputVal
@@ -225,7 +227,6 @@ function open_msg(x,y,t,c){
 //分类列表工具栏事件
 table.on('tool(category_list)', function(obj){
     var data = obj.data;
-    //console.log(obj);
     if(obj.event === 'del'){
       layer.confirm('确认删除？',{icon: 3, title:'温馨提示！'}, function(index){
         $.post('./index.php?c=api&method=del_category&u='+u,{'id':obj.data.id},function(data,status){
@@ -253,6 +254,7 @@ var link_list_cols=[[ //表头
         var url = '<a target = "_blank" href = "' + d.url + '" title = "' + d.url + '">' + d.url + '</a>';
         return url;
       }}
+      //,{field: 'tagid', title: 'tag', width:80, sort: true}
       ,{field: 'title', title: '链接标题', width:200, edit: 'text'}
       ,{field: 'add_time', title: '添加时间', width:160, sort: true,templet:function(d){
         var add_time = timestampToTime(d.add_time);
@@ -272,30 +274,12 @@ var link_list_cols=[[ //表头
       ,{field: 'click', title: '点击数',width:90,sort:true}
       ,{ title:'操作', toolbar: '#link_operate',width:128}
     ]]
-intCols();
-function intCols()
-       {
-           for (var i=0;i<link_list_cols[0].length;i++)
-           {
-               if(link_list_cols[0][i].field!=undefined)
-               {
-                   let localfield='link_list_'+link_list_cols[0][i].field;
-                   let hidevalue =window.localStorage.getItem(localfield);
-                   if(hidevalue==='false')
-                   {
-                       link_list_cols[0][i].hide=false;
-                   }else if(hidevalue==='true')
-                   {
-                       link_list_cols[0][i].hide=true;
-                   }
-               }
-           }
-       }
+intCols(); //读取筛选列
 
 table.render({
     elem: '#link_list'
     ,height: 'full-150' //自适应高度
-    ,url: './index.php?c=api&method=link_list&u='+u //数据接口
+    ,url: './index.php?c=api&method=link_list&u=' + u + (_GET('tagid').length > 0 ?'&tagid='+_GET('tagid'):'') //数据接口
     ,page: true //开启分页
     ,limit:limit  //默认每页显示行数
     ,even:true //隔行背景色
@@ -308,47 +292,16 @@ table.render({
 
 //如果页面是链接列表
 if( _GET("page")==="link_list"){
-// 选择需要观察变动的节点
-const targetNode1 =document.getElementsByClassName('layui-table-tool-self')[0];//document.getElementById('some-id');
-// 观察器的配置（需要观察什么变动）
-const config = { attributes: true, childList: true, subtree: true };
-// 当观察到变动时执行的回调函数
-const callback = function(mutationsList, observer) {
-	console.log(mutationsList);
-	for (let mutation of mutationsList) {
-		if (mutation.type === 'childList') {
-			// console.log('A child node has been added or removed');
-		} else if (mutation.type === 'attributes') {
-			console.log(mutation.target.innerText);
-			//先根据innertext 列名称 对link_list_cols 进行field 查询,查到field 可以找到本地缓存的字段,约定,本地缓存的命名规则为表名字母缩写_加field名组成,防止冲突
-			var field = "";
-			for (var i = 0; i < link_list_cols[0].length; i++) {
-				if (link_list_cols[0][i].title === mutation.target.innerText) //标题相同 则取field
-				{
-					field = link_list_cols[0][i].field;
-					break;
-				}
-			}
-			if (field !== "") {
-				// 组装缓存key
-				let localkey = 'link_list_' + field;
-				//判断value值
-				if (mutation.target.classList[2] != undefined) //说明2: "layui-form-checked"  复选框是已选择的,说明此列是在表中显示的
-				{
-					window.localStorage.setItem(localkey, false);
-				} else //没被选择,说明此列不在table中显示
-				{
-					window.localStorage.setItem(localkey, true);
-				}
-			}
-		}
-	}
-};
-// 创建一个观察器实例并传入回调函数
-const observer = new MutationObserver(callback);
-// 以上述配置开始观察目标节点
-observer.observe(targetNode1, config);
-}//链接列表End
+    if(_GET('tagid') !=''){ //接收tagid参数
+        $('#tagid').val(_GET('tagid')); 
+        form.render('select');
+    }
+//筛选列相关
+const targetNode1=document.getElementsByClassName('layui-table-tool-self')[0];const config={attributes:true,childList:true,subtree:true};const callback=function(mutationsList,observer){console.log(mutationsList);for(let mutation of mutationsList){if(mutation.type==='childList'){}else if(mutation.type==='attributes'){console.log(mutation.target.innerText);var field="";for(var i=0;i<link_list_cols[0].length;i++){if(link_list_cols[0][i].title===mutation.target.innerText){field=link_list_cols[0][i].field;break;}}if(field!==""){let localkey='link_list_'+field;if(mutation.target.classList[2]!=undefined){window.localStorage.setItem(localkey,false);}else
+{window.localStorage.setItem(localkey,true);}}}}};const observer=new MutationObserver(callback);observer.observe(targetNode1,config);}
+function intCols(){for(var i=0;i<link_list_cols[0].length;i++){if(link_list_cols[0][i].field!=undefined){let localfield='link_list_'+link_list_cols[0][i].field;let hidevalue=window.localStorage.getItem(localfield);if(hidevalue==='false'){link_list_cols[0][i].hide=false;}else if(hidevalue==='true'){link_list_cols[0][i].hide=true;}}}}
+//筛选列相关End
+
 //链接列表工具栏事件
 table.on('toolbar(mylink)', function(obj){
     var checkStatus = table.checkStatus(obj.config.id),id='';
@@ -388,7 +341,7 @@ table.on('toolbar(mylink)', function(obj){
             console.log(fid,text,id);
             if (fid ==0){ layer.msg('分类不能为全部!', {icon: 2});return}
             layer.confirm('确定要将所选链接转移到:'+text+'?', {
-               title: "批量修改分类:",
+               title: "批量修改分类",
                btn: ['确定','取消'] //按钮 Mobile_class
                }, function(){
                 $.post('./index.php?c=api&method=Mobile_class&u='+u,{'lid':id ,'cid':fid },function(data,status){
@@ -402,6 +355,35 @@ table.on('toolbar(mylink)', function(obj){
              });
         };
           break;
+      case 'set_tag':
+        var data = checkStatus.data;
+        if( data.length == 0 ) {
+          layer.msg('未选中任何数据！');
+        }else{
+            for (let i = 0; i < data.length; i++) {if (i < data.length-1){id +=data[i].id+','}else{id +=data[i].id}} //生成id表
+            var tagid=document.getElementById("tagid");
+            var index=tagid.selectedIndex ;
+            text=tagid.options[index].text;
+            tagid=tagid.options[index].value;
+            console.log(tagid,text,id);
+            if (tagid == '-1'){ layer.msg('所属标签不能为全部!', {icon: 2});return}
+            layer.confirm(tagid == '0'?'所选的链接将去除标签':'所选的链接将被加入:'+text, {
+               title: "批量设标签",
+               btn: ['确定','取消'] 
+               }, function(){
+                $.post('./index.php?c=api&method=link_set_tag&u='+u,{'lid':id ,'tagid':tagid },function(data,status){
+                if(data.code == 0){
+                link_q();
+                layer.msg('操作成功', {icon: 1});
+                }else{
+                layer.msg(data.msg, {icon: 2});
+                }
+             });
+             });
+        };
+          
+          break;
+         
       case 'addlink':
           window.open('./index.php?c=admin&page=add_link&u='+u,"_self");
           break;
@@ -926,56 +908,4 @@ function get_link_info() {
       }
     });
 }
-//时间戳格式化
-function  timestampToTime(timestamp) {
-    var  date =  new  Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-    var y = date.getFullYear();
-    var m = date.getMonth() + 1;
-    m = m < 10 ? ('0' + m) : m;
-    var d = date.getDate();
-    d = d < 10 ? ('0' + d) : d;
-    var h = date.getHours();
-    h = h < 10 ? ('0' + h) : h;
-    var minute = date.getMinutes();
-    var second = date.getSeconds();
-    minute = minute < 10 ? ('0' + minute) : minute;
-    second = second < 10 ? ('0' + second) : second;
-    return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
-}
-//取随机字符串
-function randomString(length) {
-  var str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  var result = '';
-  for (var i = length; i > 0; --i) 
-    result += str[Math.floor(Math.random() * str.length)];
-  return result;
-}
-//取随机数字
-function randomnum(length) {
-  var str = '0123456789';
-  var result = '';
-  for (var i = length; i > 0; --i) 
-    result += str[Math.floor(Math.random() * str.length)];
-  return result;
-}
-//取Get参数
-function _GET(variable){
-   var query = window.location.search.substring(1);
-   var vars = query.split("&");
-       for (var i=0;i<vars.length;i++) {
-               var pair = vars[i].split("=");
-               if(pair[0] == variable){return pair[1];}
-       }
-       return(false);
-}
 
-//获取Cookie
-function getCookie(cname){
-	var name = cname + "=";
-	var ca = document.cookie.split(';');
-	for(var i=0; i<ca.length; i++) {
-		var c = ca[i].trim();
-		if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
-	}
-	return "";
-}

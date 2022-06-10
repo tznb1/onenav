@@ -17,8 +17,9 @@ $apply  = $udb->get("config","Value",["Name"=>'apply']);
 </style>
 <div class="layui-tab layui-tab-brief layui-body layui-row content-body" lay-filter="root" style="padding-bottom: 0px;">
 <ul class="layui-tab-title">
- <li class="layui-this">全局配置</li>
- <li >用户管理</li>
+ <li class="layui-this" lay-id="1">全局配置</li>
+ <li lay-id="2">用户管理</li>
+ <li lay-id="3">订阅管理</li>
 </ul>
 <div class="layui-tab-content" style="padding-bottom: 0px;">
 <div class="layui-tab-item layui-show layui-form layui-form-pane"><!--全局配置--> 
@@ -233,12 +234,77 @@ $apply  = $udb->get("config","Value",["Name"=>'apply']);
 </div>
 
 </div><!--用户管理End-->
+
+<div class="layui-tab-item" ><!--订阅-->
+<div class="layui-row content-body place-holder" style="padding-bottom: 3em;">
+    <!-- 说明提示框 -->
+    <div class="layui-col-lg12">
+      <div class="setting-msg">
+        <ol>
+            <li>您可以在下方点击购买订阅，购买后可以：</li>
+            <li>1. 可使用标签功能</li>
+            <li>2. 优先更新系统和主题</li>
+            <li>3. 更多高级功能开发中</li>
+            <li>4. 可帮助OneNav Extend持续发展，让它变得更加美好</li>
+        </ol>
+      </div>
+    </div>
+    <!-- 说明提示框END -->
+    <!-- 订阅表格 -->
+    <div class="layui-col-lg6">
+    <h2 style = "margin-bottom:1em;">我的订阅：</h2>
+    <form class="layui-form layui-form-pane" action="">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单号</label>
+            <div class="layui-input-block">
+                <input type="text" id = "order_id" name="order_id" value = "<?php echo $subscribe['order_id']; ?>" required  lay-verify="required" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">订阅邮箱</label>
+            <div class="layui-input-block">
+                <input type="email" name="email" id = "email" value = "<?php echo $subscribe['email']; ?>" required lay-verify="required|email" autocomplete="off" placeholder="订阅邮箱" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item" style = "display:none;">
+            <label class="layui-form-label">域名</label>
+            <div class="layui-input-block">
+                <input type="text" name="domain" id = "domain" value = "<?php echo $_SERVER['HTTP_HOST']; ?>" autocomplete="off" placeholder="网站域名" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">到期时间</label>
+            <div class="layui-input-block">
+            <input type="text" name="end_time" id = "end_time" readonly="readonly" value = "<?php echo date("Y-m-d H:i:s",$subscribe['end_time']); ?>" autocomplete="off" placeholder="订阅到期时间" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <button class="layui-btn" lay-submit="" lay-filter="set_subscribe">保存设置</button>
+            <button class="layui-btn" lay-submit="" lay-filter="reset_subscribe">删除订阅</button>
+            <a class="layui-btn layui-btn-danger" rel = "nofollow" target = "_blank" title = "点此购买订阅" href="https://shop.xiaoz.top/productinfo-108.html"><i class="fa fa-shopping-cart"></i> 购买订阅</a>
+        </div>
+
+    </form>
+    </div>
+    <!-- 订阅表格END -->
+
+</div><!--订阅End-->
+
+
+</div>
+</div>
 </div>
 </div>
 </div>
 <script src = '<?php echo $libs?>/jquery/jquery-3.6.0.min.js'></script>
 <script src = '<?php echo $libs?>/Layui/v2.6.8/layui.js'></script>
 <script src = '<?php echo $libs?>/jquery/jquery.md5.js'></script>
+<script src = "./templates/admin/static/public.js?t=<?php echo $version; ?>"></script>
 <script>
 layui.use(['element','table','layer','form','util','dropdown'], function(){
     var element = layui.element;
@@ -252,8 +318,18 @@ var limit = String(getCookie('lm_limit'));
 if (limit < 10 || limit > 90){
     limit = 20 ;
 }
-//console.log(limit);
 
+    //Hash地址的定位
+    var layid = location.hash.replace(/^#root=/, '');
+    element.tabChange('root', layid);
+    console.log(layid);
+    //切换事件
+    element.on('tab(root)', function(elem){
+        layid = $(this).attr('lay-id');
+        location.hash = 'root='+ $(this).attr('lay-id');
+    });
+    
+    
 var user_cols=[[ //表头
       {type:'checkbox'} //开启复选框
       ,{field:'ID',title:'ID',width:60,sort:true}
@@ -446,6 +522,59 @@ form.on('submit(edit_root)', function(data){
     });
     return false; 
 });  
+
+
+  //保存订阅信息
+  form.on('submit(set_subscribe)', function(data){
+    var order_id = data.field.order_id;
+    var index = layer.load(1);
+    $.get('https://onenav.xiaoz.top/onenav_extend/v1/check_subscribe.php?',data.field,function(data,status){
+      
+      if(data.code == 200) {
+        email = data.data.email;
+        end_time = data.data.end_time;
+        $("#end_time").val(timestampToTime(end_time));
+        //存储到数据库中
+        $.post("./index.php?c=api&method=set_subscribe&u=<?php echo $u;?>",{order_id:order_id,email:email,end_time:end_time},function(data,status){
+          if(data.code == 0) {
+            layer.closeAll('loading');
+            layer.msg(data.msg, {icon: 1});
+          }
+          else{
+            layer.closeAll('loading');
+            layer.msg(data.msg, {icon: 5});
+          }
+        });
+      }
+      else{
+        layer.closeAll('loading');
+        layer.msg(data.msg, {icon: 5});
+      }
+
+    });
+    console.log(data.field) 
+    return false;
+  });
+  //清空订阅信息
+  form.on('submit(reset_subscribe)', function(data){
+    //存储到数据库中
+    $.post("./index.php?c=api&method=set_subscribe&u=<?php echo $u;?>",{order_id:'',email:'',end_time:null},function(data,status){
+      if(data.code == 0) {
+        //清空表单
+      $("#order_id").val('');
+      $("#email").val('');
+      //$("#domain").val('');
+      $("#end_time").val('');
+        layer.msg(data.msg, {icon: 1});
+      }
+      else{
+        layer.closeAll('loading');
+        layer.msg(data.msg, {icon: 5});
+      }
+    });
+    return false; 
+  });
+
 //结果弹出
 function open_msg(x,y,t,c){
     layer.open({ //弹出结果
@@ -457,40 +586,6 @@ function open_msg(x,y,t,c){
     ,content: c
     ,btn: ['我知道了'] 
     });
-}
-//时间戳格式化
-function  timestampToTime(timestamp) {
-    var  date =  new  Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-    var y = date.getFullYear();
-    var m = date.getMonth() + 1;
-    m = m < 10 ? ('0' + m) : m;
-    var d = date.getDate();
-    d = d < 10 ? ('0' + d) : d;
-    var h = date.getHours();
-    h = h < 10 ? ('0' + h) : h;
-    var minute = date.getMinutes();
-    var second = date.getSeconds();
-    minute = minute < 10 ? ('0' + minute) : minute;
-    second = second < 10 ? ('0' + second) : second;
-    return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
-}
-//取随机数字
-function randomnum(length) {
-  var str = '0123456789';
-  var result = '';
-  for (var i = length; i > 0; --i) 
-    result += str[Math.floor(Math.random() * str.length)];
-  return result;
-}
-//取Cookie
-function getCookie(cname){
-	var name = cname + "=";
-	var ca = document.cookie.split(';');
-	for(var i=0; i<ca.length; i++) {
-		var c = ca[i].trim();
-		if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
-	}
-	return "";
 }
 });
 </script>

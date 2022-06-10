@@ -24,6 +24,7 @@ if($udb->get("config","Value",["Name"=>'apply']) == 1 ){
         <li class="layui-nav-item layui-nav-itemed" >
           <a class="" href="javascript:;"><i class="layui-icon layui-icon-note"></i> 分类管理</a>
           <dl class="layui-nav-child">
+            <dd><a href="./index.php?c=admin&page=tags&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-share"></i> 标签管理</a></dd>
             <dd><a href="./index.php?c=admin&page=category_list&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-list"></i> 分类列表</a></dd>
             <dd><a href="./index.php?c=admin&page=add_category&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加分类</a></dd>
           </dl>

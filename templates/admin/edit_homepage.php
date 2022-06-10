@@ -140,7 +140,6 @@
         </div>
         <div class="layui-form-item">
             <button class="layui-btn" lay-submit lay-filter="edit_homepage">保存</button>
-            <!--<button class="layui-btn layui-btn-primary" type="" >设为默认首页</button>-->
         </div>
     </form>
    </div>

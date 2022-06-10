@@ -8,7 +8,6 @@
 	<link rel='stylesheet' href='./templates/admin/static/style.css?v=<?php echo $version;?>'>
 	<style>
 	body{
-		/* background:url(templates/admin/static/bg.jpg); */
 		background-color:rgba(0, 0, 51, 0.8);
 		}
 	</style>

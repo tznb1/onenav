@@ -270,9 +270,14 @@ function link_list(){
     setcookie_lm_limit($limit);
     $offset = ($page - 1) * $limit; //起始行号
     $fid = intval(@$_POST['fid']); //获取分类ID
+    $tagid = $_REQUEST['tagid']; //获取标签ID
     
     //查询条件
     $class = empty($fid) ? "":"And on_links.fid = $fid";  //分类筛选
+    if( $tagid == '0' ||  intval($tagid) > '0' ) {
+       $class = $class . " And on_links.tagid = " . intval($tagid);
+    }
+
     if($OnlyOpen){ //访客模式(不支持搜索,仅支持分类筛选)
         $WHERE = "on_links.property = 0 AND f.property = 0 AND (fcp = 0 OR fcp is null) $class";
         $fcp = "(SELECT property FROM on_categorys WHERE id = f.fid LIMIT 1 ) AS fcp,"; //查询父分类的私有属性
@@ -2005,9 +2010,12 @@ function data_empty(){
     $db->query("UPDATE sqlite_sequence SET seq = 0 WHERE name='on_links';")->fetchAll();
     $db->query("delete from on_categorys")->fetchAll();
     $db->query("UPDATE sqlite_sequence SET seq = 0 WHERE name='on_categorys';")->fetchAll();
+    $db->query("delete from lm_tag")->fetchAll();
+    $db->query("UPDATE sqlite_sequence SET seq = 0 WHERE name='lm_tag';")->fetchAll();
     $count_categorys = $db->Count("on_categorys");
     $count_links = $db->Count("on_links");
-    if($count_categorys === 0 && $count_links === 0 ){
+    $count_tag = $db->Count("lm_tag");
+    if($count_categorys === 0 && $count_links === 0 && $count_tag === 0){
         msg(0,"清空成功");
     }else{
         msg(-1111,"清空失败");
@@ -2223,6 +2231,198 @@ function get_sync_link($data,$folder) {
     return $info;
 }
 
+//标签组>添加
+function add_tags(){
+    global $db;
+    $name = $_POST['name'];
+    $mark = $_POST['mark'];
+    $pass = $_POST['pass'];
+    $expire = $_POST['expire'];
+    if( empty($name) ) {
+        msg(-1111,'名称不能为空');
+    }elseif( !preg_match('/^[A-Za-z0-9]{1,13}$/', $mark) ) {
+        msg(-1111,'标识只能是13位内的数字和字母');
+    }elseif( !empty($expire) &&  !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/i',$expire)){
+        msg(-1111,'时间错误');
+    }elseif( strlen($name) > 128 ){
+        msg(-1111,'名称长度过长>128');
+    }elseif( strlen($pass) > 128 ){
+        msg(-1111,'密码长度过长>128');
+    }elseif(!is_subscribe()){
+        msg(-1111,'您未订阅,请先购买订阅!');
+    }
+    $data = [
+            'name'           =>  htmlspecialchars($name),
+            'mark'         =>  htmlspecialchars($mark),
+            'pass'           =>  $pass,
+            'expire'      =>  strtotime($expire),
+            'add_time'      => time(),
+            ];
+    $re = $db->insert('lm_tag',$data);
+    $id = $db->id();
+
+    if( empty($id) ){ 
+        msg(-1111,'添加失败,检查名称和标识是否重复!');
+    }else{
+        msg(0,'添加成功');
+    }
+}
+//标签组>删除
+function del_tags(){
+    global $db;
+    $id = $_POST['id'];
+    if( empty($id)){
+		msg(-1003,'链接ID不能为空！');
+	}elseif(md5($id) != $_POST['md5']){
+	    msg(-1003,'签名错误');
+	}
+    $idgroup = explode(",",$id);//分割文本
+    $fail = 0 ;
+    foreach($idgroup as $id){
+        $count = $db->count("on_links", ["tagid" => $id]); 
+        if($count > 0) { 
+            $fail++;
+        }else{
+            $re = $db->delete('lm_tag',['id'=>intval($id)]);
+            if( !( $re->rowCount() ) ){
+                $fail++;
+            }
+        }
+    }
+    msg(0,'处理完毕'.($fail>0?",{$fail}个失败!":'!'));
+}
+//标签组>编辑 
+function edit_tags(){
+    global $db;
+    $id = $_POST['id'];
+    $name = $_POST['name'];
+    $mark = $_POST['mark'];
+    $pass = $_POST['pass'];
+    $expire = $_POST['expire'];
+
+    if( empty($name) ) {
+        msg(-1111,'名称不能为空');
+    }elseif( !preg_match('/^[A-Za-z0-9]{1,13}$/', $mark) ) {
+        msg(-1111,'标识只能是13位内的数字和字母');
+    }elseif( !empty($expire) &&  !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/i',$expire)){
+        msg(-1111,'时间错误');
+    }elseif( strlen($name) > 128 ){
+        msg(-1111,'名称长度过长>128');
+    }elseif( strlen($pass) > 128 ){
+        msg(-1111,'密码长度过长>128');
+    }elseif(!is_subscribe()){
+        msg(-1111,'您未订阅,请先购买订阅!');
+    }
+    
+
+    $data = [
+            'name'           =>  htmlspecialchars($name),
+            'mark'         =>  htmlspecialchars($mark),
+            'pass'           =>  $pass,
+            'expire'      =>  strtotime($expire),
+            'up_time'      => time(),
+            ];
+    $re = $db->update('lm_tag',$data,[ 'id' => $id]);
+    $row = $re->rowCount();
+
+    if(!$row) {
+        msg(-1111,'修改失败,检查名称和标识是否重复!');
+    }else{
+        msg(0,'修改成功');
+    }
+}
+
+//标签组>设置
+function set_tags(){
+    global $db;
+    $taghome = $_POST['taghome']=='on'?'on':'off' ;
+    $tag_private = $_POST['tag_private']=='on'?'on':'off' ;
+    $tagin = $_POST['tagin'];
+
+    if( $tagin != 'id' && $tagin != 'mark' && $tagin != 'id/mark') {
+        msg(-1111,'参数错误 -2');
+    }
+    
+    Writeconfig('taghome',$taghome);
+    Writeconfig('tagin',$tagin);
+    Writeconfig('tag_private',$tag_private);
+    msg(0,'修改成功');
+
+}
+
+//标签组>链接表设标签
+function link_set_tag(){
+    if(!is_subscribe()){
+        msg(-1111,'您未订阅,请先购买订阅!');
+    }
+    global $db;
+    $lid = $_POST['lid'];
+    $tagid = $_POST['tagid'];
+    if($lid =='' || $tagid == ''){msg(-1003,'ID不能为空');}
+    $sql= "UPDATE on_links SET tagid = ".$tagid." where id in(".$lid.");";
+    $data =$db->query($sql);
+    $row = $data->rowCount();//返回影响行数
+    if($row){  
+        msg(0,'successful!');
+    }else{
+        msg(-1111,'修改失败!');
+    }
+}
+
+//标签组>列表 
+function tags_list(){
+    global $db;
+    $page = empty(intval($_REQUEST['page'])) ? 1 : intval($_REQUEST['page']);
+    $limit = empty(intval($_REQUEST['limit'])) ? 20 : intval($_REQUEST['limit']);
+    setcookie_lm_limit($limit);
+    $offset = ($page - 1) * $limit; //起始行号
+
+    //统计语句
+    $count_sql = "SELECT COUNT(1) AS COUNT FROM lm_tag";
+    //查询语句
+    $query_sql = "SELECT *,(SELECT count(*) FROM on_links  WHERE tagid = tag.id ) AS count FROM lm_tag AS tag LIMIT $limit OFFSET $offset";
+    //统计总数
+    $count_re = $db->query($count_sql)->fetchAll();
+    $count = intval($count_re[0]['COUNT']);
+    //查询
+    $datas = $db->query($query_sql)->fetchAll();  
+    msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas,
+    "sql" => $query_sql 
+    ]);
+}
+
+function set_subscribe(){
+    global $udb;
+    is_admin();
+    $data['order_id'] = htmlspecialchars( trim($_REQUEST['order_id']) ); //获取订单ID
+    $data['email'] = htmlspecialchars( trim($_REQUEST['email']) ); //获取邮箱
+    $data['end_time'] = htmlspecialchars( trim($_REQUEST['end_time']) );//到期时间
+    $data['host'] = $_SERVER['HTTP_HOST'];
+    $data['md5'] = md5($_SERVER['HTTP_HOST'].$data['order_id'].$data['email'].$data['end_time']); 
+    $value = serialize($data); //序列化存储
+    Writeconfigd($udb,'config','s_subscribe',$value); //序列化存储到数据库
+    msg(0,'保存成功');
+}
+function is_subscribe(){
+    global $udb;
+    $subscribe = unserialize($udb->get("config","Value",["Name"=>'s_subscribe']));
+    if(!empty( $subscribe['order_id']) && md5($_SERVER['HTTP_HOST'].$subscribe['order_id'].$subscribe['email'].$subscribe['end_time']) != $subscribe['md5']){
+        if($data['host'] === $_SERVER['HTTP_HOST']){
+            msg(-1111,'订阅效验失败,数据被篡改!');
+        }else{
+            msg(-1111,'订阅效验失败,域名已变更!');
+        }
+    }elseif(!empty( $subscribe['order_id']) && time() < intval($subscribe['end_time']) ){
+        return true;
+    }else{
+        if(empty( $subscribe['order_id'])){
+            return false;
+            msg(-1111,'您未订阅,请先订阅在使用!');
+        }else{
+            msg(-1111,'您的订阅已过期!');
+        }
+    }
+}
 
 function check_xss($value){
     if(preg_match('/<(iframe|script|body|img|layer|div|meta|style|base|object|input)|">/i',$value)){
@@ -2231,17 +2431,3 @@ function check_xss($value){
         return false;
     }
 }
-
-function get_http_code($url) { 
-        $curl = curl_init(); 
-        curl_setopt($curl, CURLOPT_URL, $url); //设置URL 
-        curl_setopt($curl, CURLOPT_HEADER, 1); //获取Header 
-        curl_setopt($curl, CURLOPT_NOBODY, true); //Body就不要了吧，我们只是需要Head 
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //数据存到成字符串吧，别给我直接输出到屏幕了 
-        $data = curl_exec($curl); //开始执行啦～ 
-        $return = curl_getinfo($curl, CURLINFO_HTTP_CODE); //我知道HTTPSTAT码哦～ 
-           
-        curl_close($curl); //用完记得关掉他 
-           
-        return $return; 
-    }

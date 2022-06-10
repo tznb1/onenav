@@ -114,11 +114,6 @@
             // 点击回调
             click: function (data) {
                 console.log(data);
-            //    if (data.icon.substr(0,3) =='lay'){
-            //       document.getElementsByName("name")[0].value = '<i class="layui-icon '+data.icon+'"></i>';
-            //    } else {
-            //       document.getElementsByName("name")[0].value = '<i class="fa '+data.icon+'"></i>';
-            //    }    
             },
             // 渲染成功后的回调
             success: function (d) {
@@ -141,13 +136,6 @@
             // 点击回调
             click: function (data) {
                 console.log(data);
-            //    if (data.icon.substr(0,3) =='lay'){
-            //       document.getElementsByName("name")[0].value = '<i class="layui-icon '+data.icon+'"></i>';
-            //    } else {
-            //       document.getElementsByName("name")[0].value = '<i class="fa '+data.icon+'"></i>';
-            //    }
-               
-                
             },
             // 渲染成功后的回调
             success: function (d) {

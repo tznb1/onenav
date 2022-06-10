@@ -1,6 +1,20 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年06月09日</h4>
+      <ul>
+        <li>修复主题更新点击没反应的bug</li>
+        <li>新增标签管理功能(支持访问密码,访问统计,到期时间等)</li>
+        <li>链接列表新增设标签按钮和标签筛选</li>
+        <li>标签组列表,支持点击ID和标识访问标签组页面,点击链接数跳到链接列表</li>
+        <li>新增订阅管理,管理员可配置,位于网站管理>订阅管理 (购买订阅后可使用更多功能)</li>
+        <li>网站管理页面支持Hash地址定位</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年06月04日</h4>
       <ul>
         <li>优化链接识别,提高识别率</li>

@@ -2,27 +2,81 @@
 if($libs==''){exit('<h3>非法请求</h3>');}//禁止直接访问此接口!
 Visit();//访问控制
 
+
+
 //如果已经登录，获取所有分类和链接
 $is_login=is_login2();
 
-if($is_login){
-    //查询所有分类目录
-    // $categorys = $db->select('on_categorys','*',[
-    //     "ORDER" =>  ["weight" => "DESC"]
-    // ]);
+$tag = Get('tag'); //获取标签信息
+$taghome = getconfig('taghome');//值为on时已设标签的链接不在主页显示
+if(!empty($tag)){
+    $s = unserialize($udb->get("config","Value",["Name"=>'s_subscribe']));
+    if (time() > intval($s['end_time']) ){
+        $msg = '<p>订阅授权无效!</p>';require('./templates/admin/403.php');exit();
+    }elseif($s['host'] != $_SERVER['HTTP_HOST']){
+        $msg = '<p>订阅域名和当前域名不符!</p>';require('./templates/admin/403.php');exit();
+    }
+    $tagin = getconfig('tagin','id/mark');
+    if($tagin == 'id'){
+        $tag_info = $db->get('lm_tag','*',['id'=>$tag]); 
+    }elseif($tagin == 'mark'){
+        $tag_info = $db->get('lm_tag','*',['mark'=>$tag]); 
+    }elseif($tagin == 'id/mark'){
+        $tag_info = $db->get('lm_tag','*',["OR" => ['id'=>$tag , 'mark'=>$tag ] ]); 
+    }
+    
+    if(empty($tag_info)){
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            msg(-5555,"未找到标签组");
+        }else{
+            $msg = '<p>未找到标签组</p>';require('./templates/admin/403.php');exit();
+        }
+    }
+    
+    //检查访问密码 S
+    $key = md5(getIP().$_SERVER['HTTP_USER_AGENT'].$tag_info['pass'].$tag_info['id']);
+    if(!empty($_POST['check'])){ 
+        if(empty($tag_info['pass'])){
+            msg(-1111,"该标签组未设置访问密码");
+        }elseif($_POST['check'] === $tag_info['pass']){
+            setcookie('tag_'.$tag_info['id'], $key, 0 ,"/",'',false,true);
+            msg(0,"验证通过");
+        }else{
+            msg(-5555,"验证失败");
+        }
+    }
+    //检查访问密码 E
+    
+    //存在访问密码,尝试读取Cookie记录 (登录状态忽略访问密码)
+    if(!empty($tag_info['pass']) && !$is_login){
+        $PassC = $_COOKIE['tag_'.$tag_info['id']];
+        if($PassC != $key){
+            //载入访问密码验证页面
+            $msg = '<p>请验证密码！</p>';require('./templates/admin/check_tag_pass.php');exit();
+        }
+    }
+    
+    //过期检测 (登录时忽略)
+    if( intval($tag_info['expire']) != 0 && intval($tag_info['expire']) < time() && !$is_login){
+        $msg = '<p>标签已过期！</p>';require('./templates/admin/403.php');exit();
+    }
+    
+    //浏览次数+1
+    $db->update('lm_tag',['views[+]'=>  1],['id'=>  $tag_info['id']]);
+}
+
+
+if($is_login && empty($tag)){
     //查询一级分类目录，分类fid为0的都是一级分类
     $category_parent = $db->select('on_categorys','*',[
         "fid"   =>  0,
         "ORDER" =>  ["weight" => "DESC"]
     ]);
-    
-
-    
+    //var_dump($category_parent);
     //根据分类ID查询二级分类，分类fid大于0的都是二级分类
     function get_category_sub($id) {
         global $db;
         $id = intval($id);
-
         $category_sub = $db->select('on_categorys','*',[
             "fid"   =>  $id,
             "ORDER"     =>  ["weight" => "DESC"]
@@ -33,24 +87,35 @@ if($is_login){
 
     //根据category id查询链接
     function get_links($fid) {
-        global $db;
+        global $db,$taghome;
         $fid = intval($fid);
-        $links = $db->select('on_links','*',[ 
-                'fid'   =>  $fid,
-                'ORDER' =>  ["weight" => "DESC"]
-            ]);
+        if($taghome == 'on'){
+            $links = $db->select('on_links','*',[ 'fid' => $fid,"tagid" => 0 ,'ORDER' => ["weight" => "DESC"]]);
+        }else{
+            $links = $db->select('on_links','*',[ 'fid' => $fid,'ORDER' => ["weight" => "DESC"]]);
+        }
         return $links;
     }
     //右键菜单标识
     $onenav['right_menu'] = 'admin_menu();';
-}
-//如果没有登录，只获取公有链接
-else{
-    //查询分类目录
-    // $categorys = $db->select('on_categorys','*',[
-    //     "property"  =>  0,
-    //     "ORDER" =>  ["weight" => "DESC"]
-    // ]);
+}elseif(!empty($tag)){  //访问标签组
+    $category_parent[0] = ['name' => $tag_info['name'] ,"Icon" =>"fa-pencil-square-o" , "id" => $tag_info['id'] ,"description" => "标签组链接"];
+    $onenav['right_menu'] = $is_login ? 'admin_menu();':'user_menu();'; 
+    function get_category_sub($id) {return;} //空的,为了不改主题的前提下不报错
+
+    function get_links($tag) {
+        global $db,$is_login;
+        if($is_login || getconfig('tag_private') == 'on'){
+            $links = $db->select('on_links','*',[ 'tagid' => $tag,'ORDER' => ["weight" => "DESC"]]);
+        }else{
+            $links = $db->select('on_links','*',[ 'tagid' => $tag,'property'  =>  0,'ORDER' => ["weight" => "DESC"]]);
+        }
+        
+        return $links;
+    }
+    
+    
+}else{ //如果没有登录，只获取公有链接
     //查询一级分类目录，分类fid为0的都是一级分类
     $category_parent = $db->select('on_categorys','*',[
         "fid"   =>  0,
@@ -72,13 +137,13 @@ else{
     }
     //根据category id查询链接
     function get_links($fid) {
-        global $db;
+        global $db,$taghome;;
         $fid = intval($fid);
-        $links = $db->select('on_links','*',[ 
-            'fid' =>  $fid,
-            'property'  =>  0,
-            'ORDER' =>  ["weight" => "DESC"]
-        ]);
+        if($taghome == 'on'){
+            $links = $db->select('on_links','*',[ 'fid' => $fid,'property'  =>  0,"tagid" => 0 ,'ORDER' => ["weight" => "DESC"]]);
+        }else{
+            $links = $db->select('on_links','*',[ 'fid' => $fid,'property'  =>  0,'ORDER' => ["weight" => "DESC"]]);
+        }
         return $links;
     }
     //右键菜单标识

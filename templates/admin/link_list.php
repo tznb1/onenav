@@ -9,6 +9,7 @@
         <div class="layui-input-inline">
         <select id="fid" name="categorys" lay-search >
         <option value="0" selected="">全部</option>
+        <optgroup label="用户分类">
 <?php 
         $categorys = get_category();
         foreach ($categorys as $category) {
@@ -19,10 +20,28 @@
             }
         
 }?>
+        </optgroup>
         </select>
         </div>
         </div>  
         
+        <div class="layui-inline layui-form">
+        <label class="layui-form-label " style="width:60px;padding-left: 5px;padding-right: 5px;">所属标签:</label>
+        <div class="layui-input-inline">
+        <select id="tagid" name="tagid" lay-search >
+        <option value="-1" selected="">全部</option>
+        <option value="0" >无标签</option>
+        <optgroup label="用户标签">
+<?php 
+        $tags = get_tags();
+        foreach ($tags as $tag) {
+            echo '        <option value="'.$tag['id'].'">'.$tag['name']."</option>\n";
+        
+}?>
+        </optgroup>
+        </select>
+        </div>
+        </div> 
         <div class="layui-inline layui-form" >
             <label class="layui-form-label layui-hide-sm" style="width:60px;padding-left: 5px;padding-right: 5px;">关键字:</label>
             <div class="layui-input-inline">
@@ -33,7 +52,6 @@
         <button class="layui-btn layui-btn " data-type="link_reload">搜索</button>
         </div>
         <table id="link_list" lay-filter="mylink"></table>
-        <!-- 开启表格头部工具栏 <button class="layui-btn layui-btn-sm " lay-event="tiquan">提权</button> -->
         <script type="text/html" id="linktool">
             <div class="layui-btn-container">
             <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="getCheckData">删除选中</button>
@@ -42,6 +60,7 @@
             <button class="layui-btn layui-btn-sm " lay-event="addlink">添加</button>
             <button class="layui-btn layui-btn-sm " lay-event="set_private">设为私有</button>
             <button class="layui-btn layui-btn-sm " lay-event="set_public">设为公有</button>
+            <button class="layui-btn layui-btn-sm " lay-event="set_tag">设标签</button>
         </div>
         </script>
         <!-- 开启表格头部工具栏END -->
@@ -52,5 +71,15 @@
     </script>
 </div>
 <!-- 内容主题区域END -->
+<?php 
+// $tags = $db->select('lm_tag','*');
+// if (count($tags)>0){
+//     echo "<script> var tag_data = [{title: '无标签',id: 100},{type: '-'}";
+//     foreach ($tags as $tag) {
+//         echo ",{title: '{$tag['name']}',id: {$tag['id']}}";
+//     }
+//     echo "] ; </script>";
+// }
+?>
 </div>
 <?php include_once('footer.php'); ?>

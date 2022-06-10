@@ -65,7 +65,7 @@ if($current_themes1 == $key && $current_themes2 == $key){
             if($online ){
                 echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm layui-btn-danger\" onclick = \"download_theme('$key','{$theme['info']->name}','{$theme['info']->desc}')\">下载</button>";
             }elseif($theme['info']->up == 1){
-                echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm layui-btn-danger\" onclick = \"download_theme('$key','{$theme['info']->name}')\">更新</button>";
+                echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm layui-btn-danger\" onclick = \"download_theme('$key','{$theme['info']->name}','{$theme['info']->desc}')\">更新</button>";
                 echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm\" onclick = \"set_theme('$key','{$theme['info']->name}')\">使用</button>";
             }else{
                 echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm\" onclick = \"set_theme('$key','{$theme['info']->name}')\">使用</button>";
@@ -108,7 +108,7 @@ if($current_Themeo == $key){
             if($online ){
                 echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm layui-btn-danger\" onclick = \"download_theme('$key','{$theme['info']->name}','{$theme['info']->desc}')\">下载</button>";
             }elseif($theme['info']->up == 1){
-                echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm layui-btn-danger\" onclick = \"download_theme('$key','{$theme['info']->name}')\">更新</button>";
+                echo "\n<button type=\"button\" class=\"layui-btn layui-btn-sm layui-btn-danger\" onclick = \"download_theme('$key','{$theme['info']->name}','{$theme['info']->desc}')\">更新</button>";
             }
             if(!$online ){
                 if($current_Themeo == $key){

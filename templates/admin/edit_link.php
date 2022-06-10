@@ -72,7 +72,6 @@
   <div class="layui-form-item">
     <div class="layui-input-block">
       <button class="layui-btn" lay-submit lay-filter="edit_link">更新</button>
-      <!-- <button class="layui-btn" lay-submit lay-filter="get_link_info">识别</button> -->
       <a href="javascript:;" class="layui-btn" onclick="get_link_info()">识别</a>
       <button type="reset" class="layui-btn layui-btn-primary">重置</button>
     </div>
