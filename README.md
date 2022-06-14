@@ -4,7 +4,7 @@ OneNav Extend  ( 原:魔改版 ) 是一款开源免费的书签（导航）管�
 - 演示站 : [https://demo.lm21.top]( https://demo.lm21.top) 
 - 如果您觉得还不错的话可以订阅支持下我,订阅后可使用更多的功能! [https://shop.xiaoz.top/productinfo-108.html]( https://shop.xiaoz.top/productinfo-108.html)  
 
-### 2022年06月13日
+### 2022年06月14日
 - 调整订阅验证机制,支持多域名,如需升级可联系我QQ271152681
 - 新增二级域名绑定账号支持,网站管理>二级域名 (需订阅)
 - 更换IP归属地查询接口,原用的网易好像挂了..
