@@ -10,12 +10,10 @@ $is_login=is_login2();
 $tag = Get('tag'); //获取标签信息
 $taghome = getconfig('taghome');//值为on时已设标签的链接不在主页显示
 if(!empty($tag)){
-    $s = unserialize($udb->get("config","Value",["Name"=>'s_subscribe']));
-    if (time() > intval($s['end_time']) ){
-        $msg = '<p>订阅授权无效!</p>';require('./templates/admin/403.php');exit();
-    }elseif($s['host'] != $_SERVER['HTTP_HOST']){
-        $msg = '<p>订阅域名和当前域名不符!</p>';require('./templates/admin/403.php');exit();
+    if ( ! is_subscribe(true) ){
+        $msg = '<p>订阅无效,请联系站长检查!</p>';require('./templates/admin/403.php');exit();
     }
+    $s = unserialize($udb->get("config","Value",["Name"=>'s_subscribe']));
     $tagin = getconfig('tagin','id/mark');
     if($tagin == 'id'){
         $tag_info = $db->get('lm_tag','*',['id'=>$tag]); 

@@ -74,6 +74,9 @@ if($current_themes1 == $key && $current_themes2 == $key){
                 <button type="button" class="layui-btn layui-btn-sm" onclick = "theme_detail('<?php echo $theme['info']->name; ?>','<?php echo $theme['info']->description; ?>','<?php echo $theme['info']->version; ?>','<?php echo $theme['info']->update; ?>','<?php echo $theme['info']->author; ?>','<?php echo $theme['info']->homepage; ?>','<?php echo $theme['info']->screenshot; ?>','<?php echo $key ?>')">详情</button>
                 <button type="button" class="layui-btn layui-btn-sm" onclick = "theme_preview('<?php echo $key ?>','<?php echo $theme['info']->name; ?>')" <?php echo $online? 'style="display:none;"':''; ?>>预览</button>
                 <button type="button" class="layui-btn layui-btn-sm" onclick = "theme_config('<?php echo $key ?>','<?php echo $theme['info']->name ?>')" <?php echo $theme['info']->config == '1'? '':'style="display:none;"'; ?>>配置</button>
+<?php  if($admin){ ?> 
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick = "theme_del('<?php echo $key ?>')" <?php echo $key != 'default' && !$online? '':'style="display:none;"'; ?>>删除</button>
+<?php  } ?> 
             </div>
         </div>
       </div>
@@ -122,6 +125,9 @@ if($current_Themeo == $key){
             ?>
                 
                 <button type="button" class="layui-btn layui-btn-sm" onclick = "theme_detail('<?php echo $theme['info']->name; ?>','<?php echo $theme['info']->description; ?>','<?php echo $theme['info']->version; ?>','<?php echo $theme['info']->update; ?>','<?php echo $theme['info']->author; ?>','<?php echo $theme['info']->homepage; ?>','<?php echo $theme['info']->screenshot; ?>','<?php echo $key ?>')">详情</button>
+<?php  if($admin){ ?> 
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick = "theme_del('<?php echo $key ?>')" <?php echo $key != 'default' && !$online? '':'style="display:none;"'; ?>>删除</button>
+<?php  } ?> 
             </div>
         </div>
       </div>

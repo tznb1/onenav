@@ -6,7 +6,7 @@
     <div class="layui-col-lg12">
         <div class="layui-inline layui-form">
         <label class="layui-form-label " style="width:60px;padding-left: 5px;padding-right: 5px;">所属分类:</label>
-        <div class="layui-input-inline">
+        <div id="fidmsg" class="layui-input-inline">
         <select id="fid" name="categorys" lay-search >
         <option value="0" selected="">全部</option>
         <optgroup label="用户分类">
@@ -27,7 +27,7 @@
         
         <div class="layui-inline layui-form">
         <label class="layui-form-label " style="width:60px;padding-left: 5px;padding-right: 5px;">所属标签:</label>
-        <div class="layui-input-inline">
+        <div id="tagidmsg" class="layui-input-inline">
         <select id="tagid" name="tagid" lay-search >
         <option value="-1" selected="">全部</option>
         <option value="0" >无标签</option>
@@ -50,7 +50,9 @@
         </div>
         <div class="layui-btn-group ">
         <button class="layui-btn layui-btn " data-type="link_reload">搜索</button>
-        </div>
+        </div>&emsp;
+        <span id = "testing" style = "display:none;">测试中...</span>
+        <span id = "subscribe" style = "display:none;"><?php echo is_subscribe(true)?'1':'0' ?></span>
         <table id="link_list" lay-filter="mylink"></table>
         <script type="text/html" id="linktool">
             <div class="layui-btn-container">
@@ -61,6 +63,7 @@
             <button class="layui-btn layui-btn-sm " lay-event="set_private">设为私有</button>
             <button class="layui-btn layui-btn-sm " lay-event="set_public">设为公有</button>
             <button class="layui-btn layui-btn-sm " lay-event="set_tag">设标签</button>
+            <button class="layui-btn layui-btn-sm layui-btn-danger" <?php echo $offline?'style="display:none;"':''?> lay-event="testing">检测</button>
         </div>
         </script>
         <!-- 开启表格头部工具栏END -->
@@ -70,6 +73,7 @@
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" onclick = "">删除</a>
     </script>
 </div>
+
 <!-- 内容主题区域END -->
 <?php 
 // $tags = $db->select('lm_tag','*');

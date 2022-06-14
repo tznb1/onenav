@@ -251,7 +251,7 @@ var link_list_cols=[[ //表头
       // ,{field: 'fid', title: '分类ID',sort:true, width:90}
       ,{field: 'category_name', title: '所属分类',sort:true,width:140}
       ,{field: 'url', title: 'URL',templet:function(d){
-        var url = '<a target = "_blank" href = "' + d.url + '" title = "' + d.url + '">' + d.url + '</a>';
+        var url = '<a color=""   target = "_blank" href = "' + d.url + '" title = "' + d.url + '">' + d.url + '</a>';
         return url;
       }}
       //,{field: 'tagid', title: 'tag', width:80, sort: true}
@@ -276,6 +276,7 @@ var link_list_cols=[[ //表头
     ]]
 intCols(); //读取筛选列
 
+var link_data=[]; //链接列表的ID和索引
 table.render({
     elem: '#link_list'
     ,height: 'full-150' //自适应高度
@@ -288,6 +289,12 @@ table.render({
     ,toolbar: '#linktool'
     ,id:'link_list'
     ,cols: link_list_cols
+    ,done: function (res, curr, count) {
+        for(var i=0;i<res.data.length;i++){
+            link_data[res.data[i].id] = i;
+            //$("div[lay-id='link_list'] td .layui-form-checkbox").eq(i).click();
+        }
+    }
 });
 
 //如果页面是链接列表
@@ -339,7 +346,7 @@ table.on('toolbar(mylink)', function(obj){
             text=fid.options[index].text;
             fid=fid.options[index].value;
             console.log(fid,text,id);
-            if (fid ==0){ layer.msg('分类不能为全部!', {icon: 2});return}
+            if (fid ==0){layer.tips("先在这里选择新分类再点击修改分类","#fidmsg",{tips: [1, "#03a9f4"],time: 9000}); layer.msg('分类不能为全部!', {icon: 2});return;}
             layer.confirm('确定要将所选链接转移到:'+text+'?', {
                title: "批量修改分类",
                btn: ['确定','取消'] //按钮 Mobile_class
@@ -366,7 +373,11 @@ table.on('toolbar(mylink)', function(obj){
             text=tagid.options[index].text;
             tagid=tagid.options[index].value;
             console.log(tagid,text,id);
-            if (tagid == '-1'){ layer.msg('所属标签不能为全部!', {icon: 2});return}
+            if (tagid == '-1'){ 
+                layer.tips("先在这里选择标签再点击设标签","#tagidmsg",{tips: [1, "#03a9f4"],time: 9000});
+                layer.msg('所属标签不能为全部!', {icon: 2});
+                return;
+            }
             layer.confirm(tagid == '0'?'所选的链接将去除标签':'所选的链接将被加入:'+text, {
                title: "批量设标签",
                btn: ['确定','取消'] 
@@ -415,8 +426,64 @@ table.on('toolbar(mylink)', function(obj){
         for (let i = 0; i < data.length; i++) {if (i < data.length-1){id +=data[i].id+','}else{id +=data[i].id}} //生成id表
         set_link_attribute(id,0);
           break;
+       case 'testing':
+           var data = checkStatus.data;
+           if ( data.length == 0 ) {layer.msg("请先选择要检测的链接",{icon:5});return true}
+           var open_index = layer.open({
+            title:'检测原理/注意事项'
+            ,content: "0.将勾选的链接通过服务器获取目标URL的状态码<br /> 1.不能检测内网/备用链接/其他链接(如迅雷等)<br />2.受限于网络的复杂性,检测结果仅供参<br />3.检测结束有问题的链接处于勾选状态<br />4.短时间的频繁请求可能被服务器视为CC攻击<br />5.本功能订阅可用,反馈和建议直接Q我<br />6.红色:无法连通(服务器和连接,不代表本机) <br />7.绿色:正常  黄色:重定向 <br />8.本功能不会修改和删除任何数据<br />"
+            ,btn: ['开始检测', '取消']
+            ,yes: function(index, layero){
+                console.log($("#subscribe").text());
+                if($("#subscribe").text() != '1' && data.length > 3){
+                    layer.msg("未检测到有效订阅,无法使用此功能!",{icon:5});
+                    return true;
+                }
+                var current = 0 ,fail = 0 ;
+                layer.load(2, {shade: [0.1,'#fff']});//加载层
+                $("#testing").show();//显示进度提示
+                layer.close(open_index); //关闭小窗口
+                layer.tips("正在检测中,请勿操作页面...","#testing",{tips: [3, "#3595CC"],time: 9000});
+                for (let i = 0; i < data.length; i++) {
+                    $.post("./index.php?c=api&method=testing_link&u="+u,{id:data[i].id},function(re,status){
+                        current++;
+                        $("#testing").text('正在检测中 '+current +"/"+data.length +',异常数:'+fail);
+                        if(re.StatusCode == 200 || re.StatusCode == 301 ||  re.StatusCode == 302  ){
+                            $("div[lay-id='link_list'] td .layui-form-checkbox").eq(link_data[re.link.id]).click();
+                            if (re.StatusCode  == 200){
+                                $("div[lay-id='link_list'] .layui-table-body tr").eq(link_data[re.link.id] ).css("color","limegreen");
+                            }else{
+                                $("div[lay-id='link_list'] .layui-table-body tr").eq(link_data[re.link.id] ).css("color","#ffb800");
+                            }
+                        }else{
+                            fail++;
+                            //$("div[lay-id='link_list'] .layui-table-body tr").eq(link_data[re.link.id] ).css("background-color","red");
+                            $("div[lay-id='link_list'] .layui-table-body tr").eq(link_data[re.link.id] ).css("color","red");
+                            $("div[lay-id='link_list'] .layui-table-body tr").eq(link_data[re.link.id] ).css("font-weight","bold");
+                            
+                            console.log('状态码: ' + re.StatusCode + ' > ID/URL >'+ re.link.id +' ' + re.link.url);
+                        }
+                        if( current == data.length ) {
+                            $("#testing").text('检测完毕,异常数:'+fail);
+                            layer.closeAll();//关闭所有
+                            layer.msg("检测完毕",{icon:1});
+                        }
+                    });
+                    
+                }
+                return false;
+            },btn2: function(index, layero){
+                return true;
+            },cancel: function(){ 
+                return true;
+            }
+          })
+           break;
     }
 });
+
+
+
 
 //设置链接属性，公有或私有
 function set_link_attribute(ids,property) {
@@ -839,6 +906,23 @@ function download_theme(dir,name,desc){
     }
     
 }
+//删除主题
+function theme_del(dir){
+    layer.load(1, {shade:[0.1,'#fff']});//加载层
+    layer.msg('正在删除,请稍后..', {offset: 'b',anim: 1,time: 60*1000});
+    $.post("/index.php?c=api&method=del_theme&u="+u,{dir:dir},function(data,status){
+        layer.closeAll();
+        if( data.code == 200 ) {
+            layer.msg(data.msg, {icon: 1});
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+        }
+        else{
+            layer.msg(data.msg, {icon: 5});
+        }
+    });
+}
 function download_theme2(dir,name,desc){
     layer.load(1, {shade:[0.1,'#fff']});//加载层
     layer.msg('下载安装中,请稍后..', {offset: 'b',anim: 1,time: 60*1000});
@@ -848,7 +932,7 @@ function download_theme2(dir,name,desc){
             layer.msg(data.msg, {icon: 1});
             setTimeout(() => {
                 location.reload();
-            }, 1000);
+            }, 500);
         }
         else{
             layer.msg(data.msg, {icon: 5});
@@ -878,7 +962,7 @@ function set_theme2(name,type) {
             layer.msg(data.msg, {icon: 1});
             setTimeout(() => {
                 location.reload();
-            }, 1000);
+            }, 500);
         }
         else{
             layer.msg(data.msg, {icon: 5});

@@ -5,11 +5,11 @@ if($udb->get("user","Level",["User"=>$u]) != 999){
     include_once('footer.php');
     exit;
 }
-$ICP    = $udb->get("config","Value",["Name"=>'ICP']);
-$footer = $udb->get("config","Value",["Name"=>'footer']);
+$ICP    = UGet('ICP');
+$footer = UGet('footer');
 $footer = htmlspecialchars_decode(base64_decode($footer));
-$Plug     = $udb->get("config","Value",["Name"=>'Plug']);
-$apply  = $udb->get("config","Value",["Name"=>'apply']);
+$Plug     = UGet('Plug');
+$apply  = UGet('apply');
 ?>
 
 <style type="text/css">
@@ -31,7 +31,7 @@ $apply  = $udb->get("config","Value",["Name"=>'apply']);
       <div class="layui-input-inline">
         <input type="text" name="DUser" id="DUser" lay-verify="required" value = '<?php echo $Duser;?>' placeholder='admin'  autocomplete="off" class="layui-input">
       </div>
-      <div class="layui-form-mid layui-word-aux">默认主页的账号,优先级:Get>Cookie>默认用户>admin</div>
+      <div class="layui-form-mid layui-word-aux">默认主页的账号,优先级:Get>Cookie/Host>默认用户>admin</div>
     </div>
  </div>
  <div class="layui-form-item">
@@ -168,13 +168,27 @@ $apply  = $udb->get("config","Value",["Name"=>'apply']);
       <label class="layui-form-label">收录功能</label>
       <div class="layui-input-inline">
       <select id="apply" name="apply"  >
-        <option value="0" <?php if($apply==0){echo'selected=""';}?>>关闭功能</option>
-        <option value="1" <?php if($apply==1){echo'selected=""';}?>>开启功能</option>
+        <option value="0" <?php if($apply==0){echo'selected=""';}?>>关闭</option>
+        <option value="1" <?php if($apply==1){echo'selected=""';}?>>开启</option>
       </select>
       </div>
       <div class="layui-form-mid layui-word-aux">此为全局开关,关闭后所有账号无法使用此功能,账号自己还可设置是否开启!</div>
     </div>
  </div>
+ 
+ <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">二级域名</label>
+      <div class="layui-input-inline">
+      <select id="Pandomain" name="Pandomain"  >
+        <option value="0" <?php if($Pandomain==0){echo'selected=""';}?>>关闭</option>
+        <option value="1" <?php if($Pandomain==1){echo'selected=""';}?>>开启</option>
+      </select>
+      </div>
+      <div class="layui-form-mid layui-word-aux">以二级域名的形式直接进入用户主页,需配置域名泛解析和服务器泛域名绑定(需订阅)</div>
+    </div>
+ </div>
+ 
   <div class="layui-form-item">
     <div class="layui-inline">
       <label class="layui-form-label">离线模式</label>
@@ -243,9 +257,11 @@ $apply  = $udb->get("config","Value",["Name"=>'apply']);
         <ol>
             <li>您可以在下方点击购买订阅，购买后可以：</li>
             <li>1. 可使用标签功能</li>
-            <li>2. 优先更新系统和主题</li>
-            <li>3. 更多高级功能开发中</li>
-            <li>4. 可帮助OneNav Extend持续发展，让它变得更加美好</li>
+            <li>2. 可使用二级域名绑定账号功能</li>
+            <li>3. 可使用链接检测功能</li>
+            <li>4. 建议和反馈优先处理</li>
+            <li>5. 更多高级功能开发中</li>
+            <li>6. 可帮助OneNav Extend持续发展，让它变得更加美好</li>
         </ol>
       </div>
     </div>
@@ -343,7 +359,7 @@ var user_cols=[[ //表头
       ,{field:'SQLite3',title:'数据库',minWidth:150,event: 'SetName', style:'cursor: pointer;'}
       ,{field:'Email',title:'Email',minWidth:170,sort:true}
       ,{field:'RegIP',title:'注册IP',minWidth:140,sort:true,templet:function(d){
-          return '<a style="color:#3c78d8" title="查询归属地" target="_blank" href="//ip.ws.126.net/ipquery?ip='+d.RegIP+'">'+d.RegIP+'</a>'
+          return '<a style="color:#3c78d8" title="查询归属地" target="_blank" href="//ip.cn/?ip='+d.RegIP+'">'+d.RegIP+'</a>'
       }}
  
       ,{field:'RegTime',title: '注册时间',minWidth:160,sort:true,templet:function(d){
@@ -528,14 +544,14 @@ form.on('submit(edit_root)', function(data){
   form.on('submit(set_subscribe)', function(data){
     var order_id = data.field.order_id;
     var index = layer.load(1);
-    $.get('https://onenav.xiaoz.top/onenav_extend/v1/check_subscribe.php?',data.field,function(data,status){
-      
+    $.get('https://api.lm21.top/api.php?fn=check_subscribe',data.field,function(data,status){
       if(data.code == 200) {
         email = data.data.email;
         end_time = data.data.end_time;
+        domain = data.data.domain;
         $("#end_time").val(timestampToTime(end_time));
         //存储到数据库中
-        $.post("./index.php?c=api&method=set_subscribe&u=<?php echo $u;?>",{order_id:order_id,email:email,end_time:end_time},function(data,status){
+        $.post("./index.php?c=api&method=set_subscribe&u=<?php echo $u;?>",{order_id:order_id,email:email,end_time:end_time,domain:domain},function(data,status){
           if(data.code == 0) {
             layer.closeAll('loading');
             layer.msg(data.msg, {icon: 1});

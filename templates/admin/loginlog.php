@@ -62,7 +62,7 @@ layui.use(['element','table','layer','form','util','dropdown'], function(){
 var loginlog_cols=[[ //表头
       {field:'name',title:'用户名',minWidth:120,sort:true}
       ,{field:'ip',title:'登录IP',minWidth:90,sort:true,templet:function(d){
-          return '<a style="color:#3c78d8" title="查询归属地" target="_blank" href="//ip.ws.126.net/ipquery?ip='+d.ip+'">'+d.ip+'</a>'
+          return '<a style="color:#3c78d8" title="查询归属地" target="_blank" href="//ip.cn/?ip='+d.ip+'">'+d.ip+'</a>'
       }}
       ,{field:'date',title:'登录时间',minWidth:150,sort:true,templet:function(d){
           if(d.date == null){return '';}

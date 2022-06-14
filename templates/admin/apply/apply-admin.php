@@ -216,7 +216,7 @@ var cols=[[
       ,{field:'category_name',title:'分类',minWidth:120,sort:true}
       ,{field:'email',title:'Email',minWidth:120,sort:true}
       ,{field:'ip',title:'申请者IP',minWidth:140,sort:true,templet:function(d){
-          return '<a style="color:#3c78d8" title="查询归属地" target="_blank" href="//ip.ws.126.net/ipquery?ip='+d.ip+'">'+d.ip+'</a>'
+          return '<a style="color:#3c78d8" title="查询归属地" target="_blank" href="//ip.cn/?ip='+d.ip+'">'+d.ip+'</a>'
       }}
       ,{field:'time',title: '申请时间',minWidth:160,sort:true,templet:function(d){
           if(d.time == null){return '';}

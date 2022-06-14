@@ -297,7 +297,7 @@ function link_list(){
     //查询
     $datas = $db->query($query_sql)->fetchAll();  
     msgA(['code'=>0,'msg'=>'','count'=>$count,'data'=>$datas,
-    "sql" => $query_sql 
+    //"sql" => $query_sql 
     ]);
 }
 
@@ -889,7 +889,11 @@ function edit_homepage(){
 function set_theme(){
     $type = $_REQUEST['type'];
     $name = $_REQUEST['name'];
-    
+    if( (!file_exists('./templates/'.$name) || empty($name)) && ($type != 'o' && !empty($type) )){
+        msg(-1000,'主题不存在');
+    }elseif ( !preg_match("/^[a-zA-Z0-9][a-zA-Z0-9-_]+[a-zA-Z0-9]$/",$name) ) { 
+        msg(-2000,"主题名称不合法！");
+    }
     if( $type == 'PC/Pad'){
         Writeconfig('Theme' , $name);
         Writeconfig('Theme2', $name);
@@ -902,9 +906,46 @@ function set_theme(){
     }else{
         msg(-1000,'参数错误');
     }
-    //加个检测是否存在!
     msg(0,'设置成功');
 }
+//删除主题
+function del_theme(){
+    is_admin();
+    $name = $_POST['dir'];
+    if ( !preg_match("/^[a-zA-Z0-9][a-zA-Z0-9-_]+[a-zA-Z0-9]$/",$name) ) { 
+        msg(-2000,"主题名称不合法！");
+    }elseif( ($name === 'default') || ($name === 'admin') ) { 
+        msg(-2000,"默认主题不允许删除！");
+    }
+    deldir("templates/".$name);
+    if( is_dir("./templates/".$name) ) {
+        msg(-2000,"删除失败，可能是权限不足！");
+    }else{
+        msg(200,"主题已删除！");
+    }
+}
+function deldir($dir) {
+        //先删除目录下的文件：
+        $dh=opendir($dir);
+        while ($file=readdir($dh)) {
+          if($file!="." && $file!="..") {
+            $fullpath=$dir."/".$file;
+            if(!is_dir($fullpath)) {
+                unlink($fullpath);
+            } else {
+                deldir($fullpath);
+            }
+          }
+        }
+       
+        closedir($dh);
+        //删除当前文件夹：
+        if(rmdir($dir)) {
+          return true;
+        } else {
+          return false;
+        }
+    }
 //主题下载
 function download_theme(){
     global $offline,$udb,$version;
@@ -1074,6 +1115,7 @@ function edit_root(){
     $Plug       = $_POST['Plug'];  //插件支持
     $apply      = $_POST['apply'];  //收录功能
     $offline    = $_POST['offline'];  //离线模式
+    $Pandomain  = $_POST['Pandomain']; //泛域名
     if($udb->get("user","Level",["User"=>$u]) !== '999'){ //权限判断
         msg(-1102,'您没有权限修改全局配置!');
     }elseif($udb->count("user",["User"=>$DUser]) === 0 ){ //账号检测
@@ -1102,6 +1144,10 @@ function edit_root(){
         msg(-1103,'收录功能参数错误!');
     }elseif($offline !== '0' && $offline !== '1'){
         msg(-1103,'离线模式参数错误!');
+    }elseif($Pandomain !== '0' && $Pandomain !== '1'){
+        msg(-1103,'泛域名参数错误!');
+    }elseif($Pandomain == '1' && !is_subscribe(true)){
+        msg(-1103,'未检测到有效订阅,无法开启泛域名功能!');
     }
 
     Writeconfigd($udb,'config','DUser',$DUser);
@@ -1119,6 +1165,7 @@ function edit_root(){
     Writeconfigd($udb,'config','apply',$apply);
     Writeconfigd($udb,'config','footer',base64_encode($footer));
     Writeconfigd($udb,'config','offline',$offline);
+    Writeconfigd($udb,'config','Pandomain',$Pandomain);
     msg(0,'successful');
 }
 
@@ -1213,6 +1260,16 @@ function edit_property(){
             msg(-1010,'链接ID不存在！');
         }
     }
+}
+
+//检测链接是否有效
+function testing_link(){
+    global $db,$offline;
+    if ( $offline ){ msg(-5555,"离线模式无法使用此功能"); }
+    $id = intval(@$_POST['id']);
+    $link = $db->get('on_links',['id','url','title'],['id'=>$id]);
+    $code = get_http_code($link['url']);
+    msgA(['code' => 0 ,'StatusCode' => $code , 'link' => $link ]);
 }
 
 //查询用户列表
@@ -1662,7 +1719,7 @@ function Onecheck(){
     //检查PHP版本，需要大于5.6小于8.0
     $php_version = floatval(PHP_VERSION);
     $log = $log . "PHP版本：{$php_version}\n";
-    
+    $log = $log . "Web版本：{$_SERVER['SERVER_SOFTWARE']}\n";
     
     if( ( $php_version < 5.6 ) || ( $php_version > 8 ) ) {
         $log = $log . "PHP版本：不满足要求,需要5.6 <= PHP <= 7.4,建议使用7.4 )\n";
@@ -2248,7 +2305,7 @@ function add_tags(){
         msg(-1111,'名称长度过长>128');
     }elseif( strlen($pass) > 128 ){
         msg(-1111,'密码长度过长>128');
-    }elseif(!is_subscribe()){
+    }elseif(!is_subscribe(true)){
         msg(-1111,'您未订阅,请先购买订阅!');
     }
     $data = [
@@ -2397,32 +2454,24 @@ function set_subscribe(){
     $data['order_id'] = htmlspecialchars( trim($_REQUEST['order_id']) ); //获取订单ID
     $data['email'] = htmlspecialchars( trim($_REQUEST['email']) ); //获取邮箱
     $data['end_time'] = htmlspecialchars( trim($_REQUEST['end_time']) );//到期时间
-    $data['host'] = $_SERVER['HTTP_HOST'];
-    $data['md5'] = md5($_SERVER['HTTP_HOST'].$data['order_id'].$data['email'].$data['end_time']); 
+    $data['domain'] = htmlspecialchars( trim($_REQUEST['domain']) );//支持域名
+    $data['host'] = $_SERVER['HTTP_HOST']; //当前域名
+    if(empty($data['order_id'])&&empty($data['email'])&&empty($data['end_time'])){
+        $value = serialize($data); //序列化存储
+        Writeconfigd($udb,'config','s_subscribe',$value); //序列化存储到数据库
+        msg(0,'清除成功');
+    }
+    if (preg_match('/(.+)\.(.+\..+)/i',$_SERVER["HTTP_HOST"],$HOST) ){$data['host'] = $HOST[2];} //取根域名
+    if(!strstr($data['domain'],$data['host'])){
+        msg(-1111,"您的订阅不支持当前域名 >> ".$_SERVER['HTTP_HOST']);
+    }elseif($data['end_time'] < time()){
+        msg(-1111,"您的订阅已过期!");
+    }
     $value = serialize($data); //序列化存储
     Writeconfigd($udb,'config','s_subscribe',$value); //序列化存储到数据库
     msg(0,'保存成功');
 }
-function is_subscribe(){
-    global $udb;
-    $subscribe = unserialize($udb->get("config","Value",["Name"=>'s_subscribe']));
-    if(!empty( $subscribe['order_id']) && md5($_SERVER['HTTP_HOST'].$subscribe['order_id'].$subscribe['email'].$subscribe['end_time']) != $subscribe['md5']){
-        if($data['host'] === $_SERVER['HTTP_HOST']){
-            msg(-1111,'订阅效验失败,数据被篡改!');
-        }else{
-            msg(-1111,'订阅效验失败,域名已变更!');
-        }
-    }elseif(!empty( $subscribe['order_id']) && time() < intval($subscribe['end_time']) ){
-        return true;
-    }else{
-        if(empty( $subscribe['order_id'])){
-            return false;
-            msg(-1111,'您未订阅,请先订阅在使用!');
-        }else{
-            msg(-1111,'您的订阅已过期!');
-        }
-    }
-}
+
 
 function check_xss($value){
     if(preg_match('/<(iframe|script|body|img|layer|div|meta|style|base|object|input)|">/i',$value)){

@@ -1,6 +1,20 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年06月14日</h4>
+      <ul>
+        <li>调整订阅验证机制,支持多域名,如需升级可联系我QQ271152681</li>
+        <li>新增二级域名绑定账号支持,网站管理>二级域名 (需订阅)</li>
+        <li>更换IP归属地查询接口,原用的网易好像挂了..</li>
+        <li>新增主题删除按钮,管理员可用</li>
+        <li>新增链接检测 (订阅可用,通过获取状态码来判断,检测结果仅供参考)</li>
+        <li>链接列表优化操作指引</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年06月09日</h4>
       <ul>
         <li>修复主题更新点击没反应的bug</li>

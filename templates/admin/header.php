@@ -32,6 +32,7 @@
 <?php if($udb->get("config","Value",["Name"=>'apply']) == 1 ){
             echo '          <dd><a href="./index.php?c=admin&page=apply/apply-admin&u=<?php echo $u?>"><i class="layui-icon layui-icon-release"></i> 收录管理</a></dd>'."\n";
             }?>
+          <dd><a href="./index.php?c=admin&page=tags&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-share"></i> 标签管理</a></dd>
           <dd><a href="./index.php?c=admin&page=link_list&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-link"></i> 我的链接</a></dd>
           <dd><a href="./index.php?c=admin&page=add_link&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加链接</a></dd>
           <dd><a href="./index.php?c=admin&page=category_list&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-list"></i> 分类列表</a></dd>

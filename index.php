@@ -10,19 +10,27 @@ require ('./class/Class.php');//载入函数库
 $udb = new Medoo\Medoo(['database_type'=>'sqlite','database_file'=>'./data/lm.user.db3']);
 $c = Get('c');$u = Get('u');
 $CookieU  = $_COOKIE['DefaultDB'];
-$Duser    = $udb->get("config","Value",["Name"=>'DUser']);//默认用户
-$reg      = $udb->get("config","Value",["Name"=>'Reg']);//0.禁止注册 1.允许注册
-$Register = $udb->get("config","Value",["Name"=>'Register']);//注册入口 
-$login    = $udb->get("config","Value",["Name"=>'Login']); //登陆入口名
-$libs     = $udb->get("config","Value",["Name"=>'Libs']); //静态库路径
-$IconAPI  = $udb->get("config","Value",["Name"=>'IconAPI']); //图标API编号
-$Visit    = $udb->get("config","Value",["Name"=>'Visit']); //访问控制
-$Diy      = $udb->get("config","Value",["Name"=>'Diy']); //自定义代码
-$XSS      = $udb->get("config","Value",["Name"=>'XSS']);  //防XSS脚本
-$SQL      = $udb->get("config","Value",["Name"=>'SQL']);  //防SQL注入
-$offline  = $udb->get("config","Value",["Name"=>'offline']) == 1? true:false;  //离线模式
-
-$u = !empty($u)?$u:(!empty($CookieU)?$CookieU:(!empty($Duser)?$Duser:'admin'));//优先级:Get>Cookie>默认用户>admin
+$Duser    = UGet('DUser');//默认用户
+$reg      = UGet('Reg');//0.禁止注册 1.允许注册
+$Register = UGet('Register');//注册入口 
+$login    = UGet('Login'); //登陆入口名
+$libs     = UGet('Libs'); //静态库路径
+$IconAPI  = UGet('IconAPI'); //图标API编号
+$Visit    = UGet('Visit'); //访问控制
+$Diy      = UGet('Diy'); //自定义代码
+$XSS      = UGet('XSS');  //防XSS脚本
+$SQL      = UGet('SQL');  //防SQL注入
+$offline  = UGet('offline') == 1? true:false;  //离线模式
+$Pandomain = UGet('Pandomain') == 1? true:false; //泛域名
+if($Pandomain && is_subscribe(true)){
+    if (preg_match('/(.+)\.(.+\..+)/i',$_SERVER["HTTP_HOST"],$HOST) ){
+        $twou = $udb->get("user","User",["User"=>$HOST[1]]);
+        if (!empty($twou)) {
+            $CookieU = $HOST[1];
+        }
+    }
+}
+$u = !empty($u)?$u:(!empty($CookieU)?$CookieU:(!empty($Duser)?$Duser:'admin'));//优先级:Get>Cookie/Host>默认用户>admin
 $version  = get_version();//全局版本号
 if($c !== $Register){
     $userdb   = $udb->get("user","*",["User"=>$u]);

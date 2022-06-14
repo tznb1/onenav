@@ -1,4 +1,45 @@
 <?php
+//获取URL状态码
+function get_http_code($url) { 
+        $curl = curl_init(); 
+        curl_setopt($curl, CURLOPT_URL, $url); //设置URL 
+        curl_setopt($curl, CURLOPT_HEADER, 1); //获取Header 
+        curl_setopt($curl, CURLOPT_NOBODY, true); //Body就不要了吧，我们只是需要Head 
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //数据存到成字符串吧，别给我直接输出到屏幕了 
+        curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+        $data = curl_exec($curl); //开始执行啦～ 
+        $return = curl_getinfo($curl, CURLINFO_HTTP_CODE); //我知道HTTPSTAT码哦～ 
+
+        curl_close($curl); //用完记得关掉他 
+        return $return; 
+    }
+
+//取主表配置
+function UGet($Name){ global $udb; return $udb->get("config","Value",["Name"=>$Name]); }
+//订阅验证
+function is_subscribe($Bool = false){
+    global $udb;$msg = '';
+    $subscribe = unserialize($udb->get("config","Value",["Name"=>'s_subscribe']));
+    $data['host'] = $_SERVER['HTTP_HOST']; //当前域名
+    if ( preg_match('/(.+)\.(.+\..+)/i',$_SERVER["HTTP_HOST"],$HOST) ){$data['host'] = $HOST[2];} //取根域名
+    if ( empty( $subscribe['order_id']) ){ //单号为空
+        $msg ='您未订阅,请先订阅在使用';
+    }elseif(!strstr( $subscribe['domain'] , $data['host'] ) && !strstr( $subscribe['host'] , $data['host'] ) ){
+        $msg = "您的订阅不支持当前域名 >> ".$_SERVER['HTTP_HOST'];
+    }elseif(time() > intval($subscribe['end_time'])){
+        $msg ='您的订阅已过期'.$subscribe['end_time'];
+    }
+    if ($Bool){
+        return empty($msg);
+    }else{
+        if(empty($msg)){
+            return true;
+        }else{
+            msg(-1255,$msg);
+        }
+    }
+}
+
 function ccurl($url,$overtime = 3){
     try {
         $curl  =  curl_init ( $url ) ; //初始化
