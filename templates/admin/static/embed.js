@@ -910,7 +910,7 @@ function download_theme(dir,name,desc){
 function theme_del(dir){
     layer.load(1, {shade:[0.1,'#fff']});//加载层
     layer.msg('正在删除,请稍后..', {offset: 'b',anim: 1,time: 60*1000});
-    $.post("/index.php?c=api&method=del_theme&u="+u,{dir:dir},function(data,status){
+    $.post("./index.php?c=api&method=del_theme&u="+u,{dir:dir},function(data,status){
         layer.closeAll();
         if( data.code == 200 ) {
             layer.msg(data.msg, {icon: 1});
@@ -926,7 +926,7 @@ function theme_del(dir){
 function download_theme2(dir,name,desc){
     layer.load(1, {shade:[0.1,'#fff']});//加载层
     layer.msg('下载安装中,请稍后..', {offset: 'b',anim: 1,time: 60*1000});
-    $.post("/index.php?c=api&method=download_theme&u="+u,{dir:dir,name:name},function(data,status){
+    $.post("./index.php?c=api&method=download_theme&u="+u,{dir:dir,name:name},function(data,status){
         layer.closeAll();
         if( data.code == 0 ) {
             layer.msg(data.msg, {icon: 1});
@@ -957,7 +957,7 @@ function set_theme(key,name) {
 }
 function set_theme2(name,type) {
     console.log(type,name);
-    $.post("/index.php?c=api&method=set_theme&u="+u,{type:type,name:name},function(data,status){
+    $.post("./index.php?c=api&method=set_theme&u="+u,{type:type,name:name},function(data,status){
         if( data.code == 0 ) {
             layer.msg(data.msg, {icon: 1});
             setTimeout(() => {

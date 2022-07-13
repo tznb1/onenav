@@ -12,7 +12,7 @@ if(empty($id)) {
 }
 
 //查询链接信息
-$link = $db->get('on_links',['id','fid','url','url_standby','property','click','title','description'],[
+$link = $db->get('on_links',['id','fid','url','url_standby','property','click','title','description','tagid'],[
     'id'    =>  $id
 ]);
 
@@ -38,6 +38,14 @@ $category = $db->get('on_categorys',['id','property'],[
     'id'    =>  $link['fid']
 ]);
 
+//标签组>特定条件下允许访问私有链接
+if( getconfig('tag_private')=='on' && !empty($link['tagid'])){
+    $tag_info = $db->get('lm_tag','*',['id'=>$link['tagid']]); 
+    if ( preg_match('/tag=('.$tag_info['id'].'|'.$tag_info['mark'].')/',$_SERVER['HTTP_REFERER']) ) { 
+        $allow = true;
+    }
+}
+
 $ICP    = $udb->get("config","Value",["Name"=>'ICP']);
 $Ofooter = $udb->get("config","Value",["Name"=>'footer']);
 $Ofooter = htmlspecialchars_decode(base64_decode($Ofooter));
@@ -45,8 +53,8 @@ $urlz = getconfig('urlz');
 $visitorST = getconfig('visitorST');
 $adminST = getconfig('adminST');
 
-//link.id为公有，且category.id为公有
-if( ( $link['property'] == 0 ) && ($category['property'] == 0) ){
+//link.id为公有，且category.id为公有 或标签组允许
+if( ( $link['property'] == 0 ) && ($category['property'] == 0) || $allow){
     //增加link.id的点击次数
     $click = $link['click'] + 1;
     //更新数据库

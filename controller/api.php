@@ -891,7 +891,7 @@ function set_theme(){
     $name = $_REQUEST['name'];
     if( (!file_exists('./templates/'.$name) || empty($name)) && ($type != 'o' && !empty($type) )){
         msg(-1000,'主题不存在');
-    }elseif ( !preg_match("/^[a-zA-Z0-9][a-zA-Z0-9-_]+[a-zA-Z0-9]$/",$name) ) { 
+    }elseif ( !preg_match("/^[a-zA-Z0-9_-]{1,64}$/",$name) ) { 
         msg(-2000,"主题名称不合法！");
     }
     if( $type == 'PC/Pad'){
@@ -912,7 +912,7 @@ function set_theme(){
 function del_theme(){
     is_admin();
     $name = $_POST['dir'];
-    if ( !preg_match("/^[a-zA-Z0-9][a-zA-Z0-9-_]+[a-zA-Z0-9]$/",$name) ) { 
+    if ( !preg_match("/^[a-zA-Z0-9_-]{1,64}$/",$name) ) { 
         msg(-2000,"主题名称不合法！");
     }elseif( ($name === 'default') || ($name === 'admin') ) { 
         msg(-2000,"默认主题不允许删除！");
