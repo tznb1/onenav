@@ -5,10 +5,10 @@
 	"data":	
 	[{
 			"version":	"0.9.23",
-			"update":	"20220714",
-			"md5":	"bf36455b5c13351263241db759d136e3",
-			"url1":	"https://update.lm21.top/OneNav/updata/v0.9.23-20220714-Mini.tar.gz",
-			"url2":	"https://gitee.com/tznb/OneNav/raw/data/updata/v0.9.23-20220714-Mini.tar.gz",
+			"update":	"20220715",
+			"md5":	"8cab95bdb2ac0b66ed1495d02a61ccad",
+			"url1":	"https://update.lm21.top/OneNav/updata/v0.9.23-20220715-Mini.tar.gz",
+			"url2":	"https://gitee.com/tznb/OneNav/raw/data/updata/v0.9.23-20220715-Mini.tar.gz",
 			"desc":	"",
 			"low":	20220527,
 			"high":	20290604
