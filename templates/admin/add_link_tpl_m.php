@@ -76,6 +76,7 @@
 <script>
 var u = '<?php echo $u?>';
 </script>
-<script src="./templates/admin/static/embed.js"></script>
+<script src = "./templates/admin/static/embed.js?v=<?php echo $version; ?>"></script>
+<script src = "./templates/admin/static/public.js?t=<?php echo $version; ?>"></script>
 </body>
 </html>

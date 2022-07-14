@@ -1,11 +1,12 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
-      <h4 class="layui-timeline-title">2022年07月14日</h4>
+      <h4 class="layui-timeline-title">2022年07月15日</h4>
       <ul>
         <li>修复部分主题因名称检测规则造成无法切换和删除的问题</li>
         <li>修复二级目录运行时无法下载/切换/删除主题的问题</li>
         <li>修复标签组遇到链接为私有且跳转模式非直连时无法跳转的问题 (注:有来路检测,必须是主页跳转的才会放行!)</li>
+        <li>修复快速添加无法使用的问题</li>
       </ul>
     </div>
 </li>
