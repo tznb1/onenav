@@ -1,0 +1,98 @@
+/* 移动端 */
+@media screen and (max-width: 768px) {
+    .layui-layout-admin .layui-layout-left,
+    .layui-layout-admin .layui-body,
+    .layui-layout-admin .layui-footer{left: 0;}
+    .layui-layout-admin .layui-side{left: -300px;}
+    /* 顶部栏高度调小,字体调大 */ 
+    .layui-header{height: 40px;} 
+    .layui-nav .layui-nav-item {height: 40px; line-height: 40px; }
+    .layui-nav a { font-size: 18px;}
+    
+    .layui-form {margin-top: 3px;}
+    .layui-input-inline {width: 212px;}
+    .layui-form-item { margin-bottom: 6px;}
+    
+    .layui-form-item .layui-inline {margin-bottom: 2px;margin-right: auto;}
+}
+
+.layui-body {
+    padding: 15px;
+    bottom: auto;
+}
+
+/* 修改左侧栏宽度 */ 
+.layui-layout-admin .layui-side{
+    top:60px;
+    width:138px;
+}
+.layui-body {
+    left: 138px;
+}
+.layui-nav-tree{
+    width:138px;
+}
+
+
+/* 登陆/注册 */
+.login-logo h1{
+    color:#FFFFFF;
+    text-align: center;
+}
+.login-logo{
+    max-width: 400px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:5em;
+}
+
+/* msg弹窗提醒 */
+.msg{
+    width:auto;
+    line-height: 16px;
+    position: fixed;
+    top:2em;
+    border: 1px #009933 solid;
+    border-radius: 3px;
+    display: none;
+}
+.admin-msg{
+    background-color: #f2f2f2;
+    line-height: 14px;
+    padding:1em;
+    border-radius: 5px;
+    color:#888888;
+}
+.admin-msg a{
+    color:#01AAED;
+}
+/* 上传按钮 */
+#up_html{
+    margin-left:auto;
+    margin-right:auto;
+    width: 100%;
+    margin-bottom: 2em;
+    -moz-box-sizing: border-box; /*Firefox3.5+*/
+	-webkit-box-sizing: border-box; /*Safari3.2+*/
+	-o-box-sizing: border-box; /*Opera9.6*/
+	-ms-box-sizing: border-box; /*IE8*/
+	box-sizing: border-box; 
+    left:0%;
+}
+
+/* 后台设置提醒 */
+.setting-msg{
+    width:100%;
+    color: #FF5722;
+    border-left: 3px solid #FF5722;
+    background-color: #F0F0F0;
+    padding:0.8em;
+    border-radius: 1px;
+    margin-bottom:2em;
+    -moz-box-sizing: border-box; /*Firefox3.5+*/
+	-webkit-box-sizing: border-box; /*Safari3.2+*/
+	-o-box-sizing: border-box; /*Opera9.6*/
+	-ms-box-sizing: border-box; /*IE8*/
+	box-sizing: border-box; 
+}
