@@ -1,7 +1,7 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
-      <h4 class="layui-timeline-title">2022年10月10日</h4>
+      <h4 class="layui-timeline-title">2022年10月06日</h4>
       <ul>
         <li>书签管理新增本地备份,在原版的基础新增: 分类数,链接数,备注的显示!回滚时效验文件是否损坏或被篡改!</li>
         <li>订阅管理处显示您的域名,以免大家订阅时填错!</li>
