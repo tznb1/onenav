@@ -1,11 +1,22 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年10月10日</h4>
+      <ul>
+        <li>书签管理新增本地备份,在原版的基础新增: 分类数,链接数,备注的显示!回滚时效验文件是否损坏或被篡改!</li>
+        <li>订阅管理处显示您的域名,以免大家订阅时填错!</li>
+        <li>调整后台左侧导航栏突出显示当前菜单</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年10月04日</h4>
       <ul>
         <li>修复已知bug,兼容性优化(PHP8)</li>
         <li>优化主题模板预览图的显示效果</li>
-        <li>网站管理新增强制私有:可设置全站用户必须登录才可访问书签(防止用户添加非法链接被封站)</li>
+        <li>网站管理新增强制私有选项</li>
         <li>订阅通道更变,新增查询订阅按钮(输入邮箱即可查询订单号)</li>
       </ul>
     </div>
@@ -71,7 +82,7 @@
         <li>新增登录页和过渡页模板支持,位于主题模板>其他模板 (下载/更新/切换都在这里操作)</li>
         <li>其他模板>新上架:涂山简约(含登录页/过渡页)</li>
         <li>其他细节调整</li>
-        <li><a href="https://doc.xiaoz.me/books/onenav-extend/page/docker" target="_blank">Docker支持:请使用容器安装的用户更新一下镜像!已支持主题下载和系统更新! </a></li>
+        <li><a href="https://gitee.com/tznb/OneNav/wikis/%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/Docker%20%E5%AE%89%E8%A3%85" target="_blank">Docker支持:请使用容器安装的用户更新一下镜像!已支持主题下载和系统更新! </a></li>
       </ul>
     </div>
 </li>
@@ -188,7 +199,7 @@
         <li>新增离线站点图标 (使用标题第一个字符),站长在网站管理,图标API设置!</li>
         <li>修复baisu主题修改二级分类导致分类变一级的问题(后端修复法)</li>
         <li>新增一键诊断功能 (在后台首页>日志输出>一键诊断)</li>
-        <li>浏览器插件更新Extend专用版 <a href="https://doc.xiaoz.me/books/onenav-extend/page/chrome" target="_blank">(帮助说明)</a></li>
+        <li>浏览器插件更新Extend专用版 </li>
         <li>支持记忆表格每页数量(Cookie)</li>
       </ul>
     </div>
@@ -305,7 +316,7 @@
       <h4 class="layui-timeline-title">2022年03月29日</h4>
       <ul>
         <li>修复禁止访问时管理员账号也无法跳转</li>
-        <li>修复插件支持的伪静态导致本地图标API异常(<a href="https://doc.xiaoz.me/link/62#bkmrk-%E5%AE%89%E5%85%A8%E8%AE%BE%E7%BD%AE" target="_blank">请重新配置伪静态</a>)</li>
+        <li>修复插件支持的伪静态导致本地图标API异常(<a href="https://gitee.com/tznb/OneNav/wikis/%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/%E5%AE%89%E8%A3%85" target="_blank">请重新配置伪静态</a>)</li>
         <li>修复默认主题快速添加异常</li>
         <li>修复百素two无法搜索描述内容和分类图标的问题(是我适配不到位..)</li>
       </ul>
@@ -326,7 +337,7 @@
     <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年03月15日</h4>
       <ul>
-        <li>网站管理新增:插件支持,选择兼容模式时,可以使用xiaoz开发的uTools插件</li>
+        <li>网站管理新增:插件支持,选择兼容模式时,可以使用小z开发的uTools插件</li>
         <li>注:使用兼容模式2时,API将允许访客调用公开数据(分类和链接)</li>
         <li>新增API：根据ID查询单个分类信息,id支持get和post提交</li>
       </ul>

@@ -146,11 +146,9 @@ function Notice(){
 <div class="layui-tab-item"><!--开发文档-->
 
 
-<blockquote class="layui-elem-quote layui-text">此版项目地址：<a href="https://gitee.com/tznb/OneNav" target="_blank">Gitee    </a>&ensp;<a href="https://github.com/tznb1/onenav" target="_blank">Github   </a>&ensp; QQ: 271152681&ensp; PS:各位大哥,如果可以的话麻烦大家帮忙宣传一下..目前用户数太少了,根本没动力更新!</blockquote>
-<blockquote class="layui-elem-quote layui-text">原著项目地址 ：<a href="https://github.com/helloxz/onenav" target="_blank">github</a>&ensp; QQ群1：147687134 &ensp;QQ群2：932795364&ensp;QQ:337003006</blockquote>
-<blockquote class="layui-elem-quote layui-text">帮助文档 ：<a href="https://doc.xiaoz.me/books/onenav-extend" target="_blank">藏经阁&ensp;</a><a href="https://gitee.com/tznb/OneNav/wikis/" target="_blank">码云Wiki</a></blockquote>
-<blockquote class="layui-elem-quote layui-text">原著博客 ：<a href="https://www.xiaoz.me" target="_blank">www.xiaoz.me</a></blockquote>
-<blockquote class="layui-elem-quote layui-text">社区支持 ：<a href="https://dwz.ovh/vd0bw" target="_blank" >dwz.ovh/vd0bw</a></blockquote>
+<blockquote class="layui-elem-quote layui-text">项目地址：<a href="https://gitee.com/tznb/OneNav" target="_blank">Gitee    </a>&ensp;<a href="https://github.com/tznb1/onenav" target="_blank">Github   </a> </blockquote>
+<blockquote class="layui-elem-quote layui-text">技术支持 ：QQ 271152681&ensp; PS:各位大哥,如果觉得这个程序还不错到话帮忙推荐给朋友或者发到论坛博客哈!项目的更新离不开大家的支持!</blockquote>
+<blockquote class="layui-elem-quote layui-text">帮助文档 ：<a href="https://gitee.com/tznb/OneNav/wikis/" target="_blank">Gitee</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">分类图标 ：<a href="http://www.fontawesome.com.cn/faicons" target="_blank">fontawesome</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">Layui文档：
 <a href="https://gitee.com/sentsin/layui"  target="_blank">gitee码云 </a>&ensp;
@@ -166,10 +164,10 @@ function Notice(){
 </blockquote>
 <blockquote class="layui-elem-quote layui-text">XIcon项目：<a href="https://gitee.com/imlzw/xicon/tree/master" title="分类图标选择器" target="_blank">gitee</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">MDUI 文档：<a href="https://www.mdui.org/docs" title="前台用的框架" target="_blank">官方文档</a></blockquote>
-<blockquote class="layui-elem-quote layui-text">hotkeys快捷键：<a href="https://github.com/jaywcjlove/hotkeys/" target="_blank">github </a>&ensp;
-<a href="https://wangchujiang.com/hotkeys/" target="_blank">官方</a></blockquote>
 <blockquote class="layui-elem-quote layui-text">getFavicon：<a href="https://github.com/owen0o0/getFavicon" target="_blank">官方文档</a></blockquote>
-
+<blockquote class="layui-elem-quote layui-text"> 
+关于: OneNav Extend (扩展版) 是基于<a href="https://github.com/helloxz/onenav" target="_blank">小z</a>开发OneNav(原版)的基础上升级而来!各资源和原版不通用!扩展版功能更多更全,支持多用户使用等等,具体可自行探索!
+</blockquote>
 </div><!--开发文档End-->
 <div class="layui-tab-item" ><!--日志输出--> 
     <div class="layui-col-lg12">

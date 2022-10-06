@@ -4,10 +4,15 @@ OneNav Extend  ( 原:魔改版 ) 是一款开源免费的书签（导航）管�
 - 演示站 : [https://demo.lm21.top]( https://demo.lm21.top) 
 - 如果您觉得还不错的话可以订阅支持下我,订阅后可使用更多的功能! [购买订阅/打赏]( https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95)  
 
+### 2022年10月10日
+- 书签管理新增本地备份,在原版的基础新增: 支持显示分类数和链接数,支持备注!支持检测数据库是否被篡改或损坏!
+- 订阅管理处显示您的域名,以免大家订阅时填错!
+- 调整后台左侧导航栏突出显示当前菜单
+
 ### 2022年10月04日
 - 修复已知bug,兼容性优化(PHP8)
 - 优化主题模板预览图的显示效果
-- 网站管理新增强制私有:可设置全站用户必须登录才可访问书签(防止用户添加非法链接被封站)
+- 网站管理新增强制私有
 - 订阅通道更变,新增查询订阅按钮(输入邮箱即可查询订单号)
 
 ### 2022年07月15日
@@ -59,30 +64,27 @@ OneNav Extend  ( 原:魔改版 ) 是一款开源免费的书签（导航）管�
 - 支持筛选链接分类和批量修改分类
 - 支持在列表单元格上快速修改数据
 - 支持从原版升级安装
+- 支持标签组 (可加密分享书签)
+- 支持链接有效性检测
 
 ## 项目地址
 
 - [https://gitee.com/tznb/OneNav](https://gitee.com/tznb/OneNav)
 
+- [https://github.com/tznb1/onenav](https://github.com/tznb1/onenav)
+
 ## 技术支持
 
 - QQ:271152681
 
-- QQ群：147687134
+- 安装说明：[https://gitee.com/tznb/OneNav/wikis](https://gitee.com/tznb/OneNav/wikis)
 
-- 社区支持：[https://dwz.ovh/vd0bw](https://dwz.ovh/vd0bw)
-
-- 安装说明：[https://doc.xiaoz.me/books/onenav-extend/page/1651c](https://doc.xiaoz.me/books/onenav-extend/page/1651c)
-
-![img](https://doc.xiaoz.me/yuque/0/2021/png/192152/1617787025352-bb6e63df-e843-49d4-84e1-680c604f10dc.png)
-
-![](https://img.rss.ink/imgs/2022/03/cba9f1946776a8f0.png)
-
-![](https://img.rss.ink/imgs/2022/03/42ed3ef2c4a50f6d.png)
-
-![img](https://doc.xiaoz.me/yuque/0/2020/png/192152/1608005352818-4105b24b-e650-42a7-9b20-f35ffa023504.png)
-
-[![QQ截图20220313000658.jpg](https://doc.xiaoz.me/uploads/images/gallery/2022-03/scaled-1680-/qq20220313000658.jpg)](https://doc.xiaoz.me/uploads/images/gallery/2022-03/qq20220313000658.jpg)
-[![QQ截图20220313000643.jpg](https://doc.xiaoz.me/uploads/images/gallery/2022-03/scaled-1680-/qq20220313000643.jpg)](https://doc.xiaoz.me/uploads/images/gallery/2022-03/qq20220313000643.jpg)
-[![QQ截图20220313000718.jpg](https://doc.xiaoz.me/uploads/images/gallery/2022-03/scaled-1680-/qq20220313000718.jpg)](https://doc.xiaoz.me/uploads/images/gallery/2022-03/qq20220313000718.jpg)
-[![QQ截图20220313000747.jpg](https://doc.xiaoz.me/uploads/images/gallery/2022-03/scaled-1680-/qq20220313000747.jpg)](https://doc.xiaoz.me/uploads/images/gallery/2022-03/qq20220313000747.jpg)
+![输入图片说明](https://gitee.com/tznb/OneNav/raw/data/picture/1617787025352-bb6e63df-e843-49d4-84e1-680c604f10dc.png)
+![输入图片说明](https://gitee.com/tznb/OneNav/raw/data/picture/42ed3ef2c4a50f6d.png)
+![输入图片说明](https://gitee.com/tznb/OneNav/raw/data/picture/cba9f1946776a8f0.png)
+![输入图片说明](https://gitee.com/tznb/OneNav/raw/data/picture/QQ截图20221006162043.png)
+![输入图片说明](https://gitee.com/tznb/OneNav/raw/data/picture/QQ截图20221006162050.png)
+![输入图片说明](https://gitee.com/tznb/OneNav/raw/data/picture/QQ截图20221006162057.png)
+![输入图片说明](https://gitee.com/tznb/OneNav/raw/data/picture/QQ截图20221006162105.png)
+![输入图片说明](https://gitee.com/tznb/OneNav/raw/data/picture/QQ截图20221006162127.png)
+![输入图片说明](https://gitee.com/tznb/OneNav/raw/data/picture/QQ截图20221006162135.png)

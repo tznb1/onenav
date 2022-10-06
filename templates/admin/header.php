@@ -47,7 +47,7 @@
         <dl class="layui-nav-child">
           <dd><a href="./index.php?c=admin&page=logout&u=<?php echo $u?>"><i class="layui-icon layui-icon-return"></i> 退出登录</a></dd>
           <dd><a href="https://gitee.com/tznb/OneNav" target="_blank"><i class="layui-icon layui-icon-star"></i> 查看gitee</a></dd>
-          <dd><a href="https://doc.xiaoz.me/books/onenav-extend" target="_blank"><i class="layui-icon layui-icon-note"></i> 帮助文档</a></dd>
+          <dd><a href="https://gitee.com/tznb/OneNav/wikis/" target="_blank"><i class="layui-icon layui-icon-note"></i> 帮助文档</a></dd>
         </dl>
       </li>
     </ul>

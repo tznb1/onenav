@@ -146,7 +146,7 @@ if (empty($subscribe['end_time'])) $subscribe['end_time'] = 0;
         <option value="2" <?php if($Plug==2){echo'selected=""';}?>>兼容模式2</option>
       </select>
       </div>
-      <div class="layui-form-mid layui-word-aux">选择兼容模式时,可以使用xiaoz开发的uTools插件 <a href="https://doc.xiaoz.me/books/onenav-extend/page/utools" target="_blank">帮助</a></div>
+      <div class="layui-form-mid layui-word-aux">选择兼容模式时,可以使用xiaoz开发的uTools插件 <a href="https://gitee.com/tznb/OneNav/wikis/%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/uTools%E6%8F%92%E4%BB%B6" target="_blank">帮助</a></div>
     </div>
  </div> 
   <div class="layui-form-item">
@@ -285,6 +285,12 @@ if (empty($subscribe['end_time'])) $subscribe['end_time'] = 0;
     <!-- 订阅表格 -->
     <div class="layui-col-lg6">
     <h2 style = "margin-bottom:1em;">我的订阅：</h2>
+    <div class="layui-form layui-form-pane layui-form-item" >
+        <label class="layui-form-label">您的域名</label>
+        <div class="layui-input-block">
+            <input type="text" name="domain" id = "domain" value = "<?php echo $_SERVER['HTTP_HOST']; ?>  (订阅时填写)" autocomplete="off" disabled="disabled" class="layui-input">
+        </div>
+    </div>
     <form class="layui-form layui-form-pane" action="">
 
         <div class="layui-form-item">
@@ -318,7 +324,6 @@ if (empty($subscribe['end_time'])) $subscribe['end_time'] = 0;
         <div class="layui-form-item">
             <button class="layui-btn" lay-submit="" lay-filter="set_subscribe">保存设置</button>
             <button class="layui-btn" lay-submit="" lay-filter="reset_subscribe">删除订阅</button>
-            <!--<a class="layui-btn layui-btn-danger" rel = "nofollow" target = "_blank" title = "点此购买订阅" href="https://shop.xiaoz.top/productinfo-108.html"><i class="fa fa-shopping-cart"></i> 购买订阅</a>-->
             <a class="layui-btn layui-btn-danger" rel = "nofollow" target = "_blank" title = "点此购买订阅" href="https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95"><i class="fa fa-shopping-cart"></i> 购买订阅</a>
             <button class="layui-btn" lay-submit="" lay-filter="get_subscribe">查询订阅</button>
         </div>

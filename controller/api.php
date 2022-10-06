@@ -2523,6 +2523,7 @@ function tags_list(){
     ]);
 }
 
+//保存订阅设置
 function set_subscribe(){
     global $udb;
     is_admin();
@@ -2545,6 +2546,163 @@ function set_subscribe(){
     $value = serialize($data); //序列化存储
     Writeconfigd($udb,'config','s_subscribe',$value); //序列化存储到数据库
     msg(0,'保存成功');
+}
+
+//数据备份>创建备份
+function backup_db(){
+    global $u,$version,$db;
+    if(!is_subscribe()) { msg(-1111,'您未订阅,请先购买订阅!'); }
+    $backup_dir = "data/user/{$u}/backup/"; //备份目录
+    //判断目录是否存在，不存在则创建
+    if( !is_dir($backup_dir) ) {
+        try {
+            mkdir($backup_dir,0755,true);
+        } catch (\Throwable $th) {
+            msg(-2000,'备份目录创建失败，请检查目录权限！');
+        }
+    }
+    //尝试拷贝数据库进行备份
+    try {
+        $strs="QWERTYUIOPASDFGHJKLZXCVBNM1234567890qwertyuiopasdfghjklzxcvbnm";
+        $random=substr(str_shuffle($strs),mt_rand(0,strlen($strs)-11),5);
+        $file_name = "{$version}_".date("ymdHis",time())."_{$random}";
+        $backup_db_path = $backup_dir.$file_name.".db3" ; //数据库路径
+        $backup_info_path = $backup_dir.$file_name.".info" ; //信息文件路径
+        copy("data/{$u}.db3",$backup_db_path);
+        try{ //复制成功时写信息文件
+            $link_cont = $db->count('on_links', '*'); //取链接数
+            $on_categorys = $db->count('on_categorys', '*'); //取分类数
+            $md5 = md5_file($backup_db_path); //取文件MD5(用于回滚时核验)
+            $desc = $_GET['desc'];
+            $info = json_encode(["link_count"=> $link_cont , "category_count"=> $on_categorys , "md5" => $md5 , "version" => $version ,"desc" => "$desc" ]); //生成信息
+            file_put_contents($backup_info_path, $info); //写到文件
+        }catch (\Throwable $th) {}
+        
+
+        msg(200,'success');
+    } catch (\Throwable $th) {
+        msg(-2000,'创建备份文件失败，请检查目录权限！');
+    }
+}
+
+//数据备份>删除
+function del_backup_db() {
+    global $u;
+    if(!is_subscribe()) { msg(-1111,'您未订阅,请先购买订阅!'); }
+    $name = $_GET['name'];
+    //文件名检测
+    if( !preg_match_all('/^v\d+\.\d+\.\d+-\d{8}_\d{12}_[A-Za-z0-9]{5}.db3$/',$name) ) {
+        msg(-200,'数据库名称不合法！');
+    }
+    $backup_dir = "data/user/{$u}/backup/";
+    //删除数据库
+    try {
+        unlink($backup_dir.$name);
+        unlink($backup_dir.substr($name, 0,-4).'.info'); //删除信息文件
+        msg(200,'备份数据库已被删除！');
+    } catch (\Throwable $th) {
+        msg(-200,"删除失败，请检查目录权限！");
+    }
+}
+
+//回滚数据库
+function restore_db() {
+    global $u,$db,$udb;
+    if(!is_subscribe()) { msg(-1111,'您未订阅,请先购买订阅!'); }
+    $backup_dir = "data/user/{$u}/backup/"; //备份目录
+    $name = $_GET['name'];
+    $info_name = substr($name, 0,-4).'.info';
+    //文件名检测
+    if( !preg_match_all('/^v\d+\.\d+\.\d+-\d{8}_\d{12}_[A-Za-z0-9]{5}.db3$/',$name) ) {
+        msg(-200,'数据库名称不合法！');
+    }elseif(!file_exists($backup_dir.$info_name)){
+        msg(-200,'info文件缺失！');
+    }else{
+        $info_file = @file_get_contents($backup_dir.$info_name);
+        $info = json_decode($info_file,true);
+    }
+    if(!empty($info['md5']) && $info['md5'] != md5_file($backup_dir.$name)){
+        msg(-200,"回滚失败，文件MD5不一致！可能是文件损坏或被修改过!"); 
+    }
+
+    //恢复数据库
+    try {
+        copy($backup_dir.$name,"data/{$u}.db3");
+        try{ //账号关键数据同步写入
+            $user = $udb->get("user","*",["User"=>$u]);
+            Writeconfigd($db,'on_config',"User",$user['User']);
+            Writeconfigd($db,'on_config',"Pass",$user['Pass']);
+            Writeconfigd($db,'on_config',"RegTime",$user['RegTime']);
+            Writeconfigd($db,'on_config',"RegIP",$user['RegIP']);
+            Writeconfigd($db,'on_config',"SQLite3",$user['SQLite3']);
+            Writeconfigd($db,'on_config',"Email",$user['Email']);
+            Writeconfigd($db,'on_config',"Token",$user['Token']);
+            Writeconfigd($db,'on_config',"Login",$user['Login']);
+        }catch(\Throwable $th){
+            msg(200,"回滚成功,同步数据失败了,建议联系站长修复");
+        }
+        msg(200,'数据库已回滚为'.$name.'链接数:'.$db->count('on_links', '*'));
+    } catch (\Throwable $th) {
+        msg(-200,"回滚失败，请检查目录权限！");
+    }
+}
+    
+//数据备份>列表
+function backup_db_list() {
+    global $u;
+    if(!is_subscribe()) { msg(-1111,'您未订阅,请先购买订阅!'); }
+    $backup_dir = "data/user/{$u}/backup/"; //备份目录
+    $dbs = scandir($backup_dir); //遍历备份列表
+    $newdbs = $dbs;
+    if(empty($dbs)){msgA(['code' => 0,'msg' => '没有找到备份数据!','count' =>  0]);}
+
+    //列表过滤
+    for ($i=0; $i < count($dbs); $i++) { 
+        if( ($dbs[$i] == '.') || ($dbs[$i] == '..') || ( substr($newdbs[$i], -4) != '.db3') ) {
+            unset($newdbs[$i]);
+        }
+    }
+
+    $dbs = $newdbs; //赋值过滤后的数据
+    $num = count($dbs); //取列表数
+    rsort($dbs,2); //按时间从大到小重排序
+
+    //备份文件数大于10个时删除旧数据
+    if( $num > 10 ) {
+        for ($i=$num; $i > 10; $i--) { 
+            unlink($backup_dir.$dbs[$i-1]); //删除备份文件
+            unlink($backup_dir.substr($dbs[$i-1], 0,-4).'.info'); //删除信息文件
+            array_pop($dbs); //删除数组最后一个元素
+        }
+        $count = 10;
+    }else{
+        $count = $num;
+    }
+    //声明一个空数组
+    $data = [];
+    //遍历数据库，获取时间，大小
+    foreach ($dbs as $key => $value) {
+        $arr['id'] = $key + 1;
+        $arr['name'] =   $value;
+        $arr['mtime'] = date("Y-m-d H:i:s",filemtime($backup_dir.$value));
+        $arr['size'] = (filesize($backup_dir.$value) / 1024).'KB';
+        try{ //读取信息文件
+            $info_file = @file_get_contents($backup_dir.substr($value, 0,-4).'.info');
+            $info = json_decode($info_file,true);
+            $arr['category_cont'] = $info['category_count'];
+            $arr['link_cont'] = $info['link_count'];
+            $arr['md5'] = $info['md5'];
+            $arr['desc'] = $info['desc'];
+        }catch (\Throwable $th) {
+            $arr['link_cont'] = null;
+            $arr['category_cont'] = null;
+            $arr['md5'] = null;
+        }
+
+        $data[$key] = $arr;
+    }
+
+    msgA( ['code' => 0,'msg' => '','count' =>  $count,'data' =>  $data] );
 }
 
 

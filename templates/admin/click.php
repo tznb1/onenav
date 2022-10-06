@@ -83,7 +83,7 @@
 					<?php echo $msg; ?>
 				</div>
 				<hr>
-				<div class="xcdn-footer"><?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>&copy;2022 Powered by <a href="https://www.xiaoz.me/" title = "小z博客" rel = "nofollow" target = "_blank">xiaoz</a> and <a href="https://gitee.com/tznb/OneNav"  rel = "nofollow" target = "_blank">落幕</a></div>
+				<div class="xcdn-footer"><?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>&copy;2022 Powered by <a href="https://gitee.com/tznb/OneNav"  rel = "nofollow" target = "_blank">落幕</a></div>
 			</div>
 		</div>
 	</div>

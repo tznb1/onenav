@@ -15,7 +15,7 @@
 <blockquote class="layui-elem-quote " style="margin-top: 0px;border-left: 5px solid <?php echo $cache?"#1e9fff":($offline?"":"#639d11") ?>;padding: 6px;">&nbsp;
   <span class="layui-breadcrumb" lay-separator="|">
   <a href="https://gitee.com/tznb/OneNav/blob/data/template.md" target="_blank" >更新记录</a>
-  <a href="https://doc.xiaoz.me/books/onenav-extend/page/f340f" target="_blank" >使用文档</a>
+  <a href="https://gitee.com/tznb/OneNav/wikis/%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98" target="_blank" >使用文档</a>
   <?php echo $admin?"<a href=\"./index.php?c=admin&page=Theme&other={$_GET['other']}&cache=no&u={$u}\" >刷新数据</a>":""; ?>
   <?php if($_GET['other'] == 'yes'){ 
             echo "<a href=\"./index.php?c=admin&page=Theme&other=no&u=$u\"  >主题模板</a>"; 
