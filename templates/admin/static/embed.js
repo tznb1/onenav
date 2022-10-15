@@ -176,24 +176,28 @@ table.reload('link_list', {
 
 //分类删除
 function category_del(force){
-var checkStatus = table.checkStatus('category_list')
-var data = checkStatus.data;
-var res = '',id = ''; 
-if( data.length == 0 ) {layer.msg('未选中任何数据');return} //没有选中数据,结束运行!
-for (let i = 0; i < data.length; i++) {if (i < data.length-1){id +=data[i].id+','}else{id +=data[i].id;$("div.layui-table-body table tbody ").find("tr:eq(" + data[i].id + ")").remove(); }} //生成id表
-num=randomnum(4);
-layer.prompt({formType: 0,value: '',title: '输入'+num+'确定删除:'},function(value, index, elem){
-if(value == num){
-    $.post('./index.php?c=api&method=del_category&u='+u,{'id':id,'batch':'1','force':force},function(data,status){
-    if(data.code == 0){
-    layer.closeAll();//关闭所有层
-    category_q(); //刷新数据
-    open_msg('600px', '500px','处理结果',data.res);
-    } else{layer.msg(data.msg);}});
-}else{
-    layer.msg('输入内容有误,无需删除请点击取消!', {icon: 5});}
-}); 
+    var checkStatus = table.checkStatus('category_list')
+    var data = checkStatus.data;
+    var res = '',id = ''; 
+    if( data.length == 0 ) {layer.msg('未选中任何数据');return} //没有选中数据,结束运行!
+    if( force == 1){ alert("非必要请勿使用强制删除,已知不会同步删除上传的链接图标！");}
+    for (let i = 0; i < data.length; i++) {if (i < data.length-1){id +=data[i].id+','}else{id +=data[i].id;$("div.layui-table-body table tbody ").find("tr:eq(" + data[i].id + ")").remove(); }} //生成id表
+    num=randomnum(4);
+    layer.prompt({formType: 0,value: '',title: '输入'+num+'确定删除:'},function(value, index, elem){
+        if(value == num){
+            $.post('./index.php?c=api&method=del_category&u='+u,{'id':id,'batch':'1','force':force},function(data,status){
+                if(data.code == 0){
+                    layer.closeAll();//关闭所有层
+                    category_q(); //刷新数据
+                    open_msg('600px', '500px','处理结果',data.res);
+            }else{
+                layer.msg(data.msg);}
+            });
+        }else{
+            layer.msg('输入内容有误,无需删除请点击取消!', {icon: 5});}
+    }); 
 }
+
 //分类搜索
 function category_q(){
 var inputVal = $('.layui-input').val();//获取输入内容
@@ -662,9 +666,10 @@ form.on('submit(add_link)', function(data){
     $.post('./index.php?c=api&method=add_link&u='+u,data.field,function(data,status){
       //如果添加成功
       if(data.code == 0) {
+        if(data.path != '' ){$("#iconurl").val(data.path);}
         layer.msg('已添加！', {icon: 1});
-      }
-      else{
+        setTimeout(() => {location.reload();}, 500);
+      }else{
         layer.msg(data.msg, {icon: 5});
       }
     });
@@ -676,8 +681,7 @@ form.on('submit(get_link_info)', function(data){
     $.post('./index.php?c=api&method=get_link_info&u='+u,data.field.url,function(data,status){
       if(data.code == 0) {
         console.log(data);
-      }
-      else{
+      }else{
         layer.msg(data.msg, {icon: 5});
       }
     });
@@ -688,9 +692,10 @@ form.on('submit(get_link_info)', function(data){
 form.on('submit(edit_link)', function(data){
     $.post('./index.php?c=api&method=edit_link&u='+u,data.field,function(data,status){
       if(data.code == 0) {
+        if(data.path != '' ){$("#iconurl").val(data.path);}
         layer.msg('已更新！', {icon: 1});
-      }
-      else{
+        setTimeout(() => {location.reload();}, 500);
+      }else{
         layer.msg(data.msg, {icon: 5});
       }
     });
@@ -703,8 +708,7 @@ form.on('submit(get_link_info)', function(data){
     $.post('./index.php?c=api&method=get_link_info&u='+u,data.field,function(data,status){
       if(data.code == 0) {
         console.log(data);
-      }
-      else{
+      }else{
         layer.msg(data.msg, {icon: 5});
       }
     });
@@ -778,13 +782,13 @@ form.on('submit(imp_link)', function(data){
         layer.closeAll();//关闭所有层
       //如果添加成功
       if(data.code == 0) {
-          if (data.fail > 0)
-          {open_msg('800px', '600px',data.msg,data.res);}
-          else{layer.open({title:'导入完成',content:data.msg});}
-      }
-      else{
+          if (data.fail > 0){
+              open_msg('800px', '600px',data.msg,data.res);
+          }else{
+              layer.open({title:'导入完成',content:data.msg});
+          }
+      }else{
         layer.msg(data.msg, {icon: 5});
-        
       }
     });
     
@@ -858,9 +862,56 @@ form.on('select(session)', function (data) {
         open_msg('320px', '250px','注意','<div style="padding: 15px;">超过24小时未关闭浏览器也会失效<br></div>');
     }
     });
+    
+//上传图标
+  var uploadRender = upload.render({
+    elem: '#up_icon'
+    ,exts: 'jpg|png|ico|svg'
+    ,acceptMime:  'image/*'
+    ,accept: 'file'
+    ,size: 1024 
+    ,auto: false 
+    ,bindAction: ''
+    ,choose: function(obj){  //选择文件回调
+        layer.closeAll('dialog');//关闭信息层
+        var files = obj.pushFile();
+        obj.preview(function(index, file, result){
+            console.log(index); //得到文件索引
+            console.log(file); //得到文件对象
+            $('#icon').attr('src', result); //预览图Base64
+            $("#icon_base64").val(result); //提交的Base64
+            uploadRender.config.elem.next()[0].value = ''; //解决上传相同文件只触发一次
+            if(_GET('page') == 'edit_link'){ //若是编辑页面则点击更新
+                $("#edit_link").click();
+            }
+        });
+    }
+  });
+
+
 //结束
 });
 
+
+
+//删除图标
+function del_icon(key){
+    var src = $("#icon")[0].src; //获取图标内容
+    var img = 'data:image/bmp;base64,Qk1CAAAAAAAAAD4AAAAoAAAAAQAAAAEAAAABAAEAAAAAAAQAAADEDgAAxA4AAAAAAAAAAAAAAAAAAP///wCAAAAA' //空图标
+    
+    if( src != '' && src != img ){
+        $("#iconurl").val(''); //清除图标URL
+        $("#icon_base64").val('del'); //写删除标记
+        $('#icon').attr('src', img); //清除预览图
+        if(key == 'edit_link'){
+            $("#edit_link").click(); //点击更新
+        }else{
+            layer.msg("删除成功", {icon: 1});
+        }
+    }else{
+        layer.msg("您还未上传图标", {icon: 2});
+    }
+}
 //主题详情
 function theme_detail(name,description,version,update,author,homepage,screenshot,key){
     layer.open({type: 1,maxmin: false,shadeClose: true,resize: false,title: name + ' - 主题详情',area: ['60%', '59%'],content: '<body class="layui-fluid"><div class="layui-row" style = "margin-top:1em;"><div class="layui-col-sm9" style = "border-right:1px solid #e2e2e2;"><div style = "margin-left:1em;margin-right:1em;"><img src="'+screenshot+'" alt="" style = "max-width:100%;"></div></div><div class="layui-col-sm3"><div style = "margin-left:1em;margin-right:1em;"><h1>'+name+'</h1><p>描述：'+description+'</p><p>版本：'+version+'</p><p>更新时间：'+update+'</p><p>作者：'+author+'</p><p>主页：<a style = "color:#01AAED;" href="'+homepage+'" target="_blank" rel = "nofollow">访问主页</a></p></div></div></div></body>'});

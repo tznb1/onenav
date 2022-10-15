@@ -1,14 +1,16 @@
 <?php include_once('header.php'); ?>
-<?php include_once('left.php'); ?>
+<?php include_once('left.php'); 
+$iconUP = UGet('iconUP');?>
 <div class="layui-body">
 <!-- 内容主体区域 -->
 <div class="layui-row content-body">
     <div class="layui-col-lg12">
     <form class="layui-form">
+    <?php if($iconUP == 0 ) echo "<div class=\"setting-msg\"  >提示:  当前版本已支持上传链接图标啦,在网站管理找到图标上传并设为允许就可以啦,支持1M内的 jpg,png,svg,ico 文件 (该功能订阅可用)</div>"; ?>
     <div class="layui-form-item" style = "display:none;">
     <label class="layui-form-label">链接ID</label>
     <div class="layui-input-block">
-      <input type="text" name="id" required  lay-verify="required" value = '<?php echo $id; ?>' placeholder="请输入分类名称" autocomplete="off" class="layui-input">
+      <input type="text" name="id" required  lay-verify="required" value = '<?php echo $id; ?>' autocomplete="off" class="layui-input">
     </div>
     </div>
     <div class="layui-form-item">
@@ -55,7 +57,19 @@
       <input type="text" id = "iconurl" name="iconurl" value = "<?php echo $link['iconurl']; ?>" placeholder="自定义图标的URL地址，如果没有，请留空" autocomplete="off" class="layui-input">
     </div>
   </div>
-  
+
+  <div class="layui-form-item" id='ico_preview' <?php echo $iconUP == 1 ? '':'style="display:none;"';?>;>
+    <label class="layui-form-label">图标预览</label>
+    <img class="layui-upload-img" id="icon" style="width: 80px; height: 80px;" >
+  </div>
+
+  <div class="layui-form-item" style = "display:none;">
+    <label class="layui-form-label">图标内容</label>
+    <div class="layui-input-block">
+      <input type="text" name="icon_base64" id="icon_base64" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
   <div class="layui-form-item">
     <label class="layui-form-label">是否私有</label>
     <div class="layui-input-block">
@@ -71,14 +85,31 @@
   </div>
   <div class="layui-form-item">
     <div class="layui-input-block">
-      <button class="layui-btn" lay-submit lay-filter="edit_link">更新</button>
+      <button class="layui-btn" lay-submit lay-filter="edit_link" id="edit_link">更新</button>
       <a href="javascript:;" class="layui-btn" onclick="get_link_info()">识别</a>
-      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      <button type="button" class="layui-btn" id="up_icon" <?php echo $iconUP == 1 ? '':'style="display:none;"';?>>上传图标</button>
+      <a href="javascript:;" class="layui-btn" onclick="del_icon('edit_link')" <?php echo $iconUP == 1 ? '':'style="display:none;"';?>>删除图标</a>
+      <!--<button type="reset" class="layui-btn layui-btn-primary">重置</button>-->
     </div>
   </div>
+  
+  <div class="layui-form-item" <?php echo $iconUP == 1 ? '':'style="display:none;"';?>>
+    <label class="layui-form-label">注意事项</label>
+    <div class="layui-form-mid layui-word-aux">因前台主页有缓存加速机制,如果您上传图标后未更新请按CTRL+F5刷新!<br />图标格式:jpg|png|svg|ico  大小上限:1M</div>
+  </div>
+  
 </form>
     </div>
 </div>
 <!-- 内容主题区域END -->
 </div>
-<?php include_once('footer.php'); ?>
+<?php include_once('footer.php'); 
+if($iconUP != 1 ) exit;
+?>
+
+<script>
+    var icourl = $("#iconurl").val();
+    if(icourl != ''){
+        $('#icon').attr('src',icourl + '?t=' + Math.random() ) ;
+    }
+</script>

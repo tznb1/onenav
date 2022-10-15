@@ -19,6 +19,10 @@
       <!--<li class="layui-nav-item layui-hide-xs"><a href="./index.php?c=admin&page=add_category&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加分类</a></li>-->
       <li class="layui-nav-item layui-hide-xs"><a href="./index.php?c=admin&page=link_list&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-link"></i> 链接</a></li>
       <!--<li class="layui-nav-item layui-hide-xs"><a href="./index.php?c=admin&page=add_link&u=<?php echo $u; ?>"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加链接</a></li>-->
+<?php if($udb->get("user","Level",["User"=>$u]) == 999  ){ //&& !is_subscribe(true)
+            echo'      <li class="layui-nav-item layui-hide-xs"><a href="./index.php?c=admin&page=root&u='.$u.'#root=3"><i class="layui-icon layui-icon-diamond"></i> 高级功能</a></li>'."\n";
+            
+            }?>
       <li class="layui-nav-item layui-hide-sm"><a href="./?u=<?php echo $u; ?>"><i class="layui-icon layui-icon-home"></i> 首页</a></li>
       <li class="layui-nav-item layui-hide-sm">
         <a href="javascript:;"><i class="layui-icon layui-icon-set layui-hide-sm" ></i> 菜单</a>

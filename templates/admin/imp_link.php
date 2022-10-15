@@ -123,7 +123,7 @@
     <legend>本地备份 (订阅可用)</legend>
     </fieldset> 
     
-    <div class="setting-msg" >1.备份数据库仅保存最近10份数据<br />2.该功能仅辅助备份使用，无法确保100%数据安全，因此定期对整个站点打包备份仍然是必要的</div>
+    <div class="setting-msg" >1.备份数据库仅保存最近10份数据<br />2.该功能仅辅助备份使用，无法确保100%数据安全，因此定期对整个站点打包备份仍然是必要的<br />3.当前版本仅备份数据库,不会备份用户上传的图标文件,后续版本会支持!</div>
     
       <!-- 数据表格 -->
       <table class="layui-hide" id="list" lay-filter="list"></table>

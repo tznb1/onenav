@@ -1,6 +1,18 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年10月15日</h4>
+      <ul>
+        <li>修复PHP8下放入第三方非标准主题可能引发后台报错的问题</li>
+        <li>html书签导入提取图标存放路径由favicon/xxx改为data/user/xxx/favicon (xxx代表用户名)</li>
+        <li>后台添加/编辑链接时支持上传URL图标(需管理员在网站管理>图标上传设为允许)</li>
+        <li>修复已知bug,其他细节调整</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年10月06日</h4>
       <ul>
         <li>书签管理新增本地备份,在原版的基础新增: 分类数,链接数,备注的显示!回滚时效验文件是否损坏或被篡改!</li>

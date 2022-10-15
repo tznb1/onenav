@@ -310,7 +310,7 @@ function link_list(){
 
 //添加链接
 function add_link(){
-    global $db;
+    global $db,$username;
     $fid = intval(@$_POST['fid']); //获取分类ID
     $title = $_POST['title'];
     $url = $_POST['url'];
@@ -320,6 +320,7 @@ function add_link(){
     $weight = empty($_POST['weight']) ? 0 : intval($_POST['weight']);
     $property = empty($_POST['property']) ? 0 : 1;
     check_link($fid,$title,$url,$url_standby); //检测链接是否合法
+    
     $data = [
             'fid'           =>  $fid,
             'title'         =>  htmlspecialchars($title,ENT_QUOTES),
@@ -342,12 +343,44 @@ function add_link(){
     }
     
     $id = $db->id();//返回ID
-    msgA(['code'=>0,'id'=>intval($id)]);
+    
+    //图标处理
+    if(!empty($_POST['icon_base64']) && UGet('iconUP') == 1 ){
+        $path = "data/user/{$username}/favicon/{$id}";
+        del_icon($id);//删除图标
+        if($_POST['icon_base64'] == 'del'){
+            
+        }elseif(preg_match('/data:image\/(jpeg|png|x-icon|svg-xml|svg\+xml);base64,(\S+)/', $_POST['icon_base64'], $result)){
+            if( GetFileSize($result[2]) > 1024) {msg(-1015,'文件大小不能超过1M');}
+            //根据MIME类型写扩展名
+            if($result[1] == 'jpeg'){
+                $path = $path.'.jpg';
+            }elseif($result[1] == 'png'){
+                $path = $path.'.png';
+            }elseif($result[1] == 'x-icon'){
+                $path = $path.'.ico';
+            }elseif($result[1] == 'svg-xml' || $result[1] == 'svg+xml'){
+                $path = $path.'.svg';
+            }
+            
+            if( Check_Path("data/user/{$username}/favicon") && file_put_contents($path, base64_decode($result[2]))){
+                $iconurl = "./{$path}";
+                $db->update('on_links',['iconurl'=>  $iconurl],[ 'id' => $id]); //更新图标URL
+            }else{
+                msg(-1015,'链接已添加,但写入图标失败,请检查权限!');
+            }
+        }else{
+            msg(-1015,'链接已添加,图标因格式不支持未保存!');
+        }
+    }
+    
+    msgA(['code'=>0,'id'=>intval($id),'path'=>$iconurl]);
 }
+
 
 //修改链接
 function edit_link(){
-    global $db;
+    global $db,$username;
     $id  = intval(@$_POST['id']);  //获取链接ID
     $fid = intval(@$_POST['fid']); //获取分类ID
     $title = $_POST['title'];
@@ -358,6 +391,36 @@ function edit_link(){
     $weight = empty($_POST['weight']) ? 0 : intval($_POST['weight']);
     $property = empty($_POST['property']) ? 0 : 1;
     check_link($fid,$title,$url,$url_standby); //检测链接是否合法
+    
+    //图标处理
+    if(!empty($_POST['icon_base64'])  && UGet('iconUP') == 1 ){
+        $path = "data/user/{$username}/favicon/{$id}";
+        del_icon($id);//删除图标
+        if($_POST['icon_base64'] == 'del'){
+            
+        }elseif(preg_match('/data:image\/(jpeg|png|x-icon|svg-xml|svg\+xml);base64,(\S+)/', $_POST['icon_base64'], $result)){
+            if( GetFileSize($result[2]) > 1024) {msg(-1015,'文件大小不能超过1M');}
+            //根据MIME类型写扩展名
+            if($result[1] == 'jpeg'){
+                $path = $path.'.jpg';
+            }elseif($result[1] == 'png'){
+                $path = $path.'.png';
+            }elseif($result[1] == 'x-icon'){
+                $path = $path.'.ico';
+            }elseif($result[1] == 'svg-xml' || $result[1] == 'svg+xml'){
+                $path = $path.'.svg';
+            }
+            
+            if( Check_Path("data/user/{$username}/favicon") && file_put_contents($path, base64_decode($result[2]))){
+                $iconurl = "./{$path}";
+            }else{
+                msg(-1015,'写入图标失败,请检查权限!');
+            }
+        }else{
+            msg(-1015,'不支持的图标格式.');
+        }
+    }
+    
     $data = [
             'fid'           =>  $fid,
             'title'         =>  htmlspecialchars($title,ENT_QUOTES),
@@ -373,6 +436,7 @@ function edit_link(){
         array_pop($data);
     }
     
+    
     try{
         $_id = $db->get('on_links','id',["AND" => ["url" => $url,"id[!]" => $id]] ); 
         if( !empty( $_id ) ){ msg(-1000,'URL已经存在,ID:'.$_id);} 
@@ -383,8 +447,7 @@ function edit_link(){
     
     $row = $re->rowCount();//返回影响行数
     if($row){
-        $id = $db->id();//返回ID
-        msgA(['code'=>0,'id'=>$id]);
+        msgA(['code'=>0,'id'=>$id,'path' => $iconurl]);
     }else{
         msg(-1011,'URL已经存在！');
     }
@@ -425,6 +488,7 @@ function del_link(){
 		}else{
 			$re = $db->delete('on_links',[ 'id' =>  $id] );
 			if($re) {
+			    del_icon($id);//删除图标
 				msg(0,'successful');
 			} else {
 				msg(-1010,'链接ID不存在！');
@@ -434,6 +498,7 @@ function del_link(){
 	    //批量删除
 	    $idgroup=explode(",",$id);//分割文本
 	    foreach($idgroup as $_id){
+	        del_icon($_id);//删除图标
 	        $db->delete('on_links',['id'=>intval($_id)]);
 	     }
 	    msg(0,'successful');
@@ -519,6 +584,14 @@ function get_link_info() {
     $link['title'] =  $info['site_title'];
     $link['description'] = $info['site_description'];
     msgA(['code'=>0,'data'=>$link]);
+}
+
+
+//删除图标
+function del_icon($id){
+    global $username;
+    $path = "data/user/{$username}/favicon/{$id}";
+    unlink($path.'.jpg');unlink($path.'.png');unlink($path.'.ico');unlink($path.'.svg');
 }
 
 //上传书签
@@ -742,7 +815,7 @@ function imp_link() {
         if(empty($default_category)){msg(-1016,'获取分类名失败!');}
         
         //如果提取图标的话检测目录是否存在,不存在则创建目录
-        $new_file = 'favicon/'.$userdb['User'];
+        $new_file = 'data/user/'.$userdb['User'].'/favicon';
         if($icon == 1 && !file_exists($new_file)){
             mkdir($new_file, 0777);
         }
@@ -985,6 +1058,11 @@ function deldir($dir) {
 function download_theme(){
     global $offline,$udb,$version;
     if ( $offline ){ msg(-5555,"离线模式禁止下载主题!"); } //离线模式
+    if(!is_subscribe(true)){
+        $download_theme_count = $udb->get('config', 'Value', ["Name"=>'download_theme_count']);
+        $download_theme_count = empty($download_theme_count)?0:intval($download_theme_count);
+        if($download_theme_count > 3 ){ msg(-5555,"免费下载次数已用完,订阅后可无限下载!");}
+    }
     $dir = $_POST['dir'];
     $name = $_POST['name'];
     $i = intval($_POST['i']);
@@ -1043,6 +1121,9 @@ function download_theme(){
         msg(-1114,'-2,安装失败');
     } finally{
         if(file_exists("./templates/".$key['dir']."/info.json")){
+            if(!is_subscribe(true)){
+                Writeconfigd($udb,'config','download_theme_count',$download_theme_count + 1);
+            }
             msgA(['code'=>0,'msg'=> '下载成功','url'=> $i,'file_md5'=>$file_md5]);
         }else{
             msgA(['code'=>-1233,'msg'=> '-3,安装失败','url'=> $i,'file_md5'=>$file_md5]);
@@ -1151,7 +1232,9 @@ function edit_root(){
     $apply      = $_POST['apply'];  //收录功能
     $offline    = $_POST['offline'];  //离线模式
     $Pandomain  = $_POST['Pandomain']; //泛域名
-    $Privacy  = $_POST['Privacy']; //强制私有
+    $Privacy    = $_POST['Privacy']; //强制私有
+    $iconUP     = $_POST['iconUP']; //图标上传
+    
     
     if($udb->get("user","Level",["User"=>$u]) != '999'){ //权限判断
         msg(-1102,'您没有权限修改全局配置!');
@@ -1187,6 +1270,8 @@ function edit_root(){
         msg(-1103,'未检测到有效订阅,无法开启泛域名功能!');
     }elseif($Privacy != '0' && !is_subscribe(true)){
         msg(-1103,'未检测到有效订阅,无法开启强制私有!');
+    }elseif($iconUP != '0' && !is_subscribe(true)){
+        msg(-1103,'未检测到有效订阅,无法开启图标上传!');
     }
 
     Writeconfigd($udb,'config','DUser',$DUser);
@@ -1206,6 +1291,7 @@ function edit_root(){
     Writeconfigd($udb,'config','offline',$offline);
     Writeconfigd($udb,'config','Pandomain',$Pandomain);
     Writeconfigd($udb,'config','Privacy',$Privacy);
+    Writeconfigd($udb,'config','iconUP',$iconUP);
     msg(0,'successful');
 }
 
@@ -2126,6 +2212,7 @@ function data_empty(){
     if(md5(md5($pass).$RegTime) !== $password && md5($pass.$RegTime) !== $password ){
         msg(-1111,"密码错误,请核对后再试!");
     }
+    
     $db->query("delete from on_links")->fetchAll();
     $db->query("UPDATE sqlite_sequence SET seq = 0 WHERE name='on_links';")->fetchAll();
     $db->query("delete from on_categorys")->fetchAll();
@@ -2136,6 +2223,7 @@ function data_empty(){
     $count_links = $db->Count("on_links");
     $count_tag = $db->Count("lm_tag");
     if($count_categorys === 0 && $count_links === 0 && $count_tag === 0){
+        delFileUnderDir("data/user/{$userdb['User']}/favicon"); //清空图标目录下的文件
         msg(0,"清空成功");
     }else{
         msg(-1111,"清空失败");

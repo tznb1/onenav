@@ -1,4 +1,41 @@
 <?php
+
+//获取Base64的文件大小
+function GetFileSize($Base64){
+    $img_len = strlen($Base64);
+    $file_size = $img_len - ($img_len/8)*2;
+    $file_size = number_format(($file_size/1024),2);
+    return $file_size;
+}
+
+//检查目录是否存在,不存在则创建!失败返回假
+function Check_Path($Path){
+    if(!is_dir($Path)){
+        return mkdir($Path,0755,true);
+    }else{
+        return true;
+    }
+}
+
+
+//循环目录下的所有文件
+function delFileUnderDir( $Path ){
+    if ( $handle = opendir( "$Path" ) ) {
+        while ( false !== ( $item = readdir( $handle ) ) ) {
+            if ( $item != "." && $item != ".." ) {
+                if(is_dir( "$Path/$item")) {
+                    delFileUnderDir( "$Path/$item");
+                }else{
+                    unlink("$Path/$item");
+                }
+            }
+        }
+    closedir( $handle );
+    }
+}
+
+
+
 //获取URL状态码
 function get_http_code($url) { 
         $curl = curl_init(); 

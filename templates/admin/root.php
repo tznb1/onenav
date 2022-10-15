@@ -11,6 +11,7 @@ $footer = htmlspecialchars_decode(base64_decode($footer));
 $Plug     = UGet('Plug');
 $apply  = UGet('apply');
 $Privacy = UGet('Privacy');
+$iconUP = UGet('iconUP');
 if (empty($subscribe['end_time'])) $subscribe['end_time'] = 0;
 
 ?>
@@ -85,7 +86,7 @@ if (empty($subscribe['end_time'])) $subscribe['end_time'] = 0;
       <div class="layui-input-inline">
     <input type="text" name="ICP"   value = '<?php echo $ICP; ?>' placeholder='工信部ICP备案号'  autocomplete="off" class="layui-input">
       </div>
-      <div class="layui-form-mid layui-word-aux">因法律风险问题,取消了普通用户自定义备案号!这里设置的是全局显示的!</div>
+      <div class="layui-form-mid layui-word-aux">底部显示的备案号</div>
     </div>
  </div> 
 <div class="layui-form-item">
@@ -218,6 +219,18 @@ if (empty($subscribe['end_time'])) $subscribe['end_time'] = 0;
     </div>
  </div>
  
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">图标上传</label>
+      <div class="layui-input-inline">
+      <select id="iconUP" name="iconUP"  >
+        <option value="0" <?php if($iconUP==0){echo'selected=""';}?>>禁止</option>
+        <option value="1" <?php if($iconUP==1){echo'selected=""';}?>>允许</option>
+      </select>
+      </div>
+      <div class="layui-form-mid layui-word-aux">设为允许时用户在后台添加或编辑链接时可以上传图标(需订阅)</div>
+    </div>
+ </div>
   <div class="layui-form-item layui-form-text">
     <label class="layui-form-label">底部代码</label>
     <div class="layui-input-block"> 
@@ -274,10 +287,12 @@ if (empty($subscribe['end_time'])) $subscribe['end_time'] = 0;
             <li>1. 可使用标签功能</li>
             <li>2. 可使用二级域名绑定账号功能</li>
             <li>3. 可使用链接检测功能</li>
-            <li>4. 建议和反馈优先处理</li>
-            <li>5. 更多高级功能开发中</li>
-            <li>6. 可帮助OneNav Extend持续发展，让它变得更加美好</li>
-            <li>技术支持:QQ 271152681</li>
+            <li>4. 可使用全局强制私有模式</li>
+            <li>5. 可无限次数下载主题和系统更新</li>
+            <li>6. 可以使用使用图标上传功能,让您的书签图标更加好看</li>
+            <li>7. 更多专属功能开发中 (未来新增的功能均为订阅可用)</li>
+            <li>8. 可帮助OneNav Extend持续发展，让它变得更加美好</li>
+            <li>#. 技术支持:QQ 271152681  </li>
         </ol>
       </div>
     </div>
@@ -624,7 +639,7 @@ form.on('submit(edit_root)', function(data){
         layer.msg(data.msg, {icon: 1});
        }else{
         layer.closeAll('loading');
-        layer.msg(data.msg, {icon: 5});
+        layer.msg(data.msg, {icon: 5,time: 10000});
        }
       });
       

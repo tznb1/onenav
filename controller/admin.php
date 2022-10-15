@@ -159,7 +159,16 @@ if( $page == 'Theme' ) {
                     continue;
                     break;
                 default:
-                    array_push($tpls,$value);
+                    //如果信息文件不存在,则创建一个
+                    if( !is_file($tpl_dir.$value.'/info.json') && is_file($tpl_dir.$value.'/index.php')) {
+                        $info = json_encode(["name"=>$value,"description"=>"Null","homepage"=>"https://gitee.com/tznb/OneNav","version"=>"0.0.0","update"=>"1970.01.01","author"=>"Null" ,"screenshot"=>""]);
+                        try{ 
+                            file_put_contents($tpl_dir.$value.'/info.json', $info); 
+                            array_push($tpls,$value);
+                        }catch (\Throwable $th) { } //创建失败不处理
+                    }else{
+                        array_push($tpls,$value);
+                    }
                     break;
             }
         }
@@ -175,24 +184,18 @@ if( $page == 'Theme' ) {
         //如果文件存在
         if( is_file($tpl_dir.$value.'/info.json') ) {
             $themes[$value]['info'] = json_decode(@file_get_contents( $tpl_dir.$value.'/info.json' ));
-        }else{ //文件不存在时
-            $themes[$value]['info']->name = $value;
-            $themes[$value]['info']->description="未找到主题信息文件";
-            $themes[$value]['info']->homepage="https://gitee.com/tznb/OneNav";
-            $themes[$value]['info']->version="0.0.0";
-            $themes[$value]['info']->update="1970/01/01";
-            $themes[$value]['info']->author="未知";
-            $themes[$value]['info']->screenshot="";
-        }
-        $themes[$value]['info']->config = is_file($tpl_dir.$value.'/config.php') ? '1':'0';
-        // 预览图优先顺序
-        $first = 'local'; 
-        if( $first == 'local' && is_file($tpl_dir.$value.'/screenshot.png') ){
-            $themes[$value]['info']->screenshot = "./templates/".$value."/screenshot.png";
-        }elseif($first == 'local' && is_file($tpl_dir.$value.'/screenshot.jpg') ){
-            $themes[$value]['info']->screenshot = "./templates/".$value."/screenshot.jpg";
-        }elseif(empty($themes[$value]['info']->screenshot)){ 
-            $themes[$value]['info']->screenshot = "./templates/admin/static/42ed3ef2c4a50f6d.png";
+            if(empty($themes[$value]['info'])){
+                $themes[$value]['info'] = json_decode(json_encode(["name"=>$value,"description"=>"Null","homepage"=>"","version"=>"0.0.0","update"=>"1970.01.01","author"=>"Null","screenshot"=>""]));
+            }
+            $themes[$value]['info']->config = is_file($tpl_dir.$value.'/config.php') ? '1':'0';
+            $first = 'local';  // 预览图优先顺序 local:本地,online:在线
+            if( $first == 'local' && is_file($tpl_dir.$value.'/screenshot.png') ){
+                $themes[$value]['info']->screenshot = "./templates/".$value."/screenshot.png";
+            }elseif($first == 'local' && is_file($tpl_dir.$value.'/screenshot.jpg') ){
+                $themes[$value]['info']->screenshot = "./templates/".$value."/screenshot.jpg";
+            }elseif(empty($themes[$value]['info']->screenshot)){ 
+                $themes[$value]['info']->screenshot = "./templates/admin/static/42ed3ef2c4a50f6d.png";
+            }
         }
     }
     //获取当前主题
