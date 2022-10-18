@@ -2,12 +2,12 @@
 	"code":	200,
 	"msg":	"",
 	"rt": 1653212496,
-	"et": 2653212496,
+	"et": 1853212496,
 	"data":	
 	[
 		{
-			"title":	"意见征集:预计下个版本支持PHP8.0+,同时放弃PHP版本低于7.3的支持!问一下大家现在用的是PHP那个版本!",
-			"url":	"https://gitee.com/tznb/OneNav/issues/I5M6YR"
+			"title":	"活动通知: 永久订阅原价199元,现活动价只需129元,数量有限售完恢复原价! 需更新到最新版,另有2元/月的体验套餐!",
+			"url":	"https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95"
 		}
 	]
 }
