@@ -198,7 +198,7 @@ body{
 									<div class="mdui-card-primary-title link-title">
 										<img src="<?php echo geticourl($IconAPI,$link); ?>" alt="HUAN" width="16px" height="16px">
 										<span class="link_title"><?php echo $link['title']; ?></span> 
-									</div>
+									</div> 
 							</div>
 						<?php echo $CLBT; ?>
 						<!-- 卡片的内容end -->
@@ -229,7 +229,8 @@ body{
 <script src = "<?php echo $libs?>/Other/ClipBoard.min.js"></script>
 <script src = "<?php echo $libs?>/MDUI/v1.0.1/js/mdui.min.js"></script>
 <script src = "<?php echo $libs?>/Other/holmes.js"></script>
-<script src = "<?php echo $Theme?>/static/embed.js?v=<?php echo $version; ?>"></script>
+<script src = "<?php echo $Theme?>/static/jquery.qrcode.min.js"></script>
+<script src = "<?php echo $Theme?>/static/embed.js?v=<?php echo $version.time(); ?>"></script>
 <?php 
 // 如果Key不为空,则加载天气插件!
 if ($WeatherPosition != 0){

@@ -81,7 +81,8 @@ if( file_exists('./data/onenav.db3') && file_exists('./data/config.php') && !fil
                 'property'      =>  $categorys['property'],
                 'description'   =>  $categorys['description'],
                 'Icon'          =>  $ico,
-                'font_icon'     =>  $categorys['font_icon']
+                'font_icon'     =>  $categorys['font_icon'],
+                'fid'           =>  empty($categorys['fid'])? 0 : $categorys['fid']
                 ];
         $Newdb->insert("on_categorys",$data); 
     }

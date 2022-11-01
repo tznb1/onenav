@@ -843,10 +843,12 @@ upload.render({
   form.on('switch(AutoClass)', function(data){
     if(this.checked){
         $('#propertytxt').text('导入的链接和创建的分类将设为私有!');
+        $("#2Class").show();
         $("#ADD_DATE").show();
         $("#icon").show();
     }else{
         $('#propertytxt').text('导入的链接将设为私有!');
+        $("#2Class").hide();
         $("#ADD_DATE").hide();
         $("#icon").hide();
     }

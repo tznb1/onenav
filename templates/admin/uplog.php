@@ -1,6 +1,19 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年11月01日</h4>
+      <ul>
+        <li>优化导入db3数据库,提高兼容性,修复导入二级分类异常,未导入图标URL和备用链接的bug,支持导入标签组</li>
+        <li>修复从原版升级安装时二级分类变一级的bug</li>
+        <li>修复默认主题(加强)右键生成二维码失效的问题(原调用第三方API改为本地JS生成,避免API不可用时无法生成,也解决了内网用户无法生成的问题)</li>
+        <li>书签导入HTML时允许选择保留二级分类(使用自动分类时可选)</li>
+        <li>书签导入HTML时分类目录无法识别时将链接加入选择的分类(如目录名为空)</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年10月15日</h4>
       <ul>
         <li>修复PHP8下放入第三方非标准主题可能引发后台报错的问题</li>

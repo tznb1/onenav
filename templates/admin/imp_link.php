@@ -47,6 +47,15 @@
       </div>
       <div class="layui-form-mid layui-word-aux">自动创建分类目录</div>
     </div>
+ </div>
+   <div class="layui-form-item" style = "display:none;" id='2Class'>
+    <div class="layui-inline">
+      <label class="layui-form-label">二级分类</label>
+      <div class="layui-input-inline" style="width: 70px;">
+        <input lay-filter="2Class" type="checkbox" name="2Class" value = "1" lay-skin="switch" lay-text="是|否">
+      </div>
+      <div class="layui-form-mid layui-word-aux">尝试保留分类层级,无法保留时添加为一级分类</div>
+    </div>
  </div> 
    <div class="layui-form-item" style = "display:none;" id='ADD_DATE'>
     <div class="layui-inline">
@@ -113,7 +122,7 @@
     </blockquote>
     
     <blockquote class="layui-elem-quote" style="margin-top: 10px;">
-    <a  target="_blank" style="cursor:pointer;"  rel = "nofollow" onclick = "bookmarks('export_html')">导出HTML ( 支持导入浏览器 / OneNav / OneNav Extend ) &nbsp;>>&nbsp; 导出支持层级,导入不支持</a>
+    <a  target="_blank" style="cursor:pointer;"  rel = "nofollow" onclick = "bookmarks('export_html')">导出HTML ( 支持导入浏览器 / OneNav / OneNav Extend ) &nbsp;>>&nbsp; 导出导入都支持层级</a>
     </blockquote>
 </div>
 

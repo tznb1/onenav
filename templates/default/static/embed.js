@@ -39,20 +39,7 @@ var h = holmes({
   });
 //鼠标移动到链接修改为原始URL
 
-//js获取协议和域名部分
-function get_domain(){
-  //获取协议
-  var protocol = window.location.protocol;
-  protocol = protocol + '//';
-  //获取端口号
-  var port = window.location.port;
-  if( (port == 80) || (port == 443) ){
-    port = '';
-  }
-  var hostname = window.location.hostname;
-  domain = protocol + port + hostname;
-  return domain;
-}
+
 //弹窗
 function msg(text){
   // alert('dfd');
@@ -115,8 +102,10 @@ function admin_menu() {
               mdui.dialog({
                 'title':link_title,
                 'cssClass':'show_qrcode',
-                'content':'<img src = "https://qr.png.pub/v1/?text=' + url + '" />'
+                'content':'<div id="qr" style="display:none;"></div><div id="qrcode"></div>'
               });
+              $('#qr').qrcode({render: "canvas",width: 200,height: 200,text: encodeURI(url)}); //生成二维码
+              $('#qrcode').append(convertCanvasToImage(document.getElementsByTagName('canvas')[0])); //转换处理,为了兼容微信长按识别
           }},
           "copy":{name:"复制链接",icon:"copy",callback:function(){
             link_url = $(this).attr('link-url');
@@ -165,10 +154,12 @@ $.contextMenu({
           var link_title = $(this).attr('link-title');
           var url = $(this).attr('link-url');
           mdui.dialog({
-            'title':link_title,
-            'cssClass':'show_qrcode',
-            'content':'<img src = "https://qr.png.pub/v1/?text=' + url + '" />'
+              'title':link_title,
+              'cssClass':'show_qrcode',
+              'content':'<div id="qr" style="display:none;"></div><div id="qrcode"></div>'
           });
+          $('#qr').qrcode({render: "canvas",width: 200,height: 200,text: encodeURI(url)}); //生成二维码
+          $('#qrcode').append(convertCanvasToImage(document.getElementsByTagName('canvas')[0])); //转换处理,为了兼容微信长按识别
       }},
       "copy":{name:"复制链接",icon:"copy",callback:function(){
         link_url = $(this).attr('link-url');
@@ -182,8 +173,6 @@ $.contextMenu({
             
           },
           afterCopy: function() {
-            //msg('链接已复制！');
-            // mdui.alert('链接已复制！');
             layer.msg('链接已复制！');
           }
       });
@@ -244,16 +233,12 @@ function on_search(){
   $(".search").focus();
   $(".search").val('');
 }
-//快捷键支持
-// hotkeys('a,esc', function (event, handler){
-//   switch (handler.key) {
-//     case 'a': open_add_link();
-//       break;
-//     case 'esc': clean_search();
-//       break;
-    
-//     default: alert(event);
-//   }
-// });
+
+//canvas转Image
+function convertCanvasToImage(canvas) {
+    var image = new Image();
+    image.src = canvas.toDataURL("image/png");
+    return image;
+}
 
 

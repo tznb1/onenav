@@ -34,7 +34,43 @@ function delFileUnderDir( $Path ){
     }
 }
 
-
+//插入分类(导入db3)
+function insert_categorys($name,$data,$all){
+    global $db;
+    $id = $db->get('on_categorys','id',[ 'name' =>  $name ]);
+    if(!empty($id)){ return $id; } //存在则直接返回
+    if(!empty($db->get('on_categorys','id',[ 'id' =>  $data['id'] ]))){
+        unset($data['id']); //id冲突是导入分类使用新id
+    }
+    
+    //不保留属性
+    if(!$all){  
+        $data['add_time'] = time();
+        $data['up_time'] = null;
+        $data['weight'] = 0;
+    }
+    //图标处理
+    if(!empty($data['Icon'])){
+        //扩展版
+    }elseif(!empty($data['font_icon'])){ //小z新版
+        $data['Icon'] = str_replace("fa ","",$data['font_icon']); 
+    }elseif(preg_match('/<i class="fa (.+)"><\/i>/i',$data['name'],$matches) != 0){
+        $data['Icon'] = $matches[1]; //古老的..
+    }
+    
+    //防XSS处理
+    $data['name'] = htmlspecialchars($data['name'],ENT_QUOTES);
+    $data['description'] = htmlspecialchars($data['description'],ENT_QUOTES);
+    $data['Icon'] = htmlspecialchars($data['Icon'],ENT_QUOTES);
+    
+    //父分类处理(兼容没有二级分类前的版本)
+    $data['fid'] = empty($data['fid']) ? 0 : intval($data['fid']);
+    
+    //插入数据库
+    $db->insert("on_categorys",$data);
+    $id = $db->id();
+    if(!empty($id)){ return $id; }else{ return 0;}
+}
 
 //获取URL状态码
 function get_http_code($url) { 

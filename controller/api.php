@@ -347,7 +347,7 @@ function add_link(){
     //图标处理
     if(!empty($_POST['icon_base64']) && UGet('iconUP') == 1 ){
         $path = "data/user/{$username}/favicon/{$id}";
-        del_icon($id);//删除图标
+        unlink($path.'.jpg');unlink($path.'.png');unlink($path.'.ico');unlink($path.'.svg');
         if($_POST['icon_base64'] == 'del'){
             
         }elseif(preg_match('/data:image\/(jpeg|png|x-icon|svg-xml|svg\+xml);base64,(\S+)/', $_POST['icon_base64'], $result)){
@@ -395,7 +395,7 @@ function edit_link(){
     //图标处理
     if(!empty($_POST['icon_base64'])  && UGet('iconUP') == 1 ){
         $path = "data/user/{$username}/favicon/{$id}";
-        del_icon($id);//删除图标
+        unlink($path.'.jpg');unlink($path.'.png');unlink($path.'.ico');unlink($path.'.svg');
         if($_POST['icon_base64'] == 'del'){
             
         }elseif(preg_match('/data:image\/(jpeg|png|x-icon|svg-xml|svg\+xml);base64,(\S+)/', $_POST['icon_base64'], $result)){
@@ -634,9 +634,9 @@ function imp_link() {
     $filename = str_replace('./','',$filename);
     $fid = intval($_POST['fid']); //所属分类
     $property = intval(@$_POST['property']); //私有属性
-    $all = intval(@$_POST['all']); //保留属性
+    $all = intval(@$_POST['all']) == 1?true:false; //保留属性(db3)
     $suffix = strtolower(end(explode('.',$filename)));
-    $AutoClass = $_POST['AutoClass'];
+    $AutoClass = $_POST['AutoClass']; //自动分类(HTML)
     //路径过滤
     if(substr($filename,0, 12)!=='data/upload/'){
         msg(-1016,'路径非法!');
@@ -647,53 +647,86 @@ function imp_link() {
     $res='<table class="layui-table" lay-even><colgroup><col width="200"><col width="250"><col></colgroup><thead><tr><th>标题</th><th>URL</th><th>失败原因</th></tr></thead><tbody>';
     //导入数据为db3
     if($suffix==='db3'){
+
         $tempdb = new Medoo\Medoo(['database_type' => 'sqlite', 'database_file' => $filename]);
-        $categorys = $tempdb->select('on_categorys','*');//列出分类
-        $data = $tempdb->query("select * from sqlite_master where name = 'on_categorys' and sql like '%Icon%'")->fetchAll(); //查找字段
-        $icon = count($data)==0 ? false:true ; //判断有没有图标字段!如果没有则尝试从名称取图标写到专用字段
-        // $data = $tempdb->query("select * from sqlite_master where name = 'on_categorys' and sql like '%Icon%'")->fetchAll(); //查找字段
-        // $icon = count($data)==0 ? false:true ; //判断有没有图标字段!如果没有则尝试从名称取图标写到专用字段
-        $fail =0;$success=0;//初始计数
-        //遍历分类
-        foreach ($categorys as $category) {
-            $name = strip_tags($category['name']);//取分类名(存在XSS风险)
-            if(empty($name)){continue;}//如果名称为空则跳到循环尾 (名称为空)
-            $cat_name = $db->get('on_categorys','*',[ 'name' =>  $name ]); //取当前库同名ID
-            $cat_id = $db->get('on_categorys','*',[ 'id' =>  $category['id'] ]); //取当前库同名ID
-            $ico ='';
-            //如果没有图标字段,则为原版数据库!尝试正则提取是否有图标,有的话就写到写到数据库!
-            //注:原版可以写N个图标,但我这设计只能一个,所以只提取第一个图标!
-            if (!$icon && preg_match('/<i class="fa (.+)"><\/i>/i',$category['name'],$matches) != 0){
-                $ico=$matches[1];
-            }elseif($icon){
-                $ico=$category['Icon'];
+        $category_parent_New = []; 
+        try{
+            $fid = count($tempdb->query("select * from sqlite_master where name = 'on_categorys' and sql like '%fid%'")->fetchAll()) == 0 ? false:true; //是否有有二级分类
+        }catch(Exception $e){
+            unlink($filename);//删除书签
+            msgA(['code'=>-1111,'msg'=>'读取数据库异常!']);
+        }
+            
+        //根据条件来觉得是取父分类还是全部
+        if($fid){
+            $category_parent = $tempdb->select('on_categorys','*',["fid" => 0]); //获取父分类
+        }else{
+            $category_parent = $tempdb->select('on_categorys','*'); //获取分类 (不支持二级分类前的版本)
+        }
+        
+        //处理父分类
+        foreach ($category_parent as $category) {      
+            $id = insert_categorys($category['name'],$category,$all);
+            if( $id != $category['id'] ){ 
+                $tempdb->update('on_links',['fid' => $id ],[ 'fid' => $category['id']]); //更新链接所属的分类ID
+                if($fid){
+                    $tempdb->update('on_categorys',['fid' => $id ],[ 'fid' => $category['id']]);//更新二级分类id
+                }
+                $category['id'] = $id; //修改新ID
             }
-            //如果分类名相同就不创建新分类,而是把全部连接导入到同名分类下!
-            if(strip_tags($cat_name['name'])==$name){
-                $tempdb->update('on_categorys',['id' => $cat_name['id'] ],[ 'id' => $category['id']]); //修改分类ID,方便后面导入连接!
-                $tempdb->update('on_links',['fid' => $cat_name['id'] ],[ 'fid' => $category['id']]); //修改链接分类ID,方便后面导入连接!
-            }else{
-                $data = [
-                        'name'          =>  htmlspecialchars($name,ENT_QUOTES),
-                        'add_time'      =>  $all == 1 ? $category['add_time']:time(),
-                        'up_time'       =>  $all == 1 ? $category['up_time']:null,
-                        'weight'        =>  $all == 1 ? $category['weight']:0,
-                        'property'      =>  empty($category['property']) ? 0 : 1,
-                        'fid'           =>  empty($category['fid']) ? 0 : intval($category['fid']) ,
-                        'description'   =>  htmlspecialchars($category['description'],ENT_QUOTES),
-                        'Icon'          =>  htmlspecialchars($ico,ENT_QUOTES)
-                        ];
-                $db->insert("on_categorys",$data);
-                $id = $db->id();
-                if(!empty($id)){
-                    $tempdb->update('on_categorys',['id' => $id ],[ 'id' => $category['id']]); //修改分类ID,方便后面导入连接!
-                    $tempdb->update('on_links',['fid' => $id ],[ 'fid' => $category['id']]); //修改链接分类ID,方便后面导入连接!
+            if ($fid) array_push($category_parent_New,$category); 
+        }
+        
+        //处理二级分类
+        foreach ($category_parent_New as $category) {
+            $category_subs = $tempdb->select('on_categorys','*',["fid" => $category['id'],"ORDER" => ["weight" => "DESC"] ]);
+            foreach ($category_subs as $category2) {
+                $id = insert_categorys($category2['name'],$category2,$all);
+                if($id != $category2['id']){ 
+                    $tempdb->update('on_links',['fid' => $id ],[ 'fid' => $id]); //更新链接所属的分类ID
                 }
             }
         }
+        //分类处理End
+        
+        //标签组导入
+        try{ //是否存在标签组表
+            $tagv = count($tempdb->query("select * from sqlite_master where name = 'lm_tag' and sql like '%id%'")->fetchAll()) == 0 ? false:true;
+        }catch(Exception $e){
+            $tagv = false;
+        }
+        //存在则处理
+        if($tagv){
+            $tags = $tempdb->select('lm_tag','*');
+            $taga = [];
+            foreach ($tags as $tag) {
+                $old_id = 0;
+                if(!empty($db->get('lm_tag','id',[ 'id' =>  $tag['id'] ]))){
+                    //已经有这个ID了,看看名称和标识有无冲突
+                    if(empty($db->get('lm_tag','id',["OR" => ["name" => $tag['name'] ,"mark" => $tag['mark']] ]  ))){
+                        //不冲突,插入标签组信息(用新ID)
+                        $old_id = $tag['id']; 
+                        unset($tag['id']); 
+                    }
+                }
+
+                try{
+                    $db->insert('lm_tag',$tag);//插入数据库
+                    $id = $db->id();
+                    if(!empty($old_id)) { 
+                        $tempdb->update('on_links',['tagid' => $id ],[ 'tagid' => $old_id ] );
+                    }
+                    $taga[$id] = $tag['name'];
+                }catch(Exception $e){
+                    //失败暂不处理
+                }
+            }
+        }
+        //标签导入End
+        
         //导入链接
         $links = $tempdb->select('on_links','*');
-        $total = count($links);
+        $total = count($links); $fail = 0; $success = 0;
         //遍历链接
         foreach($links as $link){
             //如果标题或URL为空,则跳过
@@ -717,7 +750,10 @@ function imp_link() {
                 'up_time'       =>  $all == 1 ? $link['up_time']:null,
                 'weight'        =>  $all == 1 ? $link['weight']:0,
                 'property'      =>  empty($link['property']) ? 0 : 1,
-                'click'         =>  $all == 1 ? $link['click']:0
+                'click'         =>  $all == 1 ? $link['click']:0,
+                'url_standby'   =>  $link['url_standby'],
+                'iconurl'       =>  $link['iconurl'],
+                'tagid'         =>  empty($taga[$link['tagid']]) ? 0 : $link['tagid']
                 ];
                 
                 try{
@@ -808,6 +844,7 @@ function imp_link() {
         $data = []; //链接组
         $categorys = []; //分类信息组
         $categoryt = []; //分类信息表
+        $fcategorys = []; //上级分类
         $ADD_DATE =  intval(@$_POST['ADD_DATE']);
         $icon     =  intval(@$_POST['icon']);  
         $iconcount = 0 ;
@@ -821,12 +858,17 @@ function imp_link() {
         }
         
         // 遍历HTML
+        $Hierarchy = 0;
         foreach( $HTMLs as $HTMLh ){
             if( preg_match("/<DT><H3.+>(.*)<\/H3>/i",$HTMLh,$category) ){
                 //匹配到文件夹名时加入数组
+                $Hierarchy ++;
                 $category[1] = empty($category[1]) ? $default_category : $category[1];
                 array_push($categoryt,$category[1]);
                 array_push($categorys,$category[1]);
+                if($Hierarchy == 3){
+                    $fcategorys[$category[1]] = $categorys[$Hierarchy - 2];
+                }
             }elseif( preg_match('/<DT><A HREF="(.*)" ADD_DATE="(\d*)".*>(.*)<\/A>/i',$HTMLh,$urls) ){
                 // 1.链接 2.添加时间 3.标题
                 $datat['category']  = $categorys[count($categorys) -1];
@@ -835,17 +877,18 @@ function imp_link() {
                 $datat['title']     = $urls[3];
                 $datat['url']       = $urls[1];
                 $datat['html']   = $HTMLh;
-                
-                
+                //$datat['Hierarchy'] = $Hierarchy;
+                //$datat['fcategory'] = $categorys[$Hierarchy - 2];
                 array_push($data,$datat);
             }elseif( preg_match('/<\/DL><p>/i',$HTMLh) ){
                 //匹配到文件夹结束标记时删除一个
+                $Hierarchy --;
                 array_pop($categorys);
             }
         }
         //遍历结束,分类名去重!
         $categoryt = array_unique($categoryt);
-        //var_dump($categoryt);var_dump($data);exit;
+        //var_dump($categoryt);var_dump($fcategorys);//exit;
          
         // 检查和创建分类
         $fids = [];
@@ -854,7 +897,7 @@ function imp_link() {
             $id = $db-> get('on_categorys', 'id', ['name' => $name]);
             if( empty($id) ){
                 //插入分类目录
-                $db->insert("on_categorys",['name' => $name,'add_time' => $currenttime,'property' => $property]); 
+                $db->insert("on_categorys",['name' => $name,'add_time' => $currenttime,'property' => $property ,'Icon' => 'fa-folder']); 
                 $id = $db->id();//返回ID
                 if(empty($id)){
                     msg(-1000,'意外结束:分类已存在!');
@@ -865,7 +908,16 @@ function imp_link() {
                 $fids[$name] = $id;
             }
         }
+        $fids[$default_category] = $fid; //加入默认分类
         //var_dump($fids);var_dump($data);exit;
+        
+        //二级分类处理
+        if($_POST['2Class'] == 1){
+            foreach( $fcategorys as $name3 => $name2 ){
+                $re = $db->update('on_categorys',['fid' => $fids[$name2],'Icon'=>'fa-folder-o' ],[ 'id' => $fids[$name3]]); //更新数据
+            }
+        }
+
 
         // 遍历导入链接
         $fail = 0; $success = 0;
@@ -920,17 +972,17 @@ function imp_link() {
                 
             //插入数据库
             try{
-             $re = $db->insert('on_links',[
-                'fid'           =>  $fids[$link['category']],
-                'add_time'      =>  $time,
-                'title'         =>  $link['title'] ,
-                'url'           =>  $link['url'],
-                'property'      =>  $property,
-                'iconurl'       =>  $path
-             ]);
-             $row = $re->rowCount();//返回影响行数
+                $re = $db->insert('on_links',[
+                    'fid'           =>  $fids[$link['category']],
+                    'add_time'      =>  $time,
+                    'title'         =>  $link['title'] ,
+                    'url'           =>  $link['url'],
+                    'property'      =>  $property,
+                    'iconurl'       =>  $path
+                ]);
+                $row = $re->rowCount();//返回影响行数
             }catch(Exception $e){
-             $row = 0;
+                $row = 0;
             }
             
             if( $row ){
@@ -1863,8 +1915,8 @@ function Onecheck(){
     $log = $log . "PHP版本：{$php_version}\n";
     $log = $log . "Web版本：{$_SERVER['SERVER_SOFTWARE']}\n";
     
-    if( ( $php_version < 5.6 ) || ( $php_version > 8 ) ) {
-        $log = $log . "PHP版本：不满足要求,需要5.6 <= PHP <= 7.4,建议使用7.4 )\n";
+    if( ( $php_version < 5.6 ) || ( $php_version > 8.1 ) ) {
+        $log = $log . "PHP版本：不满足要求,需要5.6 <= PHP <= 8.1,建议使用7.4 )\n";
     }
     
     //检查是否支持pdo_sqlite
