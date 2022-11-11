@@ -11,7 +11,7 @@ $udb = new Medoo\Medoo(['database_type'=>'sqlite','database_file'=>'./data/lm.us
 $c = Get('c');$u = Get('u');
 $CookieU  = $_COOKIE['DefaultDB'];
 $Duser    = UGet('DUser');//默认用户
-$reg      = UGet('Reg');//0.禁止注册 1.允许注册
+$reg      = UGet('Reg');//0.禁止注册 1.允许注册 2.邀请注册
 $Register = UGet('Register');//注册入口 
 $login    = UGet('Login'); //登陆入口名
 $libs     = UGet('Libs'); //静态库路径

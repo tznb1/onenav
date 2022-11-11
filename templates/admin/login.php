@@ -42,7 +42,7 @@
 </form>
 <?php
     //若为默认值则显示注册入口
-    if($Register === 'Register' && $reg === "1"){
+    if($Register === 'Register' && ($reg === "1" || $reg === "2")){
         echo '<p style="width: 85%; margin-top: 10px;"><a href="?c=Register" style="color: #fffbfb;" class="fl">没有账号？立即注册</a></p>';
     } 
 ?>

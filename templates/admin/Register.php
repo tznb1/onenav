@@ -42,13 +42,28 @@
     <div class="layui-input-block">
       <input type="text" name="Email" required value=""  lay-verify="email" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
     </div>
+  </div><?php if($reg == '2'){ ?>
+  <div class="layui-form-item" style = "display:none;">
+    <label class="layui-form-label">注册码</label>
+    <div class="layui-input-block">
+      <input type="text" name="key" required value="<?php echo Get('key'); ?>"  placeholder="请输入注册码" autocomplete="off" class="layui-input">
+    </div>
   </div>
+  <div class="layui-form-item" style = "display:none;">
+    <label class="layui-form-label">邀请者</label>
+    <div class="layui-input-block">
+      <input type="text" name="Inviter" required value="<?php echo Get('u'); ?>"  placeholder="请输入注册码" autocomplete="off" class="layui-input">
+    </div>
+  </div><?php }?>
  <button class="layui-btn" lay-submit lay-filter="register" style = "width:100%;">注册</button>
 </form>
 <?php 
     //若为默认值则显示注册入口
     if($login === 'login'){
-    echo '<p style="width: 85%; margin-top: 10px;"><a href="?c=login" style="color: #fffbfb;" class="fl">已有账号？立即登录</a></p>';
+    echo '<p style="width: 96%; margin-top: 10px;"><a href="?c=login" style="color: #fffbfb;" class="fl">已有账号？立即登录</a>';
+    $Get_Invitation = UGet('Get_Invitation');
+    if($reg == 2 && !empty($Get_Invitation)){echo '<a style="color: #fffbfb;float:right" class="fl" onclick = "Get_Invitation(\''.base64_encode($Get_Invitation).'\')">获取邀请码</a>';}
+    echo '</p>';
     }
 ?>
 </div>
@@ -83,6 +98,17 @@ layui.use(['form'], function(){
         return false;
     });
 });
+
+//获取邀请码
+function Get_Invitation($base64) {
+    var content =decodeURIComponent(escape(window.atob($base64)));
+    if (content.substr(0,4) =='http'){
+        window.location.href = content;
+    }else{
+        layer.open({title:'获取邀请码',content:content});
+    }
+}
+
 </script>
 </body>
 </html>

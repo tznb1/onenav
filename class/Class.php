@@ -191,11 +191,10 @@ if ($count){
 //获取URL
 function geturl($link){
     global $u;
-if (getconfig('urlz')  == 'on'){
+if (getconfig('urlz')  == 'on' && empty($link['url_standby'])){
     return $link['url'];
 }else{
     return "./index.php?c=click&id={$link['id']}&u={$u}";
-   //return  "./index.php?c=click&id=<?php echo $link['id'].'&u='.$u; 
 }}
 
 //写入配置(如果不存在则创建)

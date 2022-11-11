@@ -6,7 +6,8 @@
 	<meta name="keywords" content="<?php echo $link['title']; ?>" />
 	<meta name="description" content="<?php echo $link['description']; ?>" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="https://lib.sinaapp.com/js/bootstrap/4.3.1/css/bootstrap.min.css" type="" media=""/>
+	<?php if(getconfig('urlz')  == 'Privacy'){echo '<meta name="referrer" content="same-origin">'."\n";}?> 
+	<link rel="stylesheet" href="<?php echo $libs?>/Other/bootstrap.min.css" type="" media=""/>
 	<style>
 		.prevent-overflow{
 			width:260px;

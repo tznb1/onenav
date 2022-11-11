@@ -1292,7 +1292,7 @@ function edit_root(){
         msg(-1102,'您没有权限修改全局配置!');
     }elseif($udb->count("user",["User"=>$DUser]) === 0 ){ //账号检测
         msg(-1102,'默认账号'.$DUser.'不存在,请检查!');
-    }elseif($Reg !== '0' && $Reg !== '1'){ //注册开关检测
+    }elseif($Reg !== '0' && $Reg !== '1' && $Reg !== '2'){ //注册开关检测
         msg(-1103,'注册用户参数错误');
     }elseif($Register == $login){ //入口名检测
         msg(-1103,'注册入口名不能和登录入口名相同!');
@@ -1324,6 +1324,8 @@ function edit_root(){
         msg(-1103,'未检测到有效订阅,无法开启强制私有!');
     }elseif($iconUP != '0' && !is_subscribe(true)){
         msg(-1103,'未检测到有效订阅,无法开启图标上传!');
+    }elseif($Reg == '2' && !is_subscribe(true)){
+        msg(-1103,'未检测到有效订阅,无法使用邀请注册!');
     }
 
     Writeconfigd($udb,'config','DUser',$DUser);
@@ -2292,7 +2294,7 @@ function export_db3(){
     header("Cache-Control: public");
     header("Content-Description: File Transfer");
     header('Content-disposition: attachment; filename='.basename($userdb["SQLite3"])); //文件名
-    header("Content-Type: application/db3"); //zip格式的
+    header("Content-Type: application/db3"); 
     header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件
     header('Content-Length: '. filesize($SQLite3)); //告诉浏览器，文件大小
     readfile($SQLite3);
@@ -2844,8 +2846,75 @@ function backup_db_list() {
 
     msgA( ['code' => 0,'msg' => '','count' =>  $count,'data' =>  $data] );
 }
-
-
+//下载备份数据库
+function download_backup_db(){
+    global $u,$db,$udb,$RegTime,$password;
+    $pass = $_GET['pass'];
+    if(md5(md5($pass).$RegTime) !== $password && md5($pass.$RegTime) !== $password ){
+        exit('密码错误,请核对后再试！');
+    }
+    if(!is_subscribe()) { msg(-1111,'您未订阅,请先购买订阅!'); }
+    $backup_dir = "data/user/{$u}/backup/"; //备份目录
+    $name = $_GET['name'];
+    //文件名检测
+    if( !preg_match_all('/^v\d+\.\d+\.\d+-\d{8}_\d{12}_[A-Za-z0-9]{5}.db3$/',$name) ) {
+        exit('数据库名称不合法！');
+    }
+    $SQLite3 = $backup_dir.'/'.$name;
+    if(!file_exists($SQLite3)){
+        exit('数据库不存在！');
+    }
+    header("Cache-Control: public");
+    header("Content-Description: File Transfer");
+    header('Content-disposition: attachment; filename='.basename($name)); //文件名
+    header("Content-Type: application/db3");
+    header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件
+    header('Content-Length: '. filesize($SQLite3)); //告诉浏览器，文件大小
+    readfile($SQLite3);
+}
+//邀请注册相关
+function Reg() {
+    global $reg,$udb;
+    if($reg != '2' || !is_subscribe(true)){msg(-200,"当前无法使用该功能");}
+    $sn = $_REQUEST['sn'];
+    if($sn === 'add'){
+        $list = unserialize(getconfig('invitation_list',''));
+        $code = hash("crc32b",uniqid().'lm21'.time()); //生成注册码
+        
+        $list[$code]['code'] = '1'; //1.未使用 2.已使用 其他表示不存在
+        $list[$code]['desc'] = '未使用';
+        $list[$code]['add_time'] = time(); //添加时间
+        $list[$code]['use_time'] = null; //使用时间
+        Writeconfig('invitation_list',serialize($list));
+        msgA( ['code' => 0,'msg' => '添加成功','key' =>  $code] );
+    }elseif($sn === 'list'){
+        
+        
+        $list = unserialize(getconfig('invitation_list',''));
+        $datas = [];
+        foreach ($list as $key => $info ){
+            $i++;
+            array_push($datas,array( 'order'=>$i,'key'=>"$key",'code'=>$info['code'],'desc'=>$info['desc'],'add_time'=>$info['add_time'],'use_time'=>$info['use_time'] ));
+        }
+    
+        $data = [
+            'code'  => 0,
+            'msg'   => '获取成功',
+            'count'=> count($datas),
+            'data' => $datas,
+        ];
+        msgA($data);
+    }elseif($sn === 'empty'){ //清空数据,前端没做
+        Writeconfig('invitation_list','');
+        msgA( ['code' => 0,'msg' => '已清空数据'] );
+    }elseif($sn === 'Set'){ 
+        Writeconfigd($udb,'config','Get_Invitation',$_POST['url']);
+        msgA( ['code' => 0,'msg' => '已保存设置'] );
+    }
+    
+    
+    msg(-200,"无效参数");
+}
 function check_xss($value){
     if(preg_match('/<(iframe|script|body|img|layer|div|meta|style|base|object|input)|">/i',$value)){
         return true;

@@ -253,7 +253,16 @@ var link_list_cols=[[ //表头
       {type:'checkbox'} //开启复选框
       ,{field: 'id', title: 'ID', width:60, sort: true}
       // ,{field: 'fid', title: '分类ID',sort:true, width:90}
-      ,{field: 'category_name', title: '所属分类',sort:true,width:140}
+      ,{field: 'category_name', title: '所属分类',sort:true,width:140,event: 'edit_category',templet:function(d){
+          if ( icos[d.fid] == null){ return d.category_name; }
+          if (icos[d.fid].substr(0,3) =='lay'){
+              return '<i class="layui-icon '+icos[d.fid]+'"></i> '+d.category_name;
+          } else if(icos[d.fid].substr(0,2) =='fa') {
+              return  '<i class="fa '+icos[d.fid]+'"></i> '+d.category_name;
+          } else{
+              return d.category_name;
+          }
+      }}
       ,{field: 'url', title: 'URL',templet:function(d){
         var url = '<a color=""   target = "_blank" href = "' + d.url + '" title = "' + d.url + '">' + d.url + '</a>';
         return url;
@@ -521,7 +530,9 @@ function set_link_attribute(ids,property) {
         layer.close(index);
       });
     } else if(obj.event === 'edit'){
-      window.location.href = './index.php?c=admin&page=edit_link&id=' + obj.data.id+'&u='+u;
+        window.location.href = './index.php?c=admin&page=edit_link&id=' + obj.data.id+'&u='+u;
+    } else if(obj.event === 'edit_category'){
+        window.location.href = './index.php?c=admin&page=edit_category&id=' + obj.data.fid+'&u='+u;
     }
   });
 //分类和连接开关事件

@@ -75,10 +75,11 @@
                 <select lay-verify="required"  id="urlz" name="urlz" lay-search>
                     <option value="on">直连模式</option>
                     <option value="302" selected="">重定向</option>
+                    <option value="Privacy">隐私保护</option>
                     <option value="Transition">过度页面</option>
                 </select>
             </div>
-            <div class="layui-form-mid layui-word-aux">直连模式无法统计点击数</div>
+            <div class="layui-form-mid layui-word-aux">直连模式无法统计点击数且无法使用备用链接,但它响应最快!</div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label" >访客停留</label>

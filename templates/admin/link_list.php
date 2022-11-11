@@ -76,14 +76,16 @@
 
 <!-- 内容主题区域END -->
 <?php 
-// $tags = $db->select('lm_tag','*');
-// if (count($tags)>0){
-//     echo "<script> var tag_data = [{title: '无标签',id: 100},{type: '-'}";
-//     foreach ($tags as $tag) {
-//         echo ",{title: '{$tag['name']}',id: {$tag['id']}}";
-//     }
-//     echo "] ; </script>";
-// }
+$categorys = $db->select('on_categorys',['id','Icon'],["ORDER" =>  ["weight" => "DESC"]]);
+echo "
+<script>
+var icos={};";
+foreach ($categorys as $category) {
+    echo "icos[{$category['id']}]=\"{$category['Icon']}\";";
+}
+echo "
+</script>
+";
 ?>
 </div>
 <?php include_once('footer.php'); ?>

@@ -45,9 +45,10 @@ if (empty($subscribe['end_time'])) $subscribe['end_time'] = 0;
       <select id="Reg" name="Reg"  >
         <option value="0" <?php if($reg==0){echo'selected=""';}?>>禁止注册</option>
         <option value="1" <?php if($reg==1){echo'selected=""';}?>>允许注册</option>
+        <option value="2" <?php if($reg==2){echo'selected=""';}?>>邀请注册</option>
       </select>
       </div>
-      <div class="layui-form-mid layui-word-aux">个人使用可以禁止注册哦!</div>
+      <div class="layui-form-mid layui-word-aux">个人使用可以禁止注册哦! <?php if($reg==2) echo '<a href="./index.php?c=admin&page=YQReg&u='.$u.'" target="_blank">管理邀请</a>';?></div>
     </div>
  </div>
  <div class="layui-form-item">
@@ -453,14 +454,14 @@ table.on('tool(user_list)', function(obj){
             }
         });
     } else if(obj.event === 'group'){
-        if(data.Level === '0'){
+        if(data.Level == '0'){
             layer.confirm('是否将 '+data.User+' 设为管理员?',{icon: 3, title:'温馨提示'}, function(index){
                 $.post('./index.php?c=api&method=func&u=<?php echo $u;?>',{'fn':'rootu','Set':'Level','id':data.ID,'Level':'999'},function(data,status){
                     if(data.code == 0){obj.update({Level: data.Level});}
                     layer.msg(data.msg, {icon: data.icon});
                 });
             });
-        }else if(data.Level === '999'){
+        }else if(data.Level == '999'){
             layer.confirm('是否将 '+data.User+' 设为普通用户?',{icon: 3, title:'温馨提示'}, function(index){
                 $.post('./index.php?c=api&method=func&u=<?php echo $u;?>',{'fn':'rootu','Set':'Level','id':data.ID,'Level':'0'},function(data,status){
                     if(data.code == 0){obj.update({Level: data.Level});}
@@ -568,7 +569,10 @@ form.on('submit(edit_root)', function(data){
     console.log(data.field) 
     $.post('./index.php?c=api&method=edit_root&u=<?php echo $u;?>',data.field,function(data,status){
       if(data.code == 0) {
-        layer.msg('已修改！', {icon: 1});
+        layer.msg('保存成功,刷新中..', {icon: 1});
+        setTimeout(() => {
+            location.reload();
+        }, 700);
       }
       else{
         layer.msg(data.msg, {icon: 5});

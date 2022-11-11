@@ -20,6 +20,9 @@ if ($reg === '0'){
     msg(-1131,'管理员已禁止注册,请联系管理员!');
 }elseif ($reg === '1'){
     //允许注册
+}elseif ($reg === '2'){
+    //邀请注册
+    
 }else{
     msg(-1131,'注册配置错误,请检查配置!');
 }
@@ -37,6 +40,15 @@ if(!preg_match('/^[A-Za-z0-9]{4,13}$/', $user)){
 }elseif(preg_match("/(class|controller|data|favicon|initial|static|templates|index|root|cache|upload)/i",$user) ) {
     msg(-1132,'禁止注册保留用户名!');
 }
+
+if ($reg === '2'){
+    //邀请注册处理
+    YQReg();
+    $log[uniqid()]['time'] = time();
+    $log[uniqid()]['value'] = '用户:'.$_POST['Inviter'].'邀请注册,注册码:'.$_POST['key'];
+    $log = serialize($log);
+}
+
 //插入用户表和创建初始数据库
 $RegTime = time();
 $PassMD5 = md5($pass.$RegTime);
@@ -50,7 +62,7 @@ $data = $udb-> insert ('user',[
     'Level'=>0,
     'Email'=>$Email,
     'Token'=>'',
-    'Log'=>'',
+    'Log'=>$log,
     'Login'=>$Elogin]);
 //检测是否是否插入成功,成功就复制初始数据库
 if($data->rowCount() == 0){
@@ -77,4 +89,31 @@ if (getconfig('User') === $user && getconfig('Pass') === $PassMD5 ){
 }else{
     //unlink($dbPath);//写入失败时删除数据库..
     msg(-1131,'写入数据库失败!请联系管理员!');
+}
+
+//邀请注册检测有效性和更新列表
+function YQReg() {
+    global $udb,$user;
+    $Inviter = $_POST['Inviter'];
+    $key = $_POST['key'];
+    if(empty($Inviter) || empty($key)){
+        msgA(['code'=> -1,'msg' =>'管理员已禁止注册']);
+    }
+    if(empty( $udb->count("user",["User"=>$Inviter]) )  ){
+        msgA(['code'=> -1,'msg' =>'注册码无效']);
+    }
+    
+    $Inviter_db = new Medoo\Medoo(['database_type' => 'sqlite','database_file' => './data/'.$Inviter.'.db3']);
+    $list = $Inviter_db->get("on_config","value",["name"=>"invitation_list"]);
+    $list = unserialize($list);
+    if($list[$key]['code'] == '2' ){
+        msgA(['code'=> -3,'msg' =>'注册码已被使用']);
+    }elseif($list[$key]['code'] === '1' ){
+        $list[$key]['use_time'] = time();
+        $list[$key]['code'] = '2';
+        $list[$key]['desc'] = '已被('.$user.')注册';
+        $Inviter_db->update('on_config',['Value' => serialize($list)],['Name' => 'invitation_list']);
+    }else{
+        msgA(['code'=> -2,'msg' =>'注册码无效']);
+    }
 }

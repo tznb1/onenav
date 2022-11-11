@@ -139,6 +139,7 @@
       <!-- 行操作 -->
       <script type="text/html" id="tooloption">
         <a class="layui-btn layui-btn-xs" lay-event="restore">回滚</a>
+        <a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
       </script>  
 
@@ -245,7 +246,7 @@
       ,{field:'size', width:80, title: '大小'}
       ,{field:'category_cont', width:70, title: '分类'}
       ,{field:'link_cont', width:80, title: '链接'}
-      ,{width:120, title:'操作', toolbar: '#tooloption'}
+      ,{width:180, title:'操作', toolbar: '#tooloption'}
     ]]
     
   });
@@ -294,7 +295,13 @@
             }
         });
       });
+    } else if(obj.event === 'download'){
+        layer.prompt({formType: 1,value: '',title: '输入登录密码:',shadeClose: true},function(value, index, elem){
+            window.open('./index.php?c=api&method=download_backup_db&u='+u +'&pass=' + $.md5(value) + '&name=' + data.name);
+            layer.closeAll();
+        }); 
     }
+    
   });
   
 //立即备份

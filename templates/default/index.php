@@ -5,6 +5,9 @@ $background = getconfig($config.'backgroundURL','');
 $DescrRowNumber = intval(getconfig($config.'DescrRowNumber','2'));
 $WeatherKey = getconfig($config.'WeatherKey','dd2e9ab2728d4b3c91245fe4057cb9ce');
 $WeatherPosition =  intval(empty($WeatherKey)?"0":getconfig($config.'WeatherPosition','2'));
+$referrer = getconfig($config.'referrer','0');
+$protectA = (($referrer == 'link' || $referrer == 'link_icon') && getconfig('urlz') == 'on') ? 'referrerpolicy="same-origin"':'';
+$protectIMG = ($referrer == 'link_icon' || $referrer == 'icon' ) ? 'referrerpolicy="same-origin"':'';
 if(getconfig($config.'ClickLocation','0') =='0'){
     $CLALL = "</a>";
 }else{
@@ -29,6 +32,7 @@ if ($DescrRowNumber <= 0 ){
 <?php if($site['keywords'] !=''){echo '<meta name="keywords" content="'.$site['keywords'].'"/>'."\n";}?>
 <?php if($site['description'] !=''){echo '<meta name="description" content="'.$site['description'].'"/>'."\n";}?>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php if($referrer == 'overall' && getconfig('urlz')  == 'on'){echo '<meta name="referrer" content="same-origin">'."\n";}?> 
 <link rel='stylesheet' href='<?php echo $libs?>/MDUI/v1.0.1/css/mdui.min.css'>
 <link rel='stylesheet' href='<?php echo $libs?>/ContextMenu/2.9.2/jquery.contextMenu.min.css'>
 <link rel="stylesheet" href="<?php echo $libs?>/Font-awesome/4.7.0/css/font-awesome.css">
@@ -193,10 +197,10 @@ body{
 						</div>
 						<?php } ?>
 						<!-- 角标END -->
-						<a class="TFC" href="<?php echo geturl($link); ?>" target="_blank" title = "<?php echo $link['description']; ?>">
+						<a class="TFC" href="<?php echo geturl($link); ?>" target="_blank" <?php echo $protectA; ?> title = "<?php echo $link['description']; ?>">
 							<div class="mdui-card-primary" >
 									<div class="mdui-card-primary-title link-title">
-										<img src="<?php echo geticourl($IconAPI,$link); ?>" alt="HUAN" width="16px" height="16px">
+										<img src="<?php echo geticourl($IconAPI,$link); ?>" alt="HUAN" width="16px" height="16px" <?php echo $protectIMG; ?>>
 										<span class="link_title"><?php echo $link['title']; ?></span> 
 									</div> 
 							</div>

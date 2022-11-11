@@ -1,6 +1,22 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年11月11日</h4>
+      <ul>
+        <li>网站管理>注册用户>新增:邀请注册 (该模式下注册时需通过邀请注册连接注册)(订阅可用)</li>
+        <li>默认主题(加强):设置中新增隐私保护选项(直连模式有效)</li>
+        <li>站点设置>功能配置:新增隐私模式(该模式不携带referer,起到防跟踪的效果)</li>
+        <li>修复登陆状态下跳转方式无效的bug</li>
+        <li>调整直连模式如果存在备用链接时将强制使用过渡页</li>
+        <li>修复PHP8下用户管理修改用户组没反应的问题</li>
+        <li>链接列表所属分类支持显示分类图标,支持点击分类名跳转到分类编辑</li>
+        <li>新增备份数据库下载</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年11月01日</h4>
       <ul>
         <li>优化导入db3数据库,提高兼容性,修复导入二级分类异常,未导入图标URL和备用链接的bug,支持导入标签组</li>

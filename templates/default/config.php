@@ -9,6 +9,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     Writeconfig($config.'CategoryFontColor',$_POST['CategoryFontColor']);
     Writeconfig($config.'TitleFontColor',$_POST['TitleFontColor']);
     Writeconfig($config.'DescrFontColor',$_POST['DescrFontColor']);
+    Writeconfig($config.'referrer',$_POST['referrer']);
     
     if($_GET['local'] == 'PresetColor'){
         //预设配色修改
@@ -202,6 +203,21 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         </div>
   
         <div class="layui-form-item">
+            <input id="referrer-input" type="hidden" value="<?php echo getconfig($config.'referrer','0');?>">
+            <label class="layui-form-label">隐私保护</label>
+            <div class="layui-input-inline">
+            <select lay-verify="required"  id="referrer" name="referrer" lay-search>
+            <option value="0">关闭</option>
+            <option value="overall">全局</option>
+            <option value="link">书签</option>
+            <option value="icon">图标</option>
+            <option value="link_icon">书签+图标</option>
+            </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux"><a target="_blank" style="color:#03a9f4!important;font-weight:bold;font-size:16px" href='https://gitee.com/tznb/OneNav/wikis/pages?sort_id=5491338&doc_id=2439895'>使用说明</a></div>
+        </div>
+  
+        <div class="layui-form-item">
             <label class="layui-form-label">背景图URL</label>
             <div class="layui-input-inline" style="width: 73%;">
             <input type="url" id = "backgroundURL" name="backgroundURL" value = "<?php echo getconfig($config.'backgroundURL','');?>" placeholder="存在时其他背景色无效,请输入图片URL" autocomplete="off" class="layui-input">
@@ -290,6 +306,8 @@ $('#WeatherBackground').val(document.getElementById('WeatherBackground-input').v
 $('#WeatherFontColor').val(document.getElementById('WeatherFontColor-input').value); 
 $('#WeatherPosition').val(document.getElementById('WeatherPosition-input').value); 
 $('#ClickLocation').val(document.getElementById('ClickLocation-input').value); 
+$('#referrer').val(document.getElementById('referrer-input').value); 
+
 layui.use(['form','colorpicker','element','dropdown'], function(){
     var form = layui.form;
     var colorpicker = layui.colorpicker;

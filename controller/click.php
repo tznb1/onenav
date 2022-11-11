@@ -34,10 +34,10 @@ if(empty($Themeo) || $Themeo == 'defaulto' ||!file_exists($path) ){
 $is_login = is_login2();
 
 //查询该ID的父及ID信息
-$category = $db->get('on_categorys',['id','property'],[
-    'id'    =>  $link['fid']
-]);
-
+$category = $db->get('on_categorys',['id','property','fid'],['id' => $link['fid']]);
+if(!empty($category['fid']) && $category['property'] == 0){
+    $fcategory = $db->get('on_categorys',['id','property','fid'],['id' => $category['fid']]);
+}
 //标签组>特定条件下允许访问私有链接
 if( getconfig('tag_private')=='on' && !empty($link['tagid'])){
     $tag_info = $db->get('lm_tag','*',['id'=>$link['tagid']]); 
@@ -54,7 +54,7 @@ $visitorST = getconfig('visitorST');
 $adminST = getconfig('adminST');
 
 //link.id为公有，且category.id为公有 或标签组允许
-if( ( $link['property'] == 0 ) && ($category['property'] == 0) || $allow){
+if( (( $link['property'] == 0 ) && ($category['property'] == 0 ) && ($fcategory['property'] == 0 ))|| $allow || $is_login){
     //增加link.id的点击次数
     $click = $link['click'] + 1;
     //更新数据库
@@ -73,33 +73,16 @@ if( ( $link['property'] == 0 ) && ($category['property'] == 0) || $allow){
         if ($urlz == '302'){
             header('location:'.$link['url']);
             exit;
+        }elseif($urlz == 'Privacy'){ //隐私保护
+            echo '<html lang="zh-ch"><head><title>正在保护您的隐私..</title><meta name="referrer" content="same-origin"></head>';
+            header("Refresh:0;url=".$link['url']);
+            exit;
         }else{
             require($path);
             exit;
         }
     }
-}
-//如果已经成功登录，直接跳转
-elseif( $is_login ) {
-    //增加link.id的点击次数
-    $click = $link['click'] + 1;
-    //更新数据库
-    $update = $db->update('on_links',[
-        'click'     =>  $click
-    ],[
-        'id'    =>  $id
-    ]);
-    //如果更新成功
-    if($update) {
-        //进行header跳转
-        // header('location:'.$link['url']);
-        // exit;
-        require($path);
-        exit;
-    }
-}
-//其它情况则没有权限
-else{
+}else{
     $msg = '<p>很抱歉，该页面是私有的，您无权限访问此页面。</p>
     <p>如果您是管理员，请尝试登录OneNav后台并重新访问。</p>';
     require('./templates/admin/403.php');
