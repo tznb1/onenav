@@ -1,6 +1,15 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年11月13日</h4>
+      <ul>
+        <li>修复上个版本造成无法注册的bug</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年11月11日</h4>
       <ul>
         <li>网站管理>注册用户>新增:邀请注册 (该模式下注册时需通过邀请注册连接注册)(订阅可用)</li>

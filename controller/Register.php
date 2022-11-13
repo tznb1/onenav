@@ -62,7 +62,7 @@ $data = $udb-> insert ('user',[
     'Level'=>0,
     'Email'=>$Email,
     'Token'=>'',
-    'Log'=>$log,
+    'Log'=>empty($log)?'':$log,
     'Login'=>$Elogin]);
 //检测是否是否插入成功,成功就复制初始数据库
 if($data->rowCount() == 0){
