@@ -3,7 +3,7 @@ OneNav Extend  是一款开源免费的书签（导航）管理程序，使用PH
 
 - 演示站 : [https://demo.lm21.top]( https://demo.lm21.top) 
 - 如果您觉得还不错的话可以订阅支持下我,订阅后可使用更多的功能! [购买订阅/打赏]( https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95)  
-### 2022年11月13日
+### 2022年12月26日
 - 修复修改链接图标使用Base64代码时无法显示预览的问题
 - 修复已知bug
 
