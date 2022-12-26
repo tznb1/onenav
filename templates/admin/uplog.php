@@ -1,6 +1,16 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
+      <h4 class="layui-timeline-title">2022年12月26日</h4>
+      <ul>
+        <li>修复修改链接图标使用Base64代码时无法显示预览的问题</li>
+        <li>修复已知bug</li>
+      </ul>
+    </div>
+</li>
+<li class="layui-timeline-item">
+    <i class="layui-icon layui-timeline-axis"></i>
+    <div class="layui-timeline-content layui-text">
       <h4 class="layui-timeline-title">2022年11月13日</h4>
       <ul>
         <li>修复上个版本造成无法注册的bug</li>

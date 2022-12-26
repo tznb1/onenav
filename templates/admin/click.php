@@ -84,11 +84,11 @@
 					<?php echo $msg; ?>
 				</div>
 				<hr>
-				<div class="xcdn-footer"><?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>&copy;2022 Powered by <a href="https://gitee.com/tznb/OneNav"  rel = "nofollow" target = "_blank">落幕</a></div>
+				<div class="xcdn-footer"><?php if($ICP != ''){echo '<a href="https://beian.miit.gov.cn" target="_blank">'.$ICP.'</a>';} ?>&copy;2022 Powered by <a href="https://gitee.com/tznb/OneNav"  rel = "nofollow" target = "_blank">落幕</a>
+				<?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']=='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
+				<?php if($Ofooter != ''){echo $Ofooter;} //公用底部?></div>
 			</div>
 		</div>
 	</div>
-	<?php $footer=getconfig("footer"); if($footer != ''&& ($Diy==='1' || $userdb['Level']=='999')){echo(htmlspecialchars_decode(base64_decode($footer)));} ?>
-    <?php if($Ofooter != ''){echo $Ofooter;} //公用底部?>
 </body>
 </html>

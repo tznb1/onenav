@@ -218,6 +218,9 @@ if ($count){
 //获取图标URL
 function geticourl($icon,$link){
     if(!empty( $link['iconurl'])){
+        if(substr ($link['iconurl'], 0,4) == '<svg'){
+            return('data:image/svg+xml;base64,'.base64_encode($link['iconurl']));
+        } 
         return($link['iconurl']);
     }elseif (getconfig('LoadIcon') != 'on'){
         global $libs;

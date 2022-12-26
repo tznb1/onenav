@@ -54,7 +54,8 @@ $iconUP = UGet('iconUP');?>
   <div class="layui-form-item">
     <label class="layui-form-label">图标URL</label>
     <div class="layui-input-block">
-      <input type="text" id = "iconurl" name="iconurl" value = "<?php echo $link['iconurl']; ?>" placeholder="自定义图标的URL地址，如果没有，请留空" autocomplete="off" class="layui-input">
+      <!--<input type="text" id = "iconurl" name="iconurl" value = "<?php echo $link['iconurl']; ?>" placeholder="自定义图标的URL地址，如果没有，请留空" autocomplete="off" class="layui-input">-->
+      <textarea name="iconurl" id = "iconurl" placeholder="自定义图标的URL地址，如果没有，请留空" class="layui-textarea" rows = "1" style="min-height:50px"><?php echo $link['iconurl']; ?></textarea>
     </div>
   </div>
 
@@ -110,6 +111,11 @@ if($iconUP != 1 ) exit;
 <script>
     var icourl = $("#iconurl").val();
     if(icourl != ''){
-        $('#icon').attr('src',icourl + '?t=' + Math.random() ) ;
+        if(icourl.substr(0,5) =='data:') {
+            $('#icon').attr('src',icourl) ;
+        }else{
+            $('#icon').attr('src',icourl + '?t=' + Math.random() ) ;
+        }
+        
     }
 </script>

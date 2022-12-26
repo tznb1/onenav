@@ -48,7 +48,8 @@ $iconUP = UGet('iconUP');?>
   <div class="layui-form-item">
     <label class="layui-form-label">图标URL</label>
     <div class="layui-input-block">
-      <input type="text" id = "iconurl" name="iconurl"  placeholder="自定义图标的URL地址，如果没有，请留空" autocomplete="off" class="layui-input">
+      <!--<input type="text" id = "iconurl" name="iconurl"  placeholder="自定义图标的URL地址，如果没有，请留空" autocomplete="off" class="layui-input">-->
+      <textarea name="iconurl" id = "iconurl" placeholder="自定义图标的URL地址，如果没有，请留空" class="layui-textarea" rows = "1" style="min-height:50px"><?php echo $link['iconurl']; ?></textarea>
     </div>
   </div>
 
