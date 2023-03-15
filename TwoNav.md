@@ -5,10 +5,10 @@
 - 安装后可以将其他版本的数据导入到TwoNav 
 - 订阅授权和OneNav Extend通用
 - 问题反馈和交流,QQ群: 695720839
-
-下载地址 随意选一个下就行
-http://twonav.test.upcdn.net/TwoNav_20230315_Alpha.tar.gz
-https://pan.baidu.com/s/1xG6XuxlrBOyTezuLv0dq3A?pwd=lm21 提取码: lm21
+- 演示站: http://two.lm21.top 账号密码admin
+### 下载地址 随意选一个下就行
+- http://twonav.test.upcdn.net/TwoNav_20230315_Alpha.tar.gz
+- https://pan.baidu.com/s/1xG6XuxlrBOyTezuLv0dq3A?pwd=lm21 提取码: lm21
 
 
 ## 已知问题 (原则上影响较大,容易修复的优先处理)
