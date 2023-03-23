@@ -6,9 +6,9 @@
 - 订阅授权和OneNav Extend通用
 - 问题反馈和交流,QQ群: 695720839
 - 演示站: http://two.lm21.top 账号密码admin
-### 下载地址 随意选一个下就行
-- http://twonav.test.upcdn.net/TwoNav_20230315_Alpha.tar.gz
-- https://pan.baidu.com/s/1xG6XuxlrBOyTezuLv0dq3A?pwd=lm21 提取码: lm21
+
+### 下载地址
+- https://pan.baidu.com/s/1TfnwAgtQFzdAYSaWfiXhyA?pwd=8kav
 
 
 ## 已知问题 (原则上影响较大,容易修复的优先处理)
@@ -16,8 +16,13 @@
 ### 已记录,优先级靠后
 - 浏览器插件和相关api暂未恢复
 - 后台:数据本地备份 
-- 链接排序功能
-- 管理员查询登录日志功能
+
+### 2023.03.23-Alpha
+- 优化db3数据导入的稳定性
+- 移除主页中的一键诊断入口
+- 网站管理新增站长工具(内含:一键诊断,phpinfo,生成伪静态,系统日志)
+- 安装脚本优化,新增安装前获取诊断信息
+- 支持链接排序
 
 ### 2023.03.18-Alpha
 - 修复前端退出登录(部分主题支持)异常的问题
