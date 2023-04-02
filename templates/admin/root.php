@@ -266,6 +266,7 @@ if (empty($subscribe['end_time'])) $subscribe['end_time'] = 0;
             <button class="layui-btn layui-btn-sm " lay-event="help" >帮助</button>
             <button class="layui-btn layui-btn-sm " lay-event="repair" >修复/升级</button>
             <button class="layui-btn layui-btn-sm " lay-event="loginlog" >登录日志</button>
+            <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="up_to_twonav" >导出数据</button>
         </div>
         </script>
         <!-- 开启表格头部工具栏END -->
@@ -532,7 +533,10 @@ table.on('toolbar(user_list)', function(obj){
       break;
       case 'loginlog':
       window.location.href="./index.php?c=admin&page=loginlog&u=<?php echo $u;?>";
-      break;   
+      break;  
+      case 'up_to_twonav':
+          export_to_twonav();
+      break; 
       
     }
 });
@@ -649,7 +653,93 @@ form.on('submit(edit_root)', function(data){
       
     return false; 
   });
-
+function export_to_twonav(){
+    let tip = layer.open({
+        title:"导出数据"
+        ,content: "导出数据用于升级到TwoNav"
+        ,btn: ['开始导出', '升级教程', '取消']
+        ,yes: function(index, layero){
+            let fail = false;
+            let up_info = {'code':0};
+            let i=0;
+            layer.close(tip);
+            layer.load(1, {shade:[0.3,'#fff']});//加载层
+            let msg_id = layer.msg('正在准备数据,请勿操作.', {icon: 16,time: 1000*300});
+            //设置同步模式
+            $.ajaxSetup({ async : false }); 
+                
+            //获取更新信息
+            $.post("./index.php?c=api&method=export_to_twonav&type=user_list&u=<?php echo $u;?>", function(data, status) {
+                   up_info = data;
+            });
+            console.log(up_info);
+            //如果失败
+            if(up_info.code != 1){
+                layer.closeAll();
+                layer.alert(up_info.msg ?? "错误代码：404",{icon:2,title:'导出失败',anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
+                return;
+            }
+            //设为异步模式
+            $.ajaxSetup({ async : true }); 
+            //开始请求更新
+            request_update(); let msg = '';
+            function request_update(){
+                if( i >= up_info.info.length){
+                    pack_data();
+                    return;
+                }else{
+                    i++;
+                }
+                let user = up_info.info[i-1];
+                console.log(up_info.info[i-1]);
+                $("#layui-layer"+ msg_id+" .layui-layer-padding").html('<i class="layui-layer-ico layui-layer-ico16"></i>[ ' + i + ' / ' + up_info.info.length + ' ] 正在处理 ' + user);
+                    
+                $.post("./index.php?c=api&method=export_to_twonav&type=export&u=<?php echo $u;?>",{"user":user}, function(data, status) {
+                    if (data.code == 1) { 
+                        request_update();
+                    }else{
+                        layer.closeAll();
+                        layer.alert(data.msg ?? "export.未知错误,请联系开发者!",{icon:5,title:up_info.info[i-1],anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
+                    } 
+                });
+            }
+            //打包数据
+            function pack_data(){
+                $("#layui-layer"+ msg_id+" .layui-layer-padding").html('<i class="layui-layer-ico layui-layer-ico16"></i>正在打包数据' );
+                $.post("./index.php?c=api&method=export_to_twonav&type=pack_data&u=<?php echo $u;?>",function(data, status) {
+                    if (data.code == 1) { 
+                        layer.closeAll();
+                        layer.alert('导出完毕,请参照教程继续操作!<a href="./data/'+data.msg+'" target="_blank" style="color: #01AAED;">下载数据</a>',{icon:1,title:'导出数据',anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
+                    }else{
+                        layer.closeAll();
+                        layer.alert(data.msg ?? "pack_data.未知错误,请联系开发者!",{icon:5,title:up_info.info[i-1],anim: 2,shadeClose: false,closeBtn: 0,btn: ['知道了']});
+                    } 
+                });
+                
+                
+            }
+            },btn2: function(index, layero){
+                window.open("https://gitee.com/tznb/OneNav/wikis/pages?sort_id=7955135&doc_id=2439895");
+                return false;
+            },btn3: function(index, layero){
+                return true;
+            },cancel: function(){ 
+                return true;
+            }
+        });
+    
+    
+    return false; 
+    layer.load(2, {shade: [0.1,'#fff']});//加载层
+    $.post("./index.php?c=api&method=export_to_twonav&u=<?php echo $u;?>",function(data,status){
+        layer.closeAll('loading');
+        if(data.code == 0) {
+            layer.msg(data.msg, {icon: 1});
+        }else{
+            layer.msg(data.msg, {icon: 5});
+      }
+    });
+}
 
 //结果弹出
 function open_msg(x,y,t,c){

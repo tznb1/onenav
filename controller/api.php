@@ -2915,6 +2915,117 @@ function Reg() {
     
     msg(-200,"无效参数");
 }
+//导出数据到TwoNav
+function export_to_twonav(){
+    global $udb;is_admin();
+    
+    if($_GET['type'] == 'user_list'){
+        
+        if(!is_dir('./data/updata')){
+            mkdir('./data/updata', 0777);
+        }
+
+        try {
+            if(is_file('./data/updata/lm.TwoNav.db3')){unlink('./data/updata/lm.TwoNav.db3');}
+            $MyDB = new Medoo\Medoo(['database_type'=>'sqlite','database_file'=>'./data/updata/lm.TwoNav.db3']);
+            $MyDB->query('CREATE TABLE IF NOT EXISTS "backup" ("id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"name" TEXT,"data" TEXT,CONSTRAINT "id" UNIQUE ("id" ASC));')->fetchAll();
+            $MyDB->insert('backup',['name'=>'ver','data'=>get_version()]); //记系统版本
+            $MyDB->insert('backup',['name'=>'backup_time','data'=>time()]); //记备份时间
+            
+            $count = $udb->count('user'); //总条数
+            $limit = 100; //每页数量
+            $pages= ceil($count/$limit); //总页数
+            //分页逐条处理
+            for ($page=1; $page<=$pages; $page++) {
+                $users = $udb->select('user','*',['ORDER' => ['ID'=>'ASC'],'LIMIT'=>[($page - 1) * $limit,$limit]]);
+                foreach($users as $user){
+                    $MyDB->insert('backup',['name'=>'user','data'=>$user]); 
+                } 
+            }
+            
+        }catch (Exception $e) {
+            msg(-1,'创建备份数据库失败'); 
+        }
+        
+        $user_list = $udb->select('user','User',['ORDER' => ['ID'=>'ASC']]);
+        msgA(['code' => 1,'info' => $user_list]);
+    }
+    
+    if($_GET['type'] == 'export'){
+        try {
+            $User = $udb->get('user','*',['User' => $_POST['user']]);
+            if(empty($User) || !is_file("./data/{$User['SQLite3']}")){
+                msg(-1,"用户数据库不存在");
+            }
+            $MyDB = new Medoo\Medoo(['database_type'=>'sqlite','database_file'=>'./data/updata/lm.TwoNav.db3']);
+            $UserDB = new Medoo\Medoo(['database_type'=>'sqlite','database_file'=>"./data/{$User['SQLite3']}"]);
+            foreach(['on_categorys','on_links','on_config','lm_apply','lm_tag'] as $table_name){
+                $count = $UserDB->count($table_name); //总条数
+                $limit = 100; //每页数量
+                $pages= ceil($count/$limit); //总页数
+                //分页处理
+                for ($page=1; $page<=$pages; $page++) {
+                    $datas = $UserDB->select($table_name,'*',['ORDER' => ['id'=>'ASC'],'LIMIT'=>[($page - 1) * $limit,$limit]]);
+                    foreach($datas as $data){
+                        $MyDB->insert('backup',['name'=>"{$User['User']}_{$table_name}",'data'=>$data]);
+                    }
+                }
+            }
+        }catch (Exception $e) {
+            msg(-1,'写入备份数据失败'); 
+        }
+        
+        //备份数据目录
+        try {
+            $file_list = glob("./data/user/{$User['User']}/MessageBoard/*.json");
+            $destDir = "./data/updata/{$User['User']}/MessageBoard";
+            if (!empty($file_list)  && !is_dir($destDir)) mkdir($destDir,0777,true) or msg(-1,'创建目录失败,请检查权限!');
+            foreach ($file_list as $filePath){
+                if(is_file($filePath)){
+                    copy($filePath, $destDir .'/'. basename($filePath));
+                }
+            }
+            $file_list = glob("./data/user/{$User['User']}/favicon/*.{jpeg,jpg,png,ico,svg}",GLOB_BRACE);
+            $destDir = "./data/updata/{$User['User']}/favicon";
+            if (!empty($file_list)  && !is_dir($destDir)) mkdir($destDir,0777,true) or msg(-1,'创建目录失败,请检查权限!');
+            foreach ($file_list as $filePath){
+                if(is_file($filePath)){
+                    copy($filePath, $destDir .'/'. basename($filePath));
+                }
+            }
+        }catch (Exception $e) {
+            msg(-1,'复制用户数据失败'); 
+        }
+        
+        msg(1,"success");
+    }
+    
+    if($_GET['type'] == 'pack_data'){
+        try {
+            $Path = "./data/twonav_updata_".uniqid().".tar";
+            if(is_file($Path)){
+                unlink($Path);
+            }
+            $phar = new PharData($Path);
+            $phar->buildFromDirectory("./data/updata");
+            if(!is_file($Path)){
+                msg(-1,'打包数据失败');
+            }
+            //计算文件哈希值并重新命名
+            $new_Path = "./data/twonav_updata_".hash_file('crc32b',$Path).".tar";
+            if(is_file($new_Path)){
+                unlink($new_Path);
+            }
+            rename($Path,$new_Path);
+        } catch (Exception $e) {
+            msg(-1,'压缩数据异常');
+        }
+        deldir("./data/updata");
+        msg(1,basename($new_Path));
+    }
+    msg(-1,'参数错误');
+}
+
 function check_xss($value){
     if(preg_match('/<(iframe|script|body|img|layer|div|meta|style|base|object|input)|">/i',$value)){
         return true;
