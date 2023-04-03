@@ -1,7 +1,7 @@
 <li class="layui-timeline-item">
     <i class="layui-icon layui-timeline-axis"></i>
     <div class="layui-timeline-content layui-text">
-      <h4 class="layui-timeline-title">2023年04月01日</h4>
+      <h4 class="layui-timeline-title">2023年04月03日</h4>
       <ul>
         <li>支持过度升级到TwoNav <a href="https://gitee.com/tznb/OneNav/wikis/pages?sort_id=7955135&doc_id=2439895" target="_blank">升级教程</a></li>
       </ul>

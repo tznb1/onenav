@@ -2932,6 +2932,12 @@ function export_to_twonav(){
             $MyDB->insert('backup',['name'=>'ver','data'=>get_version()]); //记系统版本
             $MyDB->insert('backup',['name'=>'backup_time','data'=>time()]); //记备份时间
             
+            $configs = [];
+            foreach($udb->select("config","*") as $config){
+                $configs[$config['Name']] = $config['Value'];
+            }
+            $MyDB->insert('backup',['name'=>'config','data'=>$configs]); //全局配置
+            
             $count = $udb->count('user'); //总条数
             $limit = 100; //每页数量
             $pages= ceil($count/$limit); //总页数

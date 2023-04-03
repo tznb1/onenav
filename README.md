@@ -3,14 +3,14 @@ OneNav Extend  是一款开源免费的书签（导航）管理程序，使用PH
 ***
 - 通告: 没停更,精力放在新版本**TwoNav**的开发上! Extend版将继续维护一段时间(仅修复bug,不新增功能)
 - **TwoNav演示站**: [http://two.lm21.top](http://two.lm21.top) 账号密码admin
-- QQ群: 695720839 (群内不定时发福利) 
+- QQ群: 695720839 
 
 ***
 
 - OneNav Extend 演示站 : [https://demo.lm21.top](https://demo.lm21.top) 
 - 如果您觉得还不错的话可以订阅支持下我,订阅后可使用更多的功能! [购买订阅/打赏](https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95)  
 
-### 2023.04.01
+### 2023.04.03
 - 支持过度升级到TwoNav [升级教程](https://gitee.com/tznb/OneNav/wikis/pages?sort_id=7955135&doc_id=2439895) 
 
 
