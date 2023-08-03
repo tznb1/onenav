@@ -1,18 +1,12 @@
 OneNav Extend  是一款开源免费的书签（导航）管理程序，使用PHP + SQLite 3开发，界面简洁，安装简单，使用方便。OneNav可帮助你你将浏览器书签集中式管理，解决跨设备、跨平台、跨浏览器之间同步和访问困难问题，做到一处部署，随处访问。是基于xiaoz原创的OneNav基础上进行大量的修改,实现了更多的功能!现与xiaoz版是分开发布,独立维护的!
 
 ***
-- 通告: 没停更,精力放在新版本**TwoNav**的开发上! Extend版将继续维护一段时间(仅修复bug,不新增功能)
+- **通告**: OneNav Extend 已停止维护,取而代之的是更强大的TwoNav,详情点击下方项目地址了解!
 - **TwoNav演示站**: [http://two.lm21.top](http://two.lm21.top) 账号密码admin
+- **TwoNav项目地址**: [https://gitee.com/tznb/TwoNav](https://gitee.com/tznb/TwoNav)
 - QQ群: 695720839 
 
 ***
-
-- OneNav Extend 演示站 : [https://demo.lm21.top](https://demo.lm21.top) 
-- 如果您觉得还不错的话可以订阅支持下我,订阅后可使用更多的功能! [购买订阅/打赏](https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95)  
-
-### 2023.04.03
-- 支持过度升级到TwoNav [升级教程](https://gitee.com/tznb/OneNav/wikis/pages?sort_id=7955135&doc_id=2439895) 
-
 
 
 ## 功能特色
