@@ -21,8 +21,7 @@ function Notice(){
         }
     }
     if ( $offline ){ return; } //离线模式
-    $urls = [ //2个公告获取的地址
-         "https://update.lm21.top/OneNav/Notice.json",
+    $urls = [ 
          "https://gitee.com/tznb/OneNav/raw/data/Notice.json"
         ];
     foreach($urls as $url){

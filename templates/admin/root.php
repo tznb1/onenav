@@ -588,34 +588,8 @@ form.on('submit(edit_root)', function(data){
 
   //保存订阅信息
   form.on('submit(set_subscribe)', function(data){
-    var order_id = data.field.order_id;
-    var index = layer.load(1);
-    $.get('https://api.lm21.top/api.php?fn=check_subscribe',data.field,function(data,status){
-      if(data.code == 200) {
-        email = data.data.email;
-        end_time = data.data.end_time;
-        domain = data.data.domain;
-        $("#end_time").val(timestampToTime(end_time));
-        //存储到数据库中
-        $.post("./index.php?c=api&method=set_subscribe&u=<?php echo $u;?>",{order_id:order_id,email:email,end_time:end_time,domain:domain},function(data,status){
-          if(data.code == 0) {
-            layer.closeAll('loading');
-            layer.msg(data.msg, {icon: 1});
-          }
-          else{
-            layer.closeAll('loading');
-            layer.msg(data.msg, {icon: 5});
-          }
-        });
-      }
-      else{
-        layer.closeAll('loading');
-        layer.msg(data.msg, {icon: 5});
-      }
-
-    });
-    console.log(data.field) 
-    return false;
+      layer.alert('OneNav Extend 已停止服务,请使用新版TwoNav<br /><a href="https://gitee.com/tznb/TwoNav" style="color: #1e9fff;" target="_blank">下载地址:https://gitee.com/tznb/TwoNav</a>');
+      return false;
   });
   //清空订阅信息
   form.on('submit(reset_subscribe)', function(data){
@@ -639,19 +613,8 @@ form.on('submit(edit_root)', function(data){
 
   //获取订阅
   form.on('submit(get_subscribe)', function(data){
-      $.get('https://api.lm21.top/api.php?fn=get_subscribe',data.field,function(data,status){
-       if(data.code == 200) {
-        $("#order_id").val(data.data.order_id);
-        $("#end_time").val(timestampToTime(data.data.end_time));
-        layer.closeAll('loading');
-        layer.msg(data.msg, {icon: 1});
-       }else{
-        layer.closeAll('loading');
-        layer.msg(data.msg, {icon: 5,time: 10000});
-       }
-      });
-      
-    return false; 
+      layer.alert('OneNav Extend 已停止服务,请使用新版TwoNav<br /><a href="https://gitee.com/tznb/TwoNav" style="color: #1e9fff;" target="_blank">下载地址:https://gitee.com/tznb/TwoNav</a>');
+      return false;
   });
 function export_to_twonav(){
     let tip = layer.open({

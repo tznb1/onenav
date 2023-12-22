@@ -218,7 +218,7 @@ if( $page == 'Theme' ) {
         
         //没有缓存 或 禁止缓存 或 缓存过时
         if(empty($template) ||   $_GET['cache'] === 'no'  || time() -  $data["time"] > 1800 ){ 
-            $urls = [ "https://update.lm21.top/OneNav/template.json","https://gitee.com/tznb/OneNav/raw/data/template.json"];
+            $urls = ["https://gitee.com/tznb/OneNav/raw/data/template.json"];
         }else{
             $cache = true;
         }

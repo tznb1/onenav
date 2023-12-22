@@ -220,7 +220,7 @@ table.on('toolbar(list)', function(obj){
                 ,area: ['300px', '300px']
                 ,maxmin: true
                 ,shadeClose: true
-                ,content: '<div style="padding: 15px;">1.点击ID和标识都能打开页面<br>2.点击名称可以复制链接<br>3.点击链接数可以跳转到链接列表<br>4.已登录时不受密码和到期限制<br>5.订阅失效时只能删除数据,不能添加修改<br>6.设置里面有3个选项,可按需修改!<br>7.咨询/反馈 QQ:271152681<br>8.此功能付费订阅可用,体验请点> <a href="https://demo.lm21.top/" target="_blank" style="color:#3c78d8">演示站</a></div>'
+                ,content: '<div style="padding: 15px;">1.点击ID和标识都能打开页面<br>2.点击名称可以复制链接<br>3.点击链接数可以跳转到链接列表<br>4.已登录时不受密码和到期限制<br>5.订阅失效时只能删除数据,不能添加修改<br>6.设置里面有3个选项,可按需修改!<br>7.咨询/反馈 QQ:271152681</div>'
                 ,btn: ['我知道了'] 
             });
         break;

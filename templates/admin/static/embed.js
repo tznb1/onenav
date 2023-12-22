@@ -951,23 +951,7 @@ function theme_config(key,name){
 }
 //下载主题
 function download_theme(dir,name,desc){
-    if (desc.length != 0){
-        console.log(desc);
-        layer.open({
-            title:name
-            ,content: desc
-            ,btn: ['下载', '取消']
-            ,yes: function(index, layero){
-                download_theme2(dir,name,desc);
-            },btn2: function(index, layero){
-                return true;
-            },cancel: function(){ 
-                return true;
-        }
-        });
-    }else{
-        download_theme2(dir,name,desc);
-    }
+    layer.alert('OneNav Extend 已停止服务,请使用新版TwoNav<br /><a href="https://gitee.com/tznb/TwoNav" style="color: #1e9fff;" target="_blank">下载地址:https://gitee.com/tznb/TwoNav</a>');
     
 }
 //删除主题
@@ -988,20 +972,7 @@ function theme_del(dir){
     });
 }
 function download_theme2(dir,name,desc){
-    layer.load(1, {shade:[0.1,'#fff']});//加载层
-    layer.msg('下载安装中,请稍后..', {offset: 'b',anim: 1,time: 60*1000});
-    $.post("./index.php?c=api&method=download_theme&u="+u,{dir:dir,name:name},function(data,status){
-        layer.closeAll();
-        if( data.code == 0 ) {
-            layer.msg(data.msg, {icon: 1});
-            setTimeout(() => {
-                location.reload();
-            }, 500);
-        }
-        else{
-            layer.msg(data.msg, {icon: 5});
-        }
-    });
+    layer.alert('OneNav Extend 已停止服务,请使用新版TwoNav<br /><a href="https://gitee.com/tznb/TwoNav" style="color: #1e9fff;" target="_blank">下载地址:https://gitee.com/tznb/TwoNav</a>');
 }
 function set_theme(key,name) {
     layer.open({

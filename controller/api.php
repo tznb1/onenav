@@ -1109,6 +1109,7 @@ function deldir($dir) {
 //主题下载
 function download_theme(){
     global $offline,$udb,$version;
+    msg(-1,'OneNav Extend 已停止服务,请使用新版TwoNav<br />下载地址: gitee.com/tznb/TwoNav');
     if ( $offline ){ msg(-5555,"离线模式禁止下载主题!"); } //离线模式
     if(!is_subscribe(true)){
         $download_theme_count = $udb->get('config', 'Value', ["Name"=>'download_theme_count']);
@@ -2008,7 +2009,7 @@ function get_latest_version() {
         }
         
         //加载远程数据
-        $urls = [ "https://update.lm21.top/OneNav/updata.json","https://gitee.com/tznb/OneNav/raw/data/updata.json"];
+        $urls = [ "https://gitee.com/tznb/OneNav/raw/data/updata.json"];
         foreach($urls as $url){ 
             $Res = ccurl($url,3);
             $data = json_decode($Res["content"], true);
@@ -2070,7 +2071,7 @@ function System_Upgrade() {
     set_time_limit(5*60);//设置执行最长时间，0为无限制。单位秒!
     ignore_user_abort(true);//关闭浏览器，服务器执行不中断。
     //加载远程数据
-    $urls = [ "https://update.lm21.top/OneNav/updata.json","https://gitee.com/tznb/OneNav/raw/data/updata.json"];
+    $urls = [ "https://gitee.com/tznb/OneNav/raw/data/updata.json"];
     foreach($urls as $url){ 
         $Res = ccurl($url,3);
         $data = json_decode($Res["content"], true);
