@@ -6,8 +6,28 @@
 	"data":	
 	[
 		{
-			"title":	"活动通知: 永久订阅原价199元,现活动价只需129元,数量有限售完恢复原价! 需更新到最新版,另有2元/月的体验套餐!",
-			"url":	"https://gitee.com/tznb/OneNav/wikis/%E8%AE%A2%E9%98%85%E6%9C%8D%E5%8A%A1%E6%8C%87%E5%BC%95"
-		}
+		    "title":    "TwoNav 正式版已发布,详情点击此处了解! 交流群: 695720839",
+		    "url":"https://gitee.com/tznb/TwoNav"
+		},
+		{
+		    "title":    "OneNav Extend 服务将于2023.12.31停止服务,请尽快升级到 TwoNav !",
+		    "url":"https://gitee.com/tznb/OneNav/wikis/%E5%81%9C%E6%AD%A2%E6%9C%8D%E5%8A%A1%E9%80%9A%E7%9F%A5?sort_id=8163120"
+		},
+        {
+            "title": "【腾讯云】11.11云上盛惠，云服务器首年1.8折起，买1年送3个月！",
+            "url": "https://cloud.tencent.com/act/cps/redirect?redirect=2446&cps_key=8de4358134765e6b56f54b3c30527f9d&from=console"
+        },
+        {
+            "title": "【七牛云】新人免费 CDN 全球2000+节点无盲区覆盖，注册即可免费使用",
+			"url": "https://s.qiniu.com/YnaqYf"
+        },
+        {
+            "title": "【又拍云】为开发者提供专业、免费、稳定的 CDN 及云存储服务，加速个人网站及 APP 等项目",
+            "url": "https://console.upyun.com/register/?invite=S9oig-sdh"
+        },
+        {
+            "title": "【括彩云】智能CDN, 每月可获得免费30G流量",
+            "url": "https://www.kuocaicdn.com/register?code=8z8p6ewxngj7s"
+        }
 	]
 }
